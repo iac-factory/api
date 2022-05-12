@@ -1,0 +1,61 @@
+{
+    "name": "root",
+    "private": true,
+    "type": "commonjs",
+    "devDependencies": {
+        "@commitlint/cli": "^16.2.4",
+        "@commitlint/config-conventional": "^16.2.4",
+        "@commitlint/prompt-cli": "^16.2.4",
+        "@swc/core": "^1.2.182",
+        "@tsconfig/node16-strictest-esm": "^1.0.1",
+        "@types/compression": "^1.7.2",
+        "@types/cors": "^2.8.12",
+        "@types/esm": "^3.2.0",
+        "@types/express": "^4.17.13",
+        "@types/express-serve-static-core": "^4.17.28",
+        "@types/jsonwebtoken": "^8.5.8",
+        "@types/node": "^17.0.32",
+        "@types/regenerator-runtime": "^0.13.1",
+        "@typescript-eslint/eslint-plugin": "^5.22.0",
+        "conventional-changelog-conventionalcommits": "^4.6.3",
+        "eslint": "^8.15.0",
+        "eslint-plugin-import": "^2.26.0",
+        "husky": "^7.0.4",
+        "lerna": "^4.0.0",
+        "regenerator-runtime": "^0.13.9",
+        "ts-node": "^10.7.0",
+        "typescript": "^4.6.4"
+    },
+    "dependencies": {
+        "@iac-factory/api-core": "file:packages/core",
+        "rehype-sanitize": "^5.0.1",
+        "rehype-stringify": "^9.0.3",
+        "remark-parse": "^10.0.1",
+        "remark-rehype": "^10.1.0",
+        "unified": "^10.1.2"
+    },
+    "author": {
+        "name": "Jacob B. Sanders",
+        "url": "https://github.com/iac-factory",
+        "organization": true
+    },
+    "scripts": {
+        "preinstall": "lerna init && lerna link",
+        "install": "lerna bootstrap --npm-client npm",
+        "release": "lerna version patch --no-private",
+        "postversion": "lerna publish from-git --canary --no-private",
+        "post-version-git": "lerna publish from-git --registry https://npm.pkg.github.com/ --canary --no-private",
+        "ci": "npm run release",
+        "commit": "git add --all && commit",
+        "test-commit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
+        "uninstall-husky": "npm uninstall husky && git config --unset core.hooksPath",
+        "maps": "find ./packages -type f -name '*.map' -exec rm -rf {} \\;",
+        "declarations": "find ./packages -type f -name '*.d.*' -exec rm -rf {} \\;",
+        "clean": "npm run declarations && npm run maps && find ./packages -type f -name '*.js' -exec rm -rf {} \\;"
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "exec scripts/.husky/commit-msg"
+        }
+    }
+}

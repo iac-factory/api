@@ -1,0 +1,27 @@
+{
+    "name": "utility",
+    "version": "0.0.1",
+    "private": true,
+    "description": "...",
+    "main": "index.js",
+    "module": "main.js",
+    "scripts": {
+        "start": "node distribution",
+        "prestart": "npm run build",
+        "build": "tsc --build tsconfig.json",
+        "common-js": "tsc --build tsconfig.cjs.json",
+        "ecma": "tsc --build tsconfig.esm.json",
+        "compile": "npm run ecma && npm run common-js && npm run build",
+        "prepublishOnly": "npm run compile"
+    },
+    "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+    "license": "BSD-2-Clause",
+    "dependencies": {
+        "esm": "^3.2.25"
+    },
+    "eslintConfig": {
+        "settings": {
+            "extends": "../.."
+        }
+    }
+}

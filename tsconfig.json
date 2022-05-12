@@ -1,0 +1,48 @@
+{
+    "extends": "@tsconfig/node16-strictest-esm",
+    "ts-node": {
+        "preferTsExts": true,
+        "experimentalReplAwait": false,
+        "skipIgnore": true,
+        "experimentalResolverFeatures": true,
+        "files": true,
+        "transpileOnly": true,
+        "swc": true
+    },
+    "compilerOptions": {
+        "rootDir": ".",
+        "pretty": true,
+        "target": "ES3",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "diagnostics": true,
+        "noUnusedLocals": false,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "noUnusedParameters": false,
+        "downlevelIteration": true,
+        "allowUnreachableCode": true,
+        // "importsNotUsedAsValues": "preserve",
+        "exactOptionalPropertyTypes": false,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "outDir": "distribution"
+    },
+    "include": [
+        "index.ts", "*.ts", "**/*.json", "packages"
+    ],
+    "exclude": [
+        "build",
+        "source",
+        "distribution",
+        "coverage",
+        "development",
+        "listener.*",
+        "unit-testing",
+        "iac",
+        "utility",
+        "commitlint.config.js"
+    ]
+}

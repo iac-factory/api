@@ -1,0 +1,23 @@
+{
+	"name": "@iac-factory/api-controller",
+	"version": "0.0.1",
+	"private": true,
+	"description": "...",
+	"module": "main.js",
+	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+	"license": "BSD-2-Clause",
+	"dependencies": {
+		"@mdx-js/mdx": "^2.1.1",
+		"esm": "^3.2.25",
+		"express": "^5.0.0-beta.1",
+		"rehype": "^12.0.1",
+		"rehype-sanitize": "^5.0.1",
+		"remark-rehype": "^10.1.0",
+		"vfile": "^5.3.2"
+	},
+	"eslintConfig": {
+		"settings": {
+			"extends": "../.."
+		}
+	}
+}

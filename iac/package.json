@@ -1,0 +1,13 @@
+{
+    "name": "iac",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "esm": "^3.2.25"
+    },
+    "eslintConfig": {
+        "settings": {
+            "extends": "../.."
+        }
+    }
+}

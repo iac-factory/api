@@ -1,0 +1,8 @@
+{
+    "extends": "./../tsconfig.json",
+    "ts-node": {"esm": false},
+    "compilerOptions": {
+        "target": "ES3",
+        "useDefineForClassFields": false
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "command": {
+        "create": {
+            "homepage": "https://github.com/iac-factory"
+        },
+        "publish": {
+            "tempTag": true
+        },
+        "version": {
+            "allowBranch": "Development",
+            "conventionalCommits": true,
+            "exact": true
+        }
+    },
+    "ignoreChanges": [
+        "**/*.md"
+    ],
+    "changelogPreset": {
+        "name": "conventional-changelog-conventionalcommits"
+    },
+    "npmClient": "npm",
+    "packages": [
+        "packages/*"
+    ],
+    "version": "0.0.0"
+}

@@ -1,0 +1,20 @@
+[Unit]
+Description=[ ... ]
+Documentation=https://github.com/cloud-hybrid/delta
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+User=vps-user
+Environment=NODE_ENV=production
+PIDFile=/run/npm-application.pid
+WorkingDirectory=/usr/local/sbin/npm-application
+ExecStartPre=/usr/local/bin/npm install .
+ExecStart=/usr/local/bin/npm run start
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

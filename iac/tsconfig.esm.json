@@ -1,0 +1,8 @@
+{
+    "extends": "./../tsconfig.json",
+    "ts-node": {"preferTsExts": true},
+    "compilerOptions": {
+        "outDir": "distribution/ecma",
+        "esModuleInterop": true
+    }
+}

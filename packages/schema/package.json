@@ -1,0 +1,16 @@
+{
+	"name": "@iac-factory/api-schema",
+	"version": "0.0.1",
+	"private": true,
+	"description": "...",
+	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+	"license": "BSD-2-Clause",
+	"dependencies": {
+		"esm": "^3.2.25"
+	},
+	"eslintConfig": {
+		"settings": {
+			"extends": "../.."
+		}
+	}
+}

@@ -1,0 +1,80 @@
+{
+    "name": "@cloud-technology/api",
+    "private": false,
+    "version": "0.1.113",
+    "description": "...",
+    "author": "Jacob B. Sanders",
+    "type": "module",
+    "types": "index.d.ts",
+    "main": "index.js",
+    "scripts": {
+        "server": "node ./distribution/index.js",
+        "start": "./node_modules/.bin/ts-node .",
+        "package": "npm pack",
+        "build": "tsc --pretty",
+        "compile": "tsc --watch",
+        "production": "npm install && npm run build",
+        "setup": "npm install --save-dev",
+        "upload": "npm publish --access public",
+        "test": "node --es-module-specifier-resolution node unit-testing",
+        "listening": "lsof -nP -iTCP -sTCP:LISTEN | grep 3443 | awk '{ print $2 }' | head -1",
+        "rm-declarations": "find . -name '*.d.ts' -type f -delete",
+        "rm-maps": "find . -name '*.map' -type f -delete",
+        "rm-compilations": "find . -name '*.js' -type f -delete",
+        "rm-modules": "rm -rf node_modules",
+        "clean": "npm run rm-declarations && npm run rm-maps && npm run rm-compilations && npm run rm-modules && rm tsconfig.tsbuildinfo"
+    },
+    "repository": {
+        "type": "git",
+        "url": "",
+        "directory": "packages/api"
+    },
+    "config": {
+        "//": "Must Match Application-Load-Balancer Port Mapping",
+        "port": 8080
+    },
+    "dependencies": {
+        "express": "^5.0.0-beta.1",
+        "tslib": "^2.3.1",
+        "tsconfig-paths": "^3.12.0",
+        "typescript": "^4.6.2",
+        "ts-node": "^10.7.0",
+        "@types/express": "^4.17.13",
+        "@types/express-serve-static-core": "^4.17.28",
+        "@types/express-ws": "^3.0.1",
+        "@types/node": "^17.0.13"
+    },
+    "eslintConfig": {
+        "parser": "@typescript-eslint/parser",
+        "plugins": [
+            "@typescript-eslint"
+        ],
+        "extends": [
+            "eslint:recommended",
+            "plugin:@typescript-eslint/eslint-recommended",
+            "plugin:@typescript-eslint/recommended"
+        ],
+        "rules": {
+            "no-case-declarations": 0,
+            "@typescript-eslint/no-explicit-any": 0,
+            "@typescript-eslint/explicit-function-return-type": 0,
+            "@typescript-eslint/no-use-before-define": 0,
+            "@typescript-eslint/no-empty-interface": 0,
+            "@typescript-esline/no-async-promise-executor": 0,
+            "@typescript-eslint/explicit-module-boundary-types": 0,
+            "@typescript-eslint/no-empty-function": 0,
+            "@typescript-eslint/no-unused-vars": 0,
+            "@typescript-eslint/no-inferrable-types": 0,
+            "@typescript-eslint/ban-types": 0,
+            "@typescript-eslint/ban-ts-comment": 0,
+            "no-sequences": "error"
+        },
+        "ignorePatterns": [
+            "ci",
+            "dist",
+            "coverage",
+            "distribution",
+            "node_modules"
+        ]
+    }
+}
