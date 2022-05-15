@@ -18,20 +18,16 @@ import type { Request } from "express";
  *
  */
 
-const Logger = ( request: Request, response: any, message: string, level = "log", type = "request" ) => {
+const Logger = ( request: Request, response: any, message: string ) => {
     const Bracket = ( $: string ) => "[" + $ + "]";
     const Parentheses = ( $: string ) => "(" + $ + ")";
 
     const Application = Bracket( "API" );
     const Method = Bracket( request.method );
     const Status = Parentheses( (response.statusCode === -1 ) ? "N/A" : String( response.statusCode ) );
-    const Level = Bracket( level );
-    const Type = Bracket( type );
 
     const Time = new Date();
-
-    const Modules = request.path.split( "/" ).map( ( $ ) => Bracket( $ ) ).join( " " );
-
+    
     const Stamp = Parentheses( [
             Time.getMonth(),
             Time.getDay(),
@@ -47,7 +43,7 @@ const Logger = ( request: Request, response: any, message: string, level = "log"
     );
 
     return [
-        [ Application, Modules, "(?)" ].join( " " ), [ Stamp, Micro ].join( " " ), [ Level, Type, Status, Method ].join( " " ), message
+        [ Application ].join( " " ), [ Stamp, Micro ].join( " " ), [ Status, Method ].join( " " ), message
     ].join( "\t" );
 };
 

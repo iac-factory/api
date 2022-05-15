@@ -1,14 +1,18 @@
-const Main = async () => {
-    const duration = 5000;
-    void await ( async () => new Promise( (resolve) => {
-        process.stdout.write( "Awaiting ..." + "\n" );
+import { Controller } from "@iac-factory/api-services";
 
-        setTimeout( () => resolve( true ), duration );
-    } ) )();
-};
+const Router = Controller();
 
-void (async () => Main())();
+Router.get( "/", async (request, response, callback) => {
+    try {
+        response.status( 200 ).send( { message: true } );
+    } catch ( error ) {
+        response.status( 500 ).send( {
+            error: error || "Server Error"
+        } );
+    } finally {
+        callback();
+    }
+} );
 
-export default Main;
-
-export { Main };
+export { Router };
+export default Router;

@@ -2,4 +2,4 @@
 
 module.require = require( "esm" )( module, "all" );
 
-void (async () => (await import("./main")).Server())();
+void (async () => (await import("./main")).Main())();

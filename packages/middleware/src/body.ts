@@ -10,7 +10,7 @@ const Parsers = {
             parameterLimit: 1000
         }
     },
-"JSON": {
+    "JSON": {
         Module: json,
         Parameters: {
             strict: true
@@ -31,19 +31,19 @@ const Parsers = {
  */
 
 const Body = (server: Application, parsers = Parsers) => {
-    console.debug("[Middleware] [Body-Parser] [Debug] Initializing Body Parser(s) ...");
+    console.debug( "[Middleware] [Body-Parser] [Debug] Initializing Body Parser(s) ..." );
 
-    Object.keys(parsers).forEach((Parser) => {
+    Object.keys( parsers ).forEach( (Parser) => {
         // @ts-ignore
-        const Function = parsers[Parser].Module;
+        const Function = parsers[ Parser ].Module;
 
         // @ts-ignore
-        const Parameters = parsers[Parser].Parameters;
+        const Parameters = parsers[ Parser ].Parameters;
 
-        server.use(Function(Parameters));
-    });
+        server.use( Function( Parameters ) );
+    } );
 
-    console.debug("[Middleware] [Body-Parser] [Debug] Overwrote Application Request + Response Parser(s)");
+    console.debug( "[Middleware] [Body-Parser] [Debug] Overwrote Application Request + Response Parser(s)" );
 
     return server;
 };

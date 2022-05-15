@@ -1,1 +1,0 @@
-export default (async () => import("./specification.json").then((module) => module.default))();

@@ -9,8 +9,9 @@
 		"start": "ts-node ."
 	},
 	"dependencies": {
-		"@iac-factory/api-controller": "file:../controller",
+		"@iac-factory/api-services": "file:../service",
 		"@iac-factory/api-middleware": "file:../middleware",
+		"@iac-factory/api-routing": "file:../routing",
 		"esm": "^3.2.25"
 	},
 	"eslintConfig": {

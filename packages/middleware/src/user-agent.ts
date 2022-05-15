@@ -1,18 +1,20 @@
 /*** Useragent */
 
-/*** Default CORS Options
- * @type {{credentials: boolean, origin: string, optionsSuccessStatus: number, preflightContinue: boolean}}
- */
-
-import type { Request, Response, NextFunction as Callback } from "express-serve-static-core";
 import type { Application } from "express";
+
+import type { Request } from "express-serve-static-core";
+import type { Response } from "express-serve-static-core";
+import type { NextFunction } from "express-serve-static-core";
+
+type Callback = NextFunction;
+
 
 /***
  * User-Agent Middleware Function
  *
  * @param {Request} request
  * @param {Response} response
- * @param {NextFunction} callback
+ * @param {Callback} callback
  *
  * @constructor
  *
