@@ -2,6 +2,8 @@ import FS from "fs";
 import Path from "path";
 import API, { Router as Controller } from "express";
 
+export * as AWS from "./src";
+
 export const Directory = (location: string) => {
     const extension = (location) ? Path.extname(location) : null;
 

@@ -6,4 +6,4 @@ export { Application } from "./main";
 export { Controller } from "./main";
 export { Directory } from "./main";
 
-
+export { AWS } from "./main";

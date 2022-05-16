@@ -23,7 +23,7 @@
         "noUnusedParameters": false,
         "downlevelIteration": true,
         "allowUnreachableCode": true,
-        // "importsNotUsedAsValues": "preserve",
+        "importsNotUsedAsValues": "preserve",
         "exactOptionalPropertyTypes": false,
         "declaration": true,
         "declarationMap": true,
