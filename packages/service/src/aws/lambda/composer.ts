@@ -41,20 +41,23 @@ export module Composition {
         }
 
         const data = await Promise.all( invokers )
-            .then( ( container ) => {
-                return container.filter( ( instance ) => instance )
+            .then( (container) => {
+                return container.filter( (instance) => instance )
                     .flat() as any as Invoker[];
             } );
 
-        const partials = data.map( ( awaitable ) => {
-            const { resource, invoker: endpoint } = awaitable;
+        const partials = data.map( (awaitable) => {
+            const {
+                resource,
+                invoker: endpoint
+            } = awaitable;
 
             const Resource = Reflect.construct( String, [ resource ] );
             Resource.valid = ARN.validate( resource );
 
             Object.assign( Resource, {
-                ...ARN.normalize( Reflect.construct( String, [ resource ] ) ),
-...{
+                ... ARN.normalize( Reflect.construct( String, [ resource ] ) ),
+                ... {
                     trigger: Identifier( endpoint! )
                 }
             } );
@@ -63,7 +66,7 @@ export module Composition {
         } );
 
         // @ts-ignore
-        const Mapping: Lambda[] = partials.map( ( $ ) => {
+        const Mapping: Lambda[] = partials.map( ($) => {
             return {
                 valid: $.lambda.valid,
                 service: $.lambda.service,
@@ -83,18 +86,18 @@ export module Composition {
             };
         } );
 
-        const mapping = Array.from((Mapping));
+        const mapping = Array.from( ( Mapping ) );
 
-        Hook.table( mapping.map(($) => {
+        Hook.table( mapping.map( ($) => {
             const item = $;
             const api = $.api;
 
             /// delete item.api;
 
             return {
-                ...item, ...api
+                ... item, ... api
             };
-        }), "table.endpoints.log" );
+        } ), "table.endpoints.log" );
 
         return mapping;
     };

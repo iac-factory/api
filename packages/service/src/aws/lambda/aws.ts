@@ -1,65 +1,9 @@
-import FS from "fs";
-
 import * as AWS from "@aws-sdk/client-lambda";
 
 import { Resolve } from ".";
 
 export module Lambda {
     import Invoker = Lambda.Policy.Invoker;
-    export const Function = async function ( lambda: string ) {
-        const constructor = new (
-            class extends Object {
-                client: Function.Client;
-                command: Function.Command;
-                handler: Function.Configuration;
-
-                private readonly file: string = Resolve(lambda);
-                private readonly region: string = "us-east-2";
-
-                constructor( name: string = lambda ) {
-                    super( null );
-
-                    this.file = name;
-
-                    this.client = this.instance();
-                    this.command = this.arguments();
-                    this.handler = this.hydrate();
-                }
-
-                private instance = () => new AWS.LambdaClient( { region: this.region } );
-                private arguments = () => new AWS.GetFunctionCommand( { FunctionName: lambda } );
-                private hydrate = ( data?: Function.Configuration ) => Object.create( ( data ) ? data : null );
-
-                private async log() {
-                    const data = this!.handler;
-
-                    const content = JSON.stringify( data, null, 4 );
-
-                    void await new Promise( ( resolve ) => {
-                        FS.writeFile( this.file, content, resolve );
-                    } );
-
-                    return this;
-                }
-
-                public async interface(): Promise<this> {
-                    const command = this.arguments();
-                    const response = await this.client.send( command );
-                    const data = ( response ) ? response.Configuration : {};
-
-                    this.hydrate( data );
-
-                    void await this.log();
-
-                    return this;
-                }
-            }
-        )();
-
-        const { handler } = await constructor.interface();
-
-        return ( handler ) ? handler : null;
-    };
 
     export const Functions = async function ( ) {
         const constructor = new (
@@ -208,7 +152,9 @@ export module Lambda {
 
         const { handler } = await constructor.interface();
 
-        return ( handler && handler.data ) ? handler.data.flat() : null;
+        return ( handler && handler.data )
+            ? handler.data.flat()
+            : null;
     };
 
     export const Policy = async ( name?: string ) => {
