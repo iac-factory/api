@@ -28,8 +28,7 @@
         "typescript": "^4.6.4"
     },
     "dependencies": {
-        "@iac-factory/api-core": "file:packages/core",
-        "minimist": "^1.2.6"
+        "@iac-factory/api-core": "file:packages/core"
     },
     "author": {
         "name": "Jacob B. Sanders",
