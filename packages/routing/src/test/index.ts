@@ -1,5 +1,4 @@
 import { Router } from "..";
-
 Router.options( "/test", async (request, response) => {
     const { Directory } = await import("@iac-factory/api-services");
 
@@ -13,3 +12,5 @@ export default Router.get( "/test", async (request, response) => {
         message: true
     } );
 } );
+
+export { Router };
