@@ -3,7 +3,7 @@ import Path from "path";
 import API from "express";
 
 import { Router as Controller } from "express";
-export const Directory = (location?: string) => {
+export const Directory = (location: string) => {
     const extension = (location) ? Path.extname(location) : null;
 
     location = (extension === ".ts" || extension === ".js")

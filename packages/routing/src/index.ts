@@ -1,18 +1,21 @@
+import("./test");
+
 import { Controller } from "@iac-factory/api-services";
 
-const Router = Controller();
+export const Router = Controller();
 
-Router.get( "/", async (request, response, callback) => {
-    try {
-        response.status( 200 ).send( { message: true } );
-    } catch ( error ) {
-        response.status( 500 ).send( {
-            error: error || "Server Error"
-        } );
-    } finally {
-        callback();
-    }
-} );
+Router.options("/", async (request, response) => {
+    const { Directory } = await import("@iac-factory/api-services");
 
-export { Router };
+    const directories = Directory(__filename);
+
+    response.status(200).send(directories);
+});
+
+Router.get("/", async (request, response) => {
+    response.status(200).send({
+        message: true
+    });
+});
+
 export default Router;
