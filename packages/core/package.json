@@ -6,13 +6,16 @@
 	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
 	"license": "BSD-2-Clause",
 	"scripts": {
-		"start": "ts-node ."
+		"start": "cd $(git rev-parse --show-toplevel) && npm run start"
 	},
 	"dependencies": {
 		"@iac-factory/api-services": "file:../service",
 		"@iac-factory/api-middleware": "file:../middleware",
 		"@iac-factory/api-routing": "file:../routing",
 		"esm": "^3.2.25"
+	},
+	"devDependencies": {
+		"@types/esm": "^3.2.0"
 	},
 	"eslintConfig": {
 		"settings": {

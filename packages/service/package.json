@@ -5,11 +5,15 @@
 	"description": "...",
 	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
 	"license": "BSD-3-Clause",
+	"scripts": {
+		"start": "cd $(git rev-parse --show-toplevel) && npm run start"
+	},
 	"dependencies": {
 		"express": "^5.0.0-beta.1"
 	},
 	"devDependencies": {
-		"@types/express": "^4.17.13"
+		"@types/express": "^4.17.13",
+		"@types/esm": "^3.2.0"
 	},
 	"eslintConfig": {
 		"settings": {

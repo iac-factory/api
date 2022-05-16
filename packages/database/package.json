@@ -1,0 +1,23 @@
+{
+    "name": "@iac-factory/api-database",
+    "version": "0.0.1",
+    "private": true,
+    "description": "...",
+    "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+    "license": "BSD-3-Clause",
+    "scripts": {
+        "start": "cd $(git rev-parse --show-toplevel) && npm run start"
+    },
+    "dependencies": {
+        "esm": "^3.2.25",
+        "mongodb": "^4.6.0"
+    },
+    "devDependencies": {
+        "@types/esm": "^3.2.0"
+    },
+    "eslintConfig": {
+        "settings": {
+            "extends": "../.."
+        }
+    }
+}
