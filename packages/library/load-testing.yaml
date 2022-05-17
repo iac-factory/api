@@ -1,0 +1,18 @@
+config:
+    target: "https://localhost:3000"
+    phases:
+        -   duration:    30
+            arrivalRate: 10
+    tls:
+        rejectUnauthorized: false
+    http:
+        pool: 10
+        extendedMetrics: true
+
+scenarios:
+    -   name: "Retrieve Application/JSON"
+        flow:
+            -   log: "Executing Baseline Flow"
+            -   get:
+                    url: "/"
+                    gzip: true

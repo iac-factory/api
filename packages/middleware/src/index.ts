@@ -18,6 +18,7 @@ const Middleware = (server: Application) => {
             // import("./compression").then((Module) => Module.Compress(server)),
             import("./content-type").then((Module) => Module.Set(server)),
             // import("./open.api").then((Module) => Module.$(server))
+            import("./winston").then((Module) => Module.Apply(server))
         ]
     ));
 

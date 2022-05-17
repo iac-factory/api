@@ -1,0 +1,97 @@
+openapi: "3.0.3"
+info:
+    title:       "IaC API"
+    description: "IaC API"
+    version:     "1.0.0"
+servers:
+    -   url: "http://localhost:3000"
+paths:
+    /test:
+        get:
+            summary: "GET test"
+            responses:
+                "200":
+                    description: "OK"
+    /:
+        get:
+            summary: "GET "
+            responses:
+                "200":
+                    description: "OK"
+    /health-check:
+        get:
+            summary: "GET health-check"
+            responses:
+                "200":
+                    description: "OK"
+    /aws/lambda/functions/{filter}:
+        get:
+            summary: "GET aws/lambda/functions/{filter}"
+            parameters:
+                -   name: "filter"
+                    required: true
+                    in:   "path"
+            responses:
+                "200":
+                    description: "OK"
+    /aws/lambda/functions:
+        get:
+            summary: "GET aws/lambda/functions"
+            responses:
+                "200":
+                    description: "OK"
+        options:
+            summary: "OPTIONS aws/lambda/functions"
+            responses:
+                "200":
+                    description: "OK"
+    /aws/lambda:
+        get:
+            summary: "GET aws/lambda"
+            responses:
+                "200":
+                    description: "OK"
+        options:
+            summary: "OPTIONS aws/lambda"
+            responses:
+                "200":
+                    description: "OK"
+    /aws:
+        get:
+            summary: "GET aws"
+            responses:
+                "200":
+                    description: "OK"
+        options:
+            summary: "OPTIONS aws"
+            responses:
+                "200":
+                    description: "OK"
+    /utility:
+        options:
+            summary: "OPTIONS utility"
+            responses:
+                "200":
+                    description: "OK"
+    /utility/health:
+        get:
+            summary: "GET utility/health"
+            responses:
+                "200":
+                    description: "OK"
+        options:
+            summary: "OPTIONS utility/health"
+            responses:
+                "200":
+                    description: "OK"
+    /utility/awaitable:
+        get:
+            summary: "GET utility/awaitable"
+            responses:
+                "200":
+                    description: "OK"
+        options:
+            summary: "OPTIONS utility/awaitable"
+            responses:
+                "200":
+                    description: "OK"

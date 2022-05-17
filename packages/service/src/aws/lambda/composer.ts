@@ -1,8 +1,8 @@
-import { ARN, Identifier, Lambda, Hook } from ".";
+import { ARN, Identifier, Client, Hook } from ".";
 
 export module Composition {
-    export type Invoker = Lambda.Policy.Invoker;
-    export type Functions = FlatArray<Lambda.Functions.Configuration[], 1>[] | null;
+    export type Invoker = Client.Policy.Invoker;
+    export type Functions = FlatArray<Client.Functions.Configuration[], 1>[] | null;
 
     export interface Lambda {
         valid: boolean;
@@ -25,7 +25,7 @@ export module Composition {
     }
 
     export const Endpoints = async (): Promise<Composition.Lambda[]> => {
-        const resources: Functions = await Lambda.Functions();
+        const resources: Functions = await Client.Functions();
 
         const configurations = ( resources ) ? resources : [];
 
@@ -34,7 +34,7 @@ export module Composition {
         for await ( const resource of configurations ) {
             const { FunctionName: name } = resource;
 
-            const target = Lambda.Invokers( name );
+            const target = Client.Invokers( name );
 
             // @ts-ignore
             invokers.push( target );

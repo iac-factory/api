@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
-module.require = require( "esm" )( module, "all" );
+require = require( "esm" )( module, "all" );
 
-void (async () => (await import("./src")).Main())();
+void (async () => import("./src"))();
+
+export {};

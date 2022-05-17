@@ -2,8 +2,8 @@ import * as AWS from "@aws-sdk/client-lambda";
 
 import { Resolve } from ".";
 
-export module Lambda {
-    import Invoker = Lambda.Policy.Invoker;
+export module Client {
+    import Invoker = Client.Policy.Invoker;
 
     export const Functions = async function ( ) {
         const constructor = new (
@@ -254,6 +254,8 @@ export module Lambda {
         export type Output = AWS.GetFunctionCommandOutput;
 
         export type Configuration = AWS.FunctionConfiguration;
+
+        export type Functions = typeof Client.Functions;
     }
 
     export abstract class Handler {
@@ -263,4 +265,4 @@ export module Lambda {
     }
 }
 
-export default Lambda;
+export default Client;

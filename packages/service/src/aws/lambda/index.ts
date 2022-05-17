@@ -4,7 +4,6 @@ export * from "./arn";
 export * from "./aws";
 export * from "./hook";
 export * from "./method";
-export * from "./client";
 export * from "./escape";
 export * from "./utility";
 export * from "./services";

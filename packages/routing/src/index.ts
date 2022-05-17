@@ -1,7 +1,4 @@
-import("./test");
-import("./utility");
-import("./utility/health");
-import("./utility/awaitable");
+import("./routes");
 
 import { Controller } from "@iac-factory/api-services";
 

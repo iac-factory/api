@@ -1,5 +1,5 @@
 import { Router } from "..";
-Router.options( "/utility", async (request, response) => {
+Router.options( "/aws/lambda", async (request, response) => {
     const { Directory } = await import("@iac-factory/api-services");
 
     const directories = Directory( __filename );
@@ -7,10 +7,8 @@ Router.options( "/utility", async (request, response) => {
     response.status( 200 ).send( directories );
 } );
 
-export default Router.get( "/test", async (request, response) => {
-    response.status( 200 );
-
-    return response.json( {
+export default Router.get( "/aws/lambda", async (request, response) => {
+    response.status( 200 ).send( {
         message: true
     } );
 } );

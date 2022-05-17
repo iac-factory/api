@@ -72,7 +72,7 @@ export const Method = {
     type: (input: string) => {
         const instance = Method.keys.filter(
             (method) => {
-                return input.includes(method)
+                return input.includes(method);
             } );
 
         return ( instance.length === 1 )
