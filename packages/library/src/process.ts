@@ -6,11 +6,11 @@
 
 import { Router } from ".";
 
-export const Processor = Router.prototype.process_params = function (layer: any, called: any, req: any, res: any, done: any) {
-    var params = this.params;
+export const Processor = Router.prototype.parse = function (layer: any, called: any, req: any, res: any, done: any) {
+    const params = this.params;
 
     // captured parameters from the layer, keys and values
-    var keys = layer.keys;
+    const keys = layer.keys;
 
     // fast track
     if ( !keys || keys.length === 0 ) {

@@ -152,7 +152,7 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
         request.params = self.mergeParams ? Merge( layer.params, parentParams ) : layer.params;
         const layerPath = layer.path;
 
-        self.process_params( layer, paramcalled, request, response, function (err: any) {
+        self.parse( layer, paramcalled, request, response, function (err: any) {
             if ( err ) {
                 next( layerError || err );
             } else {

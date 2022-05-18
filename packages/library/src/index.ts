@@ -52,7 +52,7 @@ export function Router(this: Construct, options?: Options): Function {
  */
 
 // eslint-disable-next-line max-len
-Router.prototype = new Proxy( Function as Function & object & { params: any; param: Function; handle: Function; stack: any; mergeParams: any; process_params: Function; use: Function; caseSensitive: boolean; route: any; strict?: boolean; dispatch: Function }, {} );
+Router.prototype = new Proxy( Function as Function & object & { params: any; param: Function; handle: Function; stack: any; mergeParams: any; parse: Function; use: Function; caseSensitive: boolean; route: any; strict?: boolean; dispatch: Function }, {} );
 Router.prototype.route = function route(path: string) {
     const route = new Route( path );
 
