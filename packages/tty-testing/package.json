@@ -1,0 +1,19 @@
+{
+    "name": "@iac-factory/api-database",
+    "version": "0.0.1",
+    "private": true,
+    "description": "...",
+    "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+    "license": "BSD-3-Clause",
+    "scripts": {
+        "prestart": "tsc --build tsconfig.json",
+        "start": "node ."
+    },
+    "dependencies": {
+        "esm": "^3.2.25",
+        "mongodb": "^4.6.0"
+    },
+    "devDependencies": {
+        "@types/esm": "^3.2.0"
+    }
+}
