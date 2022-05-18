@@ -1,47 +1,48 @@
 import { pathToRegexp } from "path-to-regexp";
 
-/**
- * Module variables.
- * @private
- */
+import { HTTP } from ".";
 
-var hasOwnProperty = Object.prototype.hasOwnProperty;
+export interface Constructor {
+    layer: any;
+    keys: any[];
+    regexp: RegExp & Partial<{
+        fast_star: boolean;
+        fast_slash: boolean;
+    }>;
 
-export module HTTP {
-    export type Request = import("express").Request;
-    export type Response = import("express").Response;
-    export type Next = import("express").NextFunction;
-    export type Error = import("express").Errback;
+    path?: string;
+    params?: object;
+    handle?: object;
+    name: any;
+
+    route: any;
+
+    new (path: string, options: any, fn: any): Constructor;
 }
 
-// @ts-ignore
-export function Layer(path, options, fn) {
-    // @ts-ignore
+export const Layer = function (this: any, path: string, options: any, fn: any) {
     if ( !( this instanceof Layer ) ) {
-        // @ts-ignore
         return new Layer( path, options, fn );
     }
 
-    // @ts-ignore
     var opts = options || {};
 
-    // @ts-ignore
     this.handle = fn;
-    // @ts-ignore
     this.name = fn.name || "<anonymous>";
-    // @ts-ignore
     this.params = undefined;
-    // @ts-ignore
     this.path = undefined;
-    // @ts-ignore
     this.regexp = pathToRegexp( path, this.keys = [], opts );
 
-    // set fast path flags\
-    // @ts-ignore
+    // set fast path flags
     this.regexp.fast_star = path === "*";
-    // @ts-ignore
     this.regexp.fast_slash = path === "/" && opts.end === false;
-}
+
+    return;
+} as any as { new(name: string, options: {
+        sensitive?: boolean;
+        strict?: boolean;
+        end?: boolean;
+    }, fn: any): Constructor; };
 
 /**
  * Handle the error for the layer.
@@ -53,7 +54,7 @@ export function Layer(path, options, fn) {
  * @api private
  */
 
-Layer.prototype.handle_error = function handle_error(error: HTTP.Error, req: HTTP.Request, res: HTTP.Response, next: HTTP.Next) {
+Layer.prototype.error = function (error: HTTP.Error, request: HTTP.Request, response: HTTP.Response, next: HTTP.Next) {
     var fn = this.handle;
 
     if ( fn.length !== 4 ) {
@@ -62,7 +63,7 @@ Layer.prototype.handle_error = function handle_error(error: HTTP.Error, req: HTT
     }
 
     try {
-        fn( error, req, res, next );
+        fn( error, request, response, next );
     } catch ( err ) {
         next( err );
     }
@@ -77,8 +78,8 @@ Layer.prototype.handle_error = function handle_error(error: HTTP.Error, req: HTT
  * @api private
  */
 
-Layer.prototype.handle_request = function handle(req: HTTP.Request, res: HTTP.Response, next: HTTP.Next) {
-    var fn = this.handle;
+Layer.prototype.handle = function (request: HTTP.Request, response: HTTP.Response, next: HTTP.Next) {
+    const fn = this.handle;
 
     if ( fn.length > 3 ) {
         // not a standard request handler
@@ -86,7 +87,7 @@ Layer.prototype.handle_request = function handle(req: HTTP.Request, res: HTTP.Re
     }
 
     try {
-        fn( req, res, next );
+        fn( request, response, next );
     } catch ( err ) {
         next( err );
     }
@@ -102,7 +103,7 @@ Layer.prototype.handle_request = function handle(req: HTTP.Request, res: HTTP.Re
  */
 
 Layer.prototype.match = function match(path: string) {
-    var match;
+    let match;
 
     if ( path != null ) {
         // fast path non-ending match for / (any path matches)
@@ -114,7 +115,7 @@ Layer.prototype.match = function match(path: string) {
 
         // fast path for * (everything matched in a param)
         if ( this.regexp.fast_star ) {
-            this.params = { 0: decode_param( path ) };
+            this.params = { 0: decode( path ) };
             this.path = path;
             return true;
         }
@@ -134,15 +135,15 @@ Layer.prototype.match = function match(path: string) {
     this.path = match[ 0 ];
 
     // iterate matches
-    var keys = this.keys;
-    var params = this.params;
+    const keys = this.keys;
+    const params = this.params;
 
-    for ( var i = 1; i < match.length; i++ ) {
-        var key = keys[ i - 1 ];
-        var prop = key.name;
-        var val = decode_param( match[ i ] );
+    for ( let i = 1; i < match.length; i++ ) {
+        const key = keys[ i - 1 ];
+        const prop = key.name;
+        const val = decode( match[ i ] );
 
-        if ( val !== undefined || !( hasOwnProperty.call( params, prop ) ) ) {
+        if ( val !== undefined || !( Object.prototype.hasOwnProperty.call( params, prop ) ) ) {
             params[ prop ] = val;
         }
     }
@@ -158,22 +159,21 @@ Layer.prototype.match = function match(path: string) {
  * @private
  */
 
-function decode_param(value: string) {
+function decode(value: string) {
     if ( typeof value !== "string" || value.length === 0 ) {
         return value;
     }
 
     try {
         return decodeURIComponent( value );
-    } catch ( err ) {
-        if ( err instanceof URIError ) {
-            err.message = "Failed to decode param '" + value + "'";
+    } catch ( error ) {
+        if ( error instanceof URIError ) {
+            error.message = "Failed to decode param '" + value + "'";
 
-            /// @ts-ignore
-            err.status = 400;
+            Reflect.set( error, "status", 400 );
         }
 
-        throw err;
+        throw error;
     }
 }
 

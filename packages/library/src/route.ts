@@ -2,53 +2,9 @@ import Methods from "methods";
 
 import { Layer } from "./layer";
 
-export module HTTP {
-    export type Request = import("express").Request;
-    export type Response = import("express").Response;
-    export type Next = import("express").NextFunction;
-}
-
-export function flatten(list: any[], depth?: number) {
-    depth = ( typeof depth == "number" ) ? depth : Infinity;
-
-    if ( !depth ) {
-        if ( Array.isArray( list ) ) {
-            return list.map( function (i) { return i; } );
-        }
-        return list;
-    }
-
-    return _flatten( list, 1 );
-
-    /// @ts-ignore
-    function _flatten(list: any[], d: number) {
-        return list.reduce( function (acc, item) {
-            /// @ts-ignore
-            if ( Array.isArray( item ) && d < depth ) {
-                return acc.concat( _flatten( item, d + 1 ) );
-            } else {
-                return acc.concat( item );
-            }
-        }, [] );
-    }
-}
-
-/**
- * Module variables.
- * @private
- */
-
-var slice = Array.prototype.slice;
-
-const defer = typeof setImmediate === "function"
-    ? setImmediate
-    : (callable: any) => {
-        process.nextTick(
-            callable.bind.apply(
-                callable, callable.arguments
-            )
-        );
-    };
+import { HTTP } from ".";
+import { Await } from ".";
+import { Flatten } from ".";
 
 /**
  * Initialize `Route` with the given `path`,
@@ -57,15 +13,11 @@ const defer = typeof setImmediate === "function"
  * @api private
  */
 
-export const Route = function(path: string) {
-    // @ts-ignore
+export const Route = function (this: any & object, path: string) {
     this.path = path;
-    // @ts-ignore
     this.stack = [];
-
-    // @ts-ignore
-    this!.methods = Object.create( null );
-};
+    this.methods = Object.create( null );
+} as object as { new(path: string): any };
 
 /**
  * @private
@@ -135,7 +87,8 @@ Route.prototype.dispatch = function dispatch(request: HTTP.Request, response: HT
     next();
 
     type Callable = typeof next.prototype;
-    function next(this: Callable, error?: Error | "route" | "router" ): void | NodeJS.Immediate {
+
+    function next(this: Callable, error?: Error | "route" | "router"): void | NodeJS.Immediate {
         // signal to exit route
         if ( error && error === "route" ) {
             return done();
@@ -154,7 +107,7 @@ Route.prototype.dispatch = function dispatch(request: HTTP.Request, response: HT
         // max sync stack
         if ( ++sync > 100 ) {
             // @ts-ignore
-            return defer(next, error);
+            return Await( next, error );
         }
 
         var layer;
@@ -172,9 +125,9 @@ Route.prototype.dispatch = function dispatch(request: HTTP.Request, response: HT
         }
 
         if ( error ) {
-            layer.handle_error( error, request, response, next );
+            layer.error( error, request, response, next );
         } else {
-            layer.handle_request( request, response, next );
+            layer.handle( request, response, next );
         }
 
         sync = 0;
@@ -211,7 +164,7 @@ Route.prototype.dispatch = function dispatch(request: HTTP.Request, response: HT
 
 Route.prototype.all = function all(handler: any) {
     // @ts-ignore
-    var callbacks = flatten( slice.call( arguments ) );
+    var callbacks = Flatten( Array.prototype.slice.call( arguments ) );
 
     if ( callbacks.length === 0 ) {
         throw new TypeError( "argument handler is required" );
@@ -239,7 +192,7 @@ Route.prototype.all = function all(handler: any) {
 Methods.forEach( function (method) {
     Route.prototype[ method ] = function (handler: any) {
         // @ts-ignore
-        var callbacks = flatten( slice.call( arguments ) );
+        var callbacks = Flatten( Array.prototype.slice.call( arguments ) );
 
         if ( callbacks.length === 0 ) {
             throw new TypeError( "argument handler is required" );

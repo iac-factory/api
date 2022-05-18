@@ -14,7 +14,7 @@ var { Router } = require( "./src" );
 var { finalhandler } = require( "./src" );
 
 var router = Router();
-router.get( "/", async (request: import("http2").Http2ServerRequest, response: import("http2").Http2ServerResponse) => {
+router.get( "/:test", async (request: any, response: import("http2").Http2ServerResponse) => {
     response.setHeader("Content-Type", "Application/JSON");
     response.end(JSON.stringify({
         Key: "Value"

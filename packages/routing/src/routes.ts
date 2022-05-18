@@ -1,4 +1,4 @@
-/*** Route Imports via Importable Side-Effects */
+/*** ArchiveRoute Imports via Importable Side-Effects */
 
 export default void ( async () => {
     await import("./test");

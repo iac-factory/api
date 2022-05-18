@@ -69,7 +69,7 @@ resource "aws_lb_target_group" "application-load-balancer-http-target-group" {
     - arn_suffix - The ARN suffix for use with CloudWatch Metrics.
     - dns_name - The DNS name of the load balancer.
     - tags_all - A map of tags assigned to the resource, including those inherited from the provider default_tags configuration block.
-    - zone_id - The canonical hosted zone ID of the load balancer (to be used in a Route 53 Alias record).
+    - zone_id - The canonical hosted zone ID of the load balancer (to be used in a ArchiveRoute 53 Alias record).
     - subnet_mapping.*.outpost_id - ID of the Outpost containing the load balancer.
 */
 

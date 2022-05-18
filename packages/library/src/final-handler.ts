@@ -1,7 +1,6 @@
-const fs = require("fs");
+const fs = require( "fs" );
 var parseUrl = require( "parseurl" );
 var statuses = require( "statuses" );
-var unpipe = require( "unpipe" );
 
 
 var ENCODE_CHARS_REGEXP = /(?:[^\x21\x25\x26-\x3B\x3D\x3F-\x5B\x5D\x5F\x61-\x7A\x7E]|%(?:[^0-9A-Fa-f]|[0-9A-Fa-f][^0-9A-Fa-f]|$))+/g;
@@ -412,12 +411,15 @@ function send(req: import("http2").Http2ServerRequest, res, status, headers, mes
     }
 
     /// detach
-    req.unpipe(req.stream);
+    req.unpipe( req.stream );
 
     // flush the request
-    return new Promise((resolve) => (req.stream.id) ? fs.fdatasync(req.stream.id, resolve) : resolve).then(() => {
-        req.resume();
-    });
+    return new Promise( (resolve) => ( req.stream.id ) ?
+        fs.fdatasync( req.stream.id, resolve )
+        : resolve ).then( () => {
+            req.resume();
+        }
+    );
 }
 
 /**

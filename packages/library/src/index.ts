@@ -1,833 +1,103 @@
-import methods from "methods";
+import methods from "./methods";
 
+import { HTTP } from "./http";
 import { Layer } from "./layer";
 import { Route } from "./route";
 
-export function flatten(list: any[], depth?: number) {
-    depth = ( typeof depth == "number" ) ? depth : Infinity;
+import("./handle");
+import("./parameter");
+import("./process");
+import("./use");
 
-    if ( !depth ) {
-        if ( Array.isArray( list ) ) {
-            return list.map( function (i) { return i; } );
-        }
-        return list;
-    }
-
-    return _flatten( list, 1 );
-
-    /// @ts-ignore
-    function _flatten(list: any[], d: number) {
-        return list.reduce( function (acc, item) {
-            /// @ts-ignore
-            if ( Array.isArray( item ) && d < depth ) {
-                return acc.concat( _flatten( item, d + 1 ) );
-            } else {
-                return acc.concat( item );
-            }
-        }, [] );
-    }
-}
-
-export module HTTP {
-    export type Request = import("express").Request;
-    export type Response = import("express").Response;
-    export type Next = import("express").NextFunction;
-    export type Error = import("express").Errback;
-}
-
-var mixin = require( "utils-merge" );
-var parseUrl = require( "parseurl" );
-
-/**
- * Module variables.
- * @private
- */
-
-var slice = Array.prototype.slice;
-
-const defer = typeof setImmediate === "function"
-    ? setImmediate
-    : (callable: any, error: any) => {
-        process.nextTick(
-            callable.bind.apply(
-                callable, callable.arguments
-            )
-        );
-    };
-
-/**
- * Expose `Route`.
- */
-
-module.exports.Route = Route;
-
-/**
- * Initialize a new `Router` with the given `options`.
+/***
  *
- * @param {object} [options]
- * @return {Router} which is a callable function
- * @public
+ * @param {Options} options
+ * @returns {Function}
+ * @constructor
  */
-
-export function Router(this: Construct, options: Options = {
-    mergeParams: true,
-    strict: false,
-    caseSensitive: false
-}) {
-    if ( !( this instanceof Router ) ) {
+export function Router(this: Construct, options?: Options): Function {
+    if ( !( ( this as object ) instanceof Router ) ) {
         return Reflect.construct( Router, [ options ] );
     }
 
-    var opts = options || {};
+    const defaults: Options = {
+        caseSensitive: false,
+        mergeParams: true,
+        strict: false
+    };
 
-    function router(req: HTTP.Request, res: HTTP.Response, next: HTTP.Next) {
-        // @ts-ignore
-        router.handle( req, res, next );
+    const configuration = ( options ) ? { ... defaults, ... options } : defaults;
+
+    function router(request: HTTP.Request, response: HTTP.Response, callable: HTTP.Next) {
+        const reference: { handle: Function } = router as object as { handle: Function };
+
+        reference.handle( request, response, callable );
     }
 
-    // inherit from the correct prototype
+    /*** Reasoning behind Object.setPrototypeOf is much more complicated than perhaps assumed */
     Object.setPrototypeOf( router, this );
+    /// router.prototype.prototype = this;
 
-    router.caseSensitive = opts.caseSensitive;
-    router.mergeParams = opts.mergeParams;
+    router.caseSensitive = configuration.caseSensitive;
+    router.mergeParams = configuration.mergeParams;
     router.params = {};
-    router.strict = opts.strict;
+    router.strict = configuration.strict;
     router.stack = [] as Construct[];
 
     return router;
-}
-
-type Construct = typeof Router.prototype;
-type Options = {
-    caseSensitive: boolean;
-    mergeParams: boolean;
-    strict: boolean;
 }
 
 /**
  * Router prototype inherits from a Function.
  */
 
-Router.prototype = function () {};
-
-/**
- * Map the given param placeholder `name`(s) to the given callback.
- *
- * Parameter mapping is used to provide pre-conditions to routes
- * which use normalized placeholders. For example a _:user_id_ parameter
- * could automatically load a user's information from the database without
- * any additional code.
- *
- * The callback uses the same signature as middleware, the only difference
- * being that the value of the placeholder is passed, in this case the _id_
- * of the user. Once the `next()` function is invoked, just like middleware
- * it will continue on to execute the route, or subsequent parameter functions.
- *
- * Just like in middleware, you must either respond to the request or call next
- * to avoid stalling the request.
- *
- *  router.param('user_id', function(req, res, next, id){
- *    User.find(id, function(err, user){
- *      if (err) {
- *        return next(err)
- *      } else if (!user) {
- *        return next(new Error("failed to load user"))
- *      }
- *      req.user = user
- *      next()
- *    })
- *  })
- *
- * @param {string} name
- * @param {function} fn
- * @public
- */
-
-// @ts-ignore
-Router.prototype.param = function param(name, fn) {
-    if ( !name ) {
-        throw new TypeError( "argument name is required" );
-    }
-
-    if ( typeof name !== "string" ) {
-        throw new TypeError( "argument name must be a string" );
-    }
-
-    if ( !fn ) {
-        throw new TypeError( "argument fn is required" );
-    }
-
-    if ( typeof fn !== "function" ) {
-        throw new TypeError( "argument fn must be a function" );
-    }
-
-    // @ts-ignore
-    var params = this.params[ name ];
-
-    if ( !params ) {
-        // @ts-ignore
-        params = this.params[ name ] = [];
-    }
-
-    params.push( fn );
-
-    return this;
-};
-
-/**
- * Dispatch a req, res into the router.
- *
- * @private
- */
-
-// @ts-ignore
-Router.prototype.handle = function handle(req, res, callback) {
-    if ( !callback ) {
-        throw new TypeError( "argument callback is required" );
-    }
-
-    var idx = 0;
-    // @ts-ignore
-    var methods;
-    var protohost = getProtohost( req.url ) || "";
-    var removed = "";
-    var self = this;
-    var slashAdded = false;
-    var sync = 0;
-    var paramcalled = {};
-
-    // middleware and routes
-    // @ts-ignore
-    var stack = this.stack;
-
-    // manage inter-router variables
-    var parentParams = req.params;
-    var parentUrl = req.baseUrl || "";
-    // @ts-ignore
-    var done = restore( callback, req, "baseUrl", "next", "params" );
-
-    // setup next layer
-    req.next = next;
-
-    // for options requests, respond with a default if nothing else responds
-    if ( req.method === "OPTIONS" ) {
-        methods = [];
-        // @ts-ignore
-        done = wrap( done, generateOptionsResponder( res, methods ) );
-    }
-
-    // setup basic req values
-    req.baseUrl = parentUrl;
-    req.originalUrl = req.originalUrl || req.url;
-
-    // @ts-ignore
-    next();
-
-    // @ts-ignore
-    function next(err) {
-        var layerError = err === "route"
-            ? null
-            : err;
-
-        // remove added slash
-        if ( slashAdded ) {
-            req.url = req.url.slice( 1 );
-            slashAdded = false;
-        }
-
-        // restore altered req.url
-        if ( removed.length !== 0 ) {
-            req.baseUrl = parentUrl;
-            req.url = protohost + removed + req.url.slice( protohost.length );
-            removed = "";
-        }
-
-        // signal to exit router
-        if ( layerError === "router" ) {
-            defer( done, null );
-            return;
-        }
-
-        // no more matching layers
-        if ( idx >= stack.length ) {
-            defer( done, layerError );
-            return;
-        }
-
-        // max sync stack
-        if ( ++sync > 100 ) {
-            return defer( next, err );
-        }
-
-        // get pathname of request
-        var path = getPathname( req );
-
-        if ( path == null ) {
-            // @ts-ignore
-            return done( layerError );
-        }
-
-        // find next matching layer
-        // @ts-ignore
-        var layer;
-        var match;
-        // @ts-ignore
-        var route;
-
-        while ( match !== true && idx < stack.length ) {
-            layer = stack[ idx++ ];
-            match = matchLayer( layer, path );
-            route = layer.route;
-
-            if ( typeof match !== "boolean" ) {
-                // hold on to layerError
-                layerError = layerError || match;
-            }
-
-            if ( match !== true ) {
-                continue;
-            }
-
-            if ( !route ) {
-                // process non-route handlers normally
-                continue;
-            }
-
-            if ( layerError ) {
-                // routes do not match with a pending error
-                match = false;
-                continue;
-            }
-
-            var method = req.method;
-            var has_method = route._handles_method( method );
-
-            // build up automatic options response
-            // @ts-ignore
-            if ( !has_method && method === "OPTIONS" && methods ) {
-                // @ts-ignore
-                methods.push.apply( methods, route._methods() );
-            }
-
-            // don't even bother matching route
-            if ( !has_method && method !== "HEAD" ) {
-                match = false;
-
-            }
-        }
-
-        // no match
-        if ( match !== true ) {
-            // @ts-ignore
-            return done( layerError );
-        }
-
-        // store route for dispatch on change
-        if ( route ) {
-            req.route = route;
-        }
-
-        // Capture one-time layer values
-        // @ts-ignore
-        req.params = self.mergeParams
-            ? mergeParams( layer.params, parentParams )
-            : layer.params;
-        var layerPath = layer.path;
-
-        // @ts-ignore
-        self.process_params( layer, paramcalled, req, res, function (err) {
-            if ( err ) {
-                next( layerError || err );
-            } else {
-                // @ts-ignore
-                if ( route ) {
-                    // @ts-ignore
-                    layer.handle_request( req, res, next );
-                } else {
-                    // @ts-ignore
-                    trim_prefix( layer, layerError, layerPath, path );
-                }
-            }
-
-            sync = 0;
-        } );
-    }
-
-    // @ts-ignore
-    function trim_prefix(layer, layerError, layerPath, path) {
-        if ( layerPath.length !== 0 ) {
-            // Validate path is a prefix match
-            if ( layerPath !== path.substring( 0, layerPath.length ) ) {
-                next( layerError );
-                return;
-            }
-
-            // Validate path breaks on a path separator
-            var c = path[ layerPath.length ];
-            if ( c && c !== "/" ) {
-                next( layerError );
-                return;
-            }
-
-            removed = layerPath;
-            req.url = protohost + req.url.slice( protohost.length + removed.length );
-
-            // Ensure leading slash
-            if ( !protohost && req.url[ 0 ] !== "/" ) {
-                req.url = "/" + req.url;
-                slashAdded = true;
-            }
-
-            // Setup base URL (no trailing slash)
-            req.baseUrl = parentUrl + ( removed[ removed.length - 1 ] === "/"
-                ? removed.substring( 0, removed.length - 1 )
-                : removed );
-        }
-
-        if ( layerError ) {
-            layer.handle_error( layerError, req, res, next );
-        } else {
-            layer.handle_request( req, res, next );
-        }
-    }
-};
-
-/**
- * Process any parameters for the layer.
- *
- * @private
- */
-
-// @ts-ignore
-Router.prototype.process_params = function process_params(layer, called, req, res, done) {
-    // @ts-ignore
-    var params = this.params;
-
-    // captured parameters from the layer, keys and values
-    var keys = layer.keys;
-
-    // fast track
-    if ( !keys || keys.length === 0 ) {
-        return done();
-    }
-
-    var i = 0;
-    // @ts-ignore
-    var name;
-    // @ts-ignore
-    var paramIndex = 0;
-    // @ts-ignore
-    var key;
-    // @ts-ignore
-    var paramVal;
-    // @ts-ignore
-    var paramCallbacks;
-    // @ts-ignore
-    var paramCalled;
-
-    // @ts-ignore
-    function param(err) {
-        if ( err ) {
-            return done( err );
-        }
-
-        if ( i >= keys.length ) {
-            return done();
-        }
-
-        paramIndex = 0;
-        key = keys[ i++ ];
-        name = key.name;
-        paramVal = req.params[ name ];
-        paramCallbacks = params[ name ];
-        paramCalled = called[ name ];
-
-        if ( paramVal === undefined || !paramCallbacks ) {
-            // @ts-ignore
-            return param();
-        }
-
-        // param previously called with same value or error occurred
-        if ( paramCalled && ( paramCalled.match === paramVal
-            || ( paramCalled.error && paramCalled.error !== "route" ) ) ) {
-            // restore value
-            req.params[ name ] = paramCalled.value;
-
-            // next param
-            return param( paramCalled.error );
-        }
-
-        called[ name ] = paramCalled = {
-            error: null,
-            match: paramVal,
-            value: paramVal
-        };
-
-        // @ts-ignore
-        paramCallback();
-    }
-
-    // @ts-ignore
-    function paramCallback(err) {
-        // @ts-ignore
-        var fn = paramCallbacks[ paramIndex++ ];
-
-        // @ts-ignore
-        paramCalled.value = req.params[ key.name ];
-
-        if ( err ) {
-            // @ts-ignore
-            paramCalled.error = err;
-            param( err );
-            return;
-        }
-
-        // @ts-ignore
-        if ( !fn ) return param();
-
-        try {
-            // @ts-ignore
-            fn( req, res, paramCallback, paramVal, key.name );
-        } catch ( e ) {
-            paramCallback( e );
-        }
-    }
-
-    // @ts-ignore
-    param();
-};
-
-/**
- * Use the given middleware function, with optional path, defaulting to "/".
- *
- * Use (like `.all`) will run for any http METHOD, but it will not add
- * handlers for those methods so OPTIONS requests will not consider `.use`
- * functions even if they could respond.
- *
- * The other difference is that _route_ path is stripped and not visible
- * to the handler function. The main effect of this feature is that mounted
- * handlers can operate without any code changes regardless of the "prefix"
- * pathname.
- *
- * @public
- */
-
-// @ts-ignore
-Router.prototype.use = function use(handler) {
-    var offset = 0;
-    var path = "/";
-
-    // default path to '/'
-    // disambiguate router.use([handler])
-    if ( typeof handler !== "function" ) {
-        var arg = handler;
-
-        while ( Array.isArray( arg ) && arg.length !== 0 ) {
-            arg = arg[ 0 ];
-        }
-
-        // first arg is the path
-        if ( typeof arg !== "function" ) {
-            offset = 1;
-            path = handler;
-        }
-    }
-
-    // @ts-ignore
-    var callbacks = flatten( slice.call( arguments, offset ) );
-
-    if ( callbacks.length === 0 ) {
-        throw new TypeError( "argument handler is required" );
-    }
-
-    for ( var i = 0; i < callbacks.length; i++ ) {
-        var fn = callbacks[ i ];
-
-        if ( typeof fn !== "function" ) {
-            throw new TypeError( "argument handler must be a function" );
-        }
-
-        // @ts-ignore
-        var layer = new Layer( path, {
-            // @ts-ignore
-            sensitive: this.caseSensitive,
-            // @ts-ignore
-            strict: false,
-            // @ts-ignore
-            end: false
-        }, fn );
-
-        layer.route = undefined;
-
-        // @ts-ignore
-        this.stack.push( layer );
-    }
-
-    return this;
-};
-
-/**
- * Create a new Route for the given path.
- *
- * Each route contains a separate middleware stack and VERB handlers.
- *
- * See the Route api documentation for details on adding handlers
- * and middleware to routes.
- *
- * @param {string} path
- * @return {Route}
- * @public
- */
-
-// @ts-ignore
-Router.prototype.route = function route(path) {
-    // @ts-ignore
-    var route = new Route( path );
-
-    // @ts-ignore
-    var layer = new Layer( path, {
-        // @ts-ignore
+// eslint-disable-next-line max-len
+Router.prototype = new Proxy( Function as Function & object & { params: any; param: Function; handle: Function; stack: any; mergeParams: any; process_params: Function; use: Function; caseSensitive: boolean; route: any; strict?: boolean; dispatch: Function }, {} );
+Router.prototype.route = function route(path: string) {
+    const route = new Route( path );
+
+    const layer = new Layer( path, {
         sensitive: this.caseSensitive,
-        // @ts-ignore
         strict: this[ "strict" ],
         end: true
     }, handle );
 
-    // @ts-ignore
-    function handle(req, res, next) {
-        route.dispatch( req, res, next );
+    function handle(request: HTTP.Request, response: HTTP.Response, next: HTTP.Next) {
+        route.dispatch( request, response, next );
     }
 
     layer.route = route;
 
-    // @ts-ignore
     this.stack.push( layer );
     return route;
 };
 
-// @ts-ignore
-methods.concat( "all" ).forEach( function (method) {
-    // @ts-ignore
-    Router.prototype[ method ] = function (path) {
-        // @ts-ignore
-        var route = this.route( path );
-        route[ method ].apply( route, slice.call( arguments, 1 ) );
-        return this;
-    };
+methods().concat( "all" ).forEach( (method: string) => {
+    Object.assign( Router.prototype, {
+        [ method ]: function (this: Construct, path: string) {
+            const route = ( this && this[ "route" ] ) ? this[ "route" ]( path ) : null;
+
+            if ( route && route[ method ] ) {
+                route[ method ].apply( route, Array.prototype.slice.call( arguments, 1 ) );
+            }
+
+            return this;
+        }
+    } );
 } );
 
-/**
- * Generate a callback that will make an OPTIONS response.
- *
- * @param {OutgoingMessage} res
- * @param {array} methods
- * @private
- */
-
-// @ts-ignore
-function generateOptionsResponder(res, methods) {
-    // @ts-ignore
-    return function onDone(fn, err) {
-        if ( err || methods.length === 0 ) {
-            return fn( err );
-        }
-
-        trySendOptionsResponse( res, methods, fn );
-    };
-}
-
-/**
- * Get pathname of request.
- *
- * @param {IncomingMessage} req
- * @private
- */
-
-// @ts-ignore
-function getPathname(req) {
-    try {
-        return parseUrl( req ).pathname;
-    } catch ( err ) {
-        return undefined;
-    }
-}
-
-/**
- * Get get protocol + host for a URL.
- *
- * @param {string} url
- * @private
- */
-
-// @ts-ignore
-function getProtohost(url) {
-    if ( typeof url !== "string" || url.length === 0 || url[ 0 ] === "/" ) {
-        return undefined;
-    }
-
-    var searchIndex = url.indexOf( "?" );
-    var pathLength = searchIndex !== -1
-        ? searchIndex
-        : url.length;
-    var fqdnIndex = url.substring( 0, pathLength ).indexOf( "://" );
-
-    return fqdnIndex !== -1
-        ? url.substring( 0, url.indexOf( "/", 3 + fqdnIndex ) )
-        : undefined;
-}
-
-/**
- * Match path to a layer.
- *
- * @param {Layer} layer
- * @param {string} path
- * @private
- */
-
-// @ts-ignore
-function matchLayer(layer, path) {
-    try {
-        return layer.match( path );
-    } catch ( err ) {
-        return err;
-    }
-}
-
-/**
- * Merge params with parent params
- *
- * @private
- */
-
-// @ts-ignore
-function mergeParams(params, parent) {
-    if ( typeof parent !== "object" || !parent ) {
-        return params;
-    }
-
-    // make copy of parent for base
-    var obj = mixin( {}, parent );
-
-    // simple non-numeric merging
-    if ( !( 0 in params ) || !( 0 in parent ) ) {
-        return mixin( obj, params );
-    }
-
-    var i = 0;
-    var o = 0;
-
-    // determine numeric gap in params
-    while ( i in params ) {
-        i++;
-    }
-
-    // determine numeric gap in parent
-    while ( o in parent ) {
-        o++;
-    }
-
-    // offset numeric indices in params before merge
-    for ( i--; i >= 0; i-- ) {
-        params[ i + o ] = params[ i ];
-
-        // create holes for the merge when necessary
-        if ( i < o ) {
-            delete params[ i ];
-        }
-    }
-
-    return mixin( obj, params );
-}
-
-/**
- * Restore obj props after function
- *
- * @private
- */
-
-// @ts-ignore
-function restore(fn, obj) {
-    var props = new Array( arguments.length - 2 );
-    var vals = new Array( arguments.length - 2 );
-
-    for ( var i = 0; i < props.length; i++ ) {
-        props[ i ] = arguments[ i + 2 ];
-        vals[ i ] = obj[ props[ i ] ];
-    }
-
-    return function () {
-        // restore vals
-        for ( var i = 0; i < props.length; i++ ) {
-            obj[ props[ i ] ] = vals[ i ];
-        }
-
-        // @ts-ignore
-        return fn.apply( this, arguments );
-    };
-}
-
-/**
- * Send an OPTIONS response.
- *
- * @private
- */
-
-// @ts-ignore
-function sendOptionsResponse(res, methods) {
-    var options = Object.create( null );
-
-    // build unique method map
-    for ( var i = 0; i < methods.length; i++ ) {
-        options[ methods[ i ] ] = true;
-    }
-
-    // construct the allow list
-    var allow = Object.keys( options ).sort().join( ", " );
-
-    // send response
-    res.setHeader( "Allow", allow );
-    res.setHeader( "Content-Length", Buffer.byteLength( allow ) );
-    res.setHeader( "Content-Type", "text/plain" );
-    res.setHeader( "X-Content-Type-Options", "nosniff" );
-    res.end( allow );
-}
-
-/**
- * Try to send an OPTIONS response.
- *
- * @private
- */
-
-// @ts-ignore
-function trySendOptionsResponse(res, methods, next) {
-    try {
-        sendOptionsResponse( res, methods );
-    } catch ( err ) {
-        next( err );
-    }
-}
-
-/**
- * Wrap a function
- *
- * @private
- */
-
-// @ts-ignore
-function wrap(old, fn) {
-    return function proxy() {
-        var args = new Array( arguments.length + 1 );
-
-        args[ 0 ] = old;
-        for ( var i = 0, len = arguments.length; i < len; i++ ) {
-            args[ i + 1 ] = arguments[ i ];
-        }
-
-        // @ts-ignore
-        fn.apply( this, args );
-    };
-}
-
-export * from "./handler";
+export * from "./final-handler";
+export * from "./flatten";
+export * from "./handle";
+export * from "./http";
+export * from "./parameter";
+export * from "./process";
+export * from "./use";
 export * from "./layer";
-export * from "./handler";
+export * from "./route";
+export * from "./methods";
+export * from "./async";
+export * from "./utility";
+
+export type Construct = typeof Router.prototype;
+export type Options = { caseSensitive: boolean; mergeParams: boolean; strict: boolean }
