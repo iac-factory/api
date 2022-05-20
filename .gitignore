@@ -52,6 +52,8 @@ tsconfig.tsbuildinfo
 
 !commitlint.config.js
 
+*.log
+
 lerna-debug.log
 
 lambda-data.log
