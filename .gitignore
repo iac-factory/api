@@ -50,11 +50,6 @@ documentation
 tsconfig.tsbuildinfo
 **/tsconfig.tsbuildinfo
 
-!commitlint.config.js
-
 *.log
 
-lerna-debug.log
-
-lambda-data.log
-table.endpoints.log
+openapitools.json

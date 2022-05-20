@@ -1,0 +1,13 @@
+{
+    "language": "typescript",
+    "app": "ts-node .",
+    "terraformModules": [],
+    "terraformProviders": [
+        "integrations/github"
+    ],
+    "context": {
+        "allowSepCharsInLogicalIds": "true",
+        "excludeStackIdFromLogicalIds": "true"
+    },
+    "codeMakerOutput": "library"
+}

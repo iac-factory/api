@@ -1,0 +1,26 @@
+[core]
+    ignorecase = false
+    credential = --help
+    pager = cat
+
+[submodule]
+    recurse = true
+
+[credential]
+    helper = store
+
+[status]
+    branch = true
+    showStash = true
+    showUntrackedFiles = all
+    showSubmoduleSummary = true
+    submoduleSummary = true
+
+[pager]
+    paginate = false
+
+[init]
+    defaultBranch = Development
+
+[pull]
+    rebase = false

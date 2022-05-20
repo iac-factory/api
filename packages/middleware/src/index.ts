@@ -1,6 +1,6 @@
-import type { Application } from "express";
+import { Application } from "express";
 
-const Middleware = (server: Application) => {
+export function Middleware(server: Application) {
     console.debug("[Middleware] [Debug] Initializing Middleware ...");
 
     const Promises = Promise.allSettled((
@@ -18,17 +18,13 @@ const Middleware = (server: Application) => {
             // import("./compression").then((Module) => Module.Compress(server)),
             import("./content-type").then((Module) => Module.Set(server)),
             // import("./open.api").then((Module) => Module.$(server))
-            import("./winston").then((Module) => Module.Apply(server))
+            // import("./winston").then((Module) => Module.Apply(server))
         ]
     ));
 
     Promises.finally(() => console.debug("[Middleware] [Debug] API Middleware Successfully Loaded"));
 
     return Promises;
-};
+}
 
-export { Middleware };
-
-export default Middleware;
-
-export * from "./crypto";
+void (async () => await import("./crypto"))();

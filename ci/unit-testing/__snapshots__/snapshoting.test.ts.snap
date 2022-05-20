@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CDKTF Application Snapshot Comparator 1`] = `
+Object {
+  "data": Object {
+    "github_user": Object {
+      "cliutilities_creator_0351F295": Object {
+        "username": "\${var.cliutilities_username_3C782997}",
+      },
+    },
+  },
+  "output": Object {
+    "cliutilities_datauser_BC4B9DFF": Object {
+      "value": "cli-utilities/creator",
+    },
+    "cliutilities_inputarchivevariable_51EA5346": Object {
+      "value": "cli-utilities/archive",
+    },
+    "cliutilities_inputlicensevariable_56C1B44F": Object {
+      "value": "cli-utilities/license",
+    },
+    "cliutilities_inputorganizationvariable_ED7FC11F": Object {
+      "value": "cli-utilities/owner",
+    },
+    "cliutilities_inputtemplatevariable_110FDA0A": Object {
+      "value": "cli-utilities/template",
+    },
+    "cliutilities_inputtopicsvariable_39EFFB68": Object {
+      "value": "cli-utilities/topics",
+    },
+    "cliutilities_inputusernamevariable_470A7C26": Object {
+      "value": "cli-utilities/username",
+    },
+    "cliutilities_resourcebranchoutput_0595CF64": Object {
+      "value": "cli-utilities/branch",
+    },
+    "cliutilities_resourcebranchprotectionsoutput_CD140BA1": Object {
+      "value": "cli-utilities/protection",
+    },
+    "cliutilities_resourcerepositoryoutput_B71A4B2E": Object {
+      "value": "cli-utilities/repository",
+    },
+  },
+  "provider": Object {
+    "github": Array [
+      Object {
+        "owner": "\${var.cliutilities_owner_DA0C2024}",
+      },
+    ],
+  },
+  "resource": Object {
+    "github_branch_default": Object {
+      "cliutilities_branch_6E2DACE0": Object {
+        "branch": "Development",
+        "repository": "\${github_repository.cliutilities_repository_0B43601D.name}",
+      },
+    },
+    "github_branch_protection": Object {
+      "cliutilities_protection_3014CFAC": Object {
+        "allows_deletions": true,
+        "allows_force_pushes": true,
+        "enforce_admins": false,
+        "pattern": "\${github_branch_default.cliutilities_branch_6E2DACE0.branch}",
+        "push_restrictions": Array [
+          "\${data.github_user.cliutilities_creator_0351F295.node_id}",
+        ],
+        "repository_id": "\${github_repository.cliutilities_repository_0B43601D.node_id}",
+        "require_conversation_resolution": false,
+        "require_signed_commits": false,
+        "required_linear_history": false,
+        "required_pull_request_reviews": Array [
+          Object {
+            "dismiss_stale_reviews": true,
+            "dismissal_restrictions": Array [],
+            "restrict_dismissals": true,
+          },
+        ],
+        "required_status_checks": Array [
+          Object {
+            "contexts": Array [],
+            "strict": false,
+          },
+        ],
+      },
+    },
+    "github_repository": Object {
+      "cliutilities_repository_0B43601D": Object {
+        "allow_auto_merge": false,
+        "allow_merge_commit": false,
+        "allow_rebase_merge": false,
+        "allow_squash_merge": true,
+        "archive_on_destroy": "\${var.cliutilities_archive_E3A2458C}",
+        "archived": false,
+        "auto_init": true,
+        "delete_branch_on_merge": true,
+        "gitignore_template": "Node",
+        "has_downloads": false,
+        "has_issues": true,
+        "has_projects": false,
+        "has_wiki": true,
+        "homepage_url": "https://github.com/\${var.cliutilities_owner_DA0C2024}/cli-utilities",
+        "ignore_vulnerability_alerts_during_read": true,
+        "is_template": false,
+        "license_template": "\${var.cliutilities_license_5A1E6ECD}",
+        "name": "cli-utilities",
+        "topics": "\${var.cliutilities_topics_A8BA718D}",
+        "visibility": "public",
+        "vulnerability_alerts": true,
+      },
+    },
+  },
+  "terraform": Object {
+    "backend": Object {
+      "local": Object {
+        "path": "terraform.state.json",
+      },
+    },
+    "required_providers": Object {
+      "github": Object {
+        "source": "integrations/github",
+        "version": "4.24.1",
+      },
+    },
+  },
+  "variable": Object {
+    "cliutilities_archive_E3A2458C": Object {
+      "default": false,
+      "type": "bool",
+    },
+    "cliutilities_license_5A1E6ECD": Object {
+      "default": "BSD-2-Clause",
+      "type": "string",
+    },
+    "cliutilities_owner_DA0C2024": Object {
+      "default": "iac-factory",
+      "type": "string",
+    },
+    "cliutilities_template_64C6E305": Object {
+      "default": Array [],
+      "type": "any",
+    },
+    "cliutilities_topics_A8BA718D": Object {
+      "default": Array [
+        "cdk",
+        "cdktf",
+        "terraform",
+        "github",
+        "version-control",
+      ],
+      "type": "list(string)",
+    },
+    "cliutilities_username_3C782997": Object {
+      "default": "Segmentational",
+      "type": "string",
+    },
+  },
+}
+`;

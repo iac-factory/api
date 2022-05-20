@@ -24,7 +24,7 @@ import Path from "path";
  * @constructor
  *
  */
-const Reader = async ( target: string ) =>
+const Reader = async ( target: string ) => {
     /***
      * Asynchronously computes the canonical pathname by resolving `.`, `..` and
      * symbolic links.

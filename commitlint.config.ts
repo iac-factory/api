@@ -1,4 +1,4 @@
-const Configuration = {
+export default {
     /*
      * Resolve and load @commitlint/config-conventional from node_modules.
      * Referenced packages must be installed
@@ -29,7 +29,7 @@ const Configuration = {
     /*
      * Functions that return true if commitlint should ignore the given message.
      */
-    ignores: [ (commit) => commit === "" ],
+    ignores: [ (commit: string) => commit === "" ],
     /*
      * Whether commitlint uses the default ignore rules.
      */
@@ -52,5 +52,3 @@ const Configuration = {
 //     "snake-case", // snake_case
 //     "start-case" // Start Case
 // ];
-
-module.exports = Configuration; /// { extends: [ "@commitlint/config-conventional" ] };

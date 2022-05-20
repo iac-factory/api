@@ -3,6 +3,16 @@
  * as a reference module to Express || Router related type-declarations.
  */
 
-declare module "IaC.API.Schema.Framework" {
+import { Router } from "express";
 
+declare namespace Express {
+    export interface Request {
+        originalMethod?: string | undefined;
+    }
 }
+
+declare namespace e {
+    export interface Proxy extends Router {}
+}
+
+export = e;

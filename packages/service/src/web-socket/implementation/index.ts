@@ -61,13 +61,13 @@ export default function expressWs(application: Application & Router, server: HTT
             }
         };
 
-        Reflect.set(application, "handle", ( request, mock, () => {
+        Reflect.set(application, "handle", function (request: { wsHandled: any; }, mock: any) {
             if ( !request.wsHandled ) {
                 /* There was no matching WebSocket-specific route for this request. We'll close
                  * the connection, as no endpoint was able to handle the request anyway... */
                 socket.close();
             }
-        }))
+        });
     } );
 
     return {

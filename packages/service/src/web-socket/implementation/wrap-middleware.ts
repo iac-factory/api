@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express-serve-static-core";
+import type { Request, Response, NextFunction } from "express-serve-static-core";
 
 export default function wrapMiddleware(middleware: (request: Request, response: Request | Response, next: NextFunction) => void) {
     return (request: Request & { ws?: any, wsHandled: boolean }, response: Response, next: NextFunction) => {

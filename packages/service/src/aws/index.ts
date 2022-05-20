@@ -1,4 +1,3 @@
-import * as Lambda from "./lambda";
 export * as Lambda from "./lambda";
 
 void ( async () => {
@@ -14,7 +13,3 @@ void ( async () => {
 
     ( debug ) && await test();
 } )();
-
-export const AWS = {
-    Lambda
-};

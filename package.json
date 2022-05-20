@@ -9,6 +9,7 @@
         "@jest/globals": "^28.1.0",
         "@openapitools/openapi-generator-cli": "^2.5.1",
         "@swc/core": "^1.2.182",
+        "@tsconfig/esm": "^1.0.0",
         "@tsconfig/node16-strictest-esm": "^1.0.1",
         "@types/jest": "^27.5.1",
         "@types/jsonwebtoken": "^8.5.8",
@@ -21,6 +22,7 @@
         "husky": "^7.0.4",
         "jest": "^28.1.0",
         "lerna": "^4.0.0",
+        "nodemon": "^2.0.16",
         "regenerator-runtime": "^0.13.9",
         "ts-jest": "^28.0.2",
         "ts-node": "^10.7.0",
@@ -32,7 +34,8 @@
         "@iac-factory/api-middleware": "file:packages/middleware",
         "@iac-factory/api-routing": "file:packages/routing",
         "@iac-factory/api-schema": "file:packages/schema",
-        "@iac-factory/api-services": "file:packages/service"
+        "@iac-factory/api-services": "file:packages/service",
+        "@iac-factory/local": "file:ci"
     },
     "author": {
         "name": "Jacob B. Sanders",
@@ -50,7 +53,8 @@
         "test": "node --experimental-vm-modules $(command -v jest) --config jest.config.js --injectGlobals --detectOpenHandles",
         "commit": "git add --all && commit",
         "prestart": "tsc",
-        "start": "ts-node .",
+        "start": "ts-node $(npm root)",
+        "development": "nodemon --ext ts --ignore js --exec \"tsc --diagnostics && ts-node .\"",
         "test-commit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
         "uninstall-husky": "npm uninstall husky && git config --unset core.hooksPath",
         "maps": "find ./packages -type f -name '*.map' -exec rm -rf {} \\;",

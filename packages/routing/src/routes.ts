@@ -1,14 +1,21 @@
 /*** ArchiveRoute Imports via Importable Side-Effects */
 
 export default void ( async () => {
-    await import("./test");
-    await import("./utility");
-    await import("./utility/health");
-    await import("./utility/awaitable");
-    await import("./aws/lambda");
-    await import("./aws/lambda/functions");
-    await import("./aws/lambda/functions/filter");
-    await import("./aws/lambda/functions/filter/environment-variables");
+    const Routing = [
+        import("./test").then((route) => console.log(route)),
+        import("./schema").then((route) => console.log(route)),
+        import("./schema/typescript").then((route) => console.log(route)),
+        import("./utility").then((route) => console.log(route)),
+        import("./utility/health").then((route) => console.log(route)),
+        import("./utility/awaitable").then((route) => console.log(route)),
+        import("./aws/lambda").then((route) => console.log(route)),
+        import("./aws/lambda/functions").then((route) => console.log(route)),
+        import("./aws/lambda/functions/filter").then((route) => console.log(route)),
+        import("./aws/lambda/functions/filter/environment-variables").then((route) => console.log(route))
+    ];
+
+    return Promise.allSettled(Routing);
+
 } )();
 
 /// If the route is imported, the side-effect is mutation to the router prototype

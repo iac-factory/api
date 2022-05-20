@@ -1,43 +1,27 @@
 {
-    "extends": "@tsconfig/node16-strictest-esm",
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "@iac-factory/tsc-configuration",
+    "exclude": ["iac", "coverage"],
     "ts-node": {
         "preferTsExts": true,
-        "experimentalReplAwait": false,
-        "skipIgnore": true,
-        "experimentalResolverFeatures": true,
-        "files": true,
         "transpileOnly": true,
         "swc": true
     },
     "compilerOptions": {
-        "rootDir": ".",
-        "pretty": true,
-        "target": "ES6",
+        "lib": ["ESNext"],
         "module": "CommonJS",
+        "target": "ES2018",
         "moduleResolution": "Node",
-        "resolveJsonModule": true,
-        "diagnostics": true,
-        "noUnusedLocals": false,
+        "strict": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "noUnusedParameters": false,
-        "downlevelIteration": true,
-        "allowUnreachableCode": true,
-        "importsNotUsedAsValues": "preserve",
-        "exactOptionalPropertyTypes": false,
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "inlineSourceMap": false
-    },
-    "include": [
-        "index.ts", "jest.config.ts", "*.ts", "**/*.json", "packages", "unit-testing"
-    ],
-    "exclude": [
-        "*.d.ts",
-        "coverage",
-        "iac",
-        "node_modules",
-        "commitlint.config.js"
-    ]
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUncheckedIndexedAccess": true,
+        "noEmitOnError": true,
+        "resolveJsonModule": true,
+        "incremental": true
+    }
 }

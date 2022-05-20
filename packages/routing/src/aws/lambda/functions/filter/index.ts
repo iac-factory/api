@@ -1,6 +1,6 @@
 import { Router } from "..";
 
-import { Lambda } from "IaC.API.Schema.AWS";
+import {  } from "@iac-factory/api-services";
 import { Runtime } from "inspector";
 
 export module Index {

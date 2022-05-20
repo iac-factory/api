@@ -1,8 +1,6 @@
-import("./routes");
-
 import { Controller } from "@iac-factory/api-services";
 
-export const Router = Controller();
+const Router = Controller();
 
 Router.options("/", async (request, response) => {
     const { Directory } = await import("@iac-factory/api-services");
@@ -18,4 +16,7 @@ Router.get("/", async (request, response) => {
     });
 });
 
+export { Router };
 export default Router;
+
+void import("./routes");
