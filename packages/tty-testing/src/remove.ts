@@ -1,9 +1,14 @@
 import FS from "fs";
 import Path from "path";
+import Utility from "util";
 
 /***
  * Promisified Version of {@link FS.rm}
  * ---
+ *
+ * With additional logging and recursive file evaluation ...
+ *
+ * <br/>
  *
  * Asynchronously, recursively deletes the entire directory structure from target,
  * including subdirectories and files.
@@ -16,28 +21,118 @@ import Path from "path";
  * @constructor
  *
  */
-const Remove = async ( target: string ) => {
-    const descriptors = async () => new Promise((resolve) => {
-        FS.readdir(target, { encoding: "utf-8", withFileTypes: true }, (exception: (NodeJS.ErrnoException | null), files: FS.Dirent[]) => {
-            if (exception) throw exception;
+export const Remove = async (target: string) => {
+    const valid = (descriptor: string = target) => {
+        return new Promise( (resolve) => FS.realpath( descriptor, { encoding: "utf-8" }, (exception, path) => {
+            resolve( ( exception ) ? false : !!( path ) );
+        } ) );
+    };
 
-            resolve(files.map((descriptor) => Path.join(Path.resolve(target, descriptor.name))));
+    const descriptors = async (location: string = target) => {
+        return new Promise((resolve) => {
+            FS.readdir( location, {
+                encoding: "utf-8",
+                withFileTypes: true
+            }, (exception: Exception, files: FS.Dirent[]) => {
+                if (exception) throw exception;
+
+                resolve( remap(files) );
+            } );
+        }) as Promise<Descriptor[]>;
+
+        function remap (files: FS.Dirent[]) {
+            return files.map( (descriptor) => {
+                const canonical = Path.join( Path.resolve( location, descriptor.name ) );
+
+                return {
+                    name: descriptor.name,
+                    path: canonical,
+                    properties: {
+                        file: descriptor.isFile(),
+                        directory: descriptor.isDirectory(),
+                        socket: descriptor.isSocket(),
+                        symbolic: descriptor.isSymbolicLink()
+                    }
+                };
+            } );
+        };
+    };
+
+    const clean = async (descriptor: Descriptor) => {
+        const recurse = descriptor.properties.directory;
+
+        /// If the given file-descriptor is indeed a directory
+        switch (true) {
+            case ( ( recurse ) ): {
+                const handlers = await descriptors(descriptor.path);
+                for await (const handler of handlers) {
+                    await clean(handler);
+                }
+
+                break;
+            }
+
+            default: await new Promise(async (resolve) => {
+                const existence = await valid(descriptor.path);
+
+                console.debug("[Debug] Removing", Utility.inspect(descriptor.path, { colors: true }), "...");
+
+                (existence) && FS.unlink(descriptor.path, async (exception) => {
+                    if (exception) {
+                        (exception.code = "EPERM") && await new Promise((resolve) => {
+                            FS.rm(descriptor.path, { force: true }, resolve)
+                        });
+                    } else (exception !== null) && console.warn("[Warning]", exception);
+
+                    resolve(null);
+                });
+            });
+        }
+    };
+
+    const finalize = async () => {
+        void await new Promise((resolve) => {
+            FS.rm(target, { force: true, recursive: true }, (exception) => {
+                if (exception) throw exception;
+
+                resolve(null);
+            });
         });
-    });
+    };
 
-    const handles = await descriptors();
+    try {
+        if (await valid()) {
+            console.debug(" - Pre-Existing Directory Found");
+            process.stdout.write("\n");
 
-    console.log(handles);
-    //
-    // return new Promise( async ( resolve ) => {
-    //     ///for await (const descriptor of await descriptors()) {
-    //     ///    FS.rm( descriptor.name, { recursive: true, force: true } );
-    //     ///}
-    //
-    //     resolve(true);
-    // } );
+            console.debug("[Debug]", "Removing", Utility.inspect(Path.resolve(target), { colors: true }), "...");
+            const targets = await descriptors();
+            for await (const target of targets) {
+                await clean(target);
+            }
+
+            await finalize();
+        }
+    } catch ( error ) {
+        throw error;
+    }
+
+    process.stdout.write("\n");
+
+    return;
 };
 
-export { Remove };
+export type Exception = NodeJS.ErrnoException | null;
+
+export type Descriptor = {
+    name: string;
+    path: string;
+    properties: {
+        file: boolean;
+        directory: boolean;
+        socket: boolean;
+        symbolic: boolean;
+    };
+};
 
 export default Remove;

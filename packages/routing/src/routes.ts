@@ -8,6 +8,7 @@ export default void ( async () => {
     await import("./aws/lambda");
     await import("./aws/lambda/functions");
     await import("./aws/lambda/functions/filter");
+    await import("./aws/lambda/functions/filter/environment-variables");
 } )();
 
 /// If the route is imported, the side-effect is mutation to the router prototype

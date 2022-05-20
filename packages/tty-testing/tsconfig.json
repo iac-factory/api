@@ -1,41 +1,28 @@
 {
-    "extends": "@tsconfig/node16-strictest-esm",
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "IaC-Factory",
     "ts-node": {
-        "preferTsExts": true,
-        "experimentalReplAwait": false,
-        "skipIgnore": true,
-        "experimentalResolverFeatures": true,
-        "files": true,
+        "pretty": true,
         "transpileOnly": true,
-        "swc": true
+        "files": true
     },
     "compilerOptions": {
-        "rootDir": ".",
-        "pretty": true,
-        "target": "ES6",
-        "module": "CommonJS",
-        "moduleResolution": "Node",
-        "resolveJsonModule": true,
-        "diagnostics": true,
-        "noUnusedLocals": false,
+        "strict": true,
+        "allowUnusedLabels": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedParameters": true,
+
+        "importsNotUsedAsValues": "remove",
+        "allowJs": true,
+        "checkJs": false,
+
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "noUnusedParameters": false,
-        "downlevelIteration": true,
-        "allowUnreachableCode": true,
-        "importsNotUsedAsValues": "preserve",
-        "exactOptionalPropertyTypes": false,
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "inlineSourceMap": false
-    },
-    "include": [
-        "index.ts", "*.ts", "**/*.json"
-    ],
-    "exclude": [
-        "*.d.ts",
-        "coverage",
-        "node_modules"
-    ]
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    }
 }
+

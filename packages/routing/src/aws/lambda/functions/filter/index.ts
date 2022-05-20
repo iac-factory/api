@@ -1,11 +1,24 @@
 import { Router } from "..";
-import type { Request } from "express-serve-static-core";
-import * as QueryString from "querystring";
-import { UrlWithParsedQuery } from "url";
-import { ParsedUrlQuery } from "node:querystring";
+
+import { Lambda } from "IaC.API.Schema.AWS";
+import { Runtime } from "inspector";
+
+export module Index {
+    export const Local = (local: Locality) => {
+
+        const keys = Properties(local);
+
+        console.debug("[Debug] Local Property Key(s)" + ":", keys);
+    };
+
+    function Properties<Generic>($: Generic): Array<keyof Generic> {
+        return Object.keys($) as Array<keyof typeof $>;
+    }
+}
 
 /***
  * Types of available filter(s):
+ *
  *  1. `"name"`
  *  2. `"arn"`
  *  3. `"role"`
@@ -13,10 +26,11 @@ import { ParsedUrlQuery } from "node:querystring";
  *
  *  Implementation is handled via the router in simple cases; increasingly complex
  *  solutions should be moved to the @iac-factory/api-services package.
- *
  */
-Router.get( "/aws/lambda/functions/:filter", async (request: Request<{filter: string}, {}, {}, {}, Record<string, {}>>, response) => {
+Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
+
+    Index.Local(response.locals);
 
     const filter = request.params.filter;
     const error: { throw: boolean } = { throw: false };
@@ -86,3 +100,4 @@ Router.get( "/aws/lambda/functions/:filter", async (request: Request<{filter: st
 } );
 
 export { Router };
+export type Locality = Record<string, {}>;
