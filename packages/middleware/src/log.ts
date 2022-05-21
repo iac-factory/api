@@ -1,10 +1,17 @@
 import { HTTP } from "@iac-factory/api-schema";
 
-import Application = HTTP.Application;
-
 import Request = HTTP.Request;
 import Response = HTTP.Response;
-import Callback = HTTP.Next;
+
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Log = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Body-Parser", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 /***
  * A Abstract Logger meant only for Logging Request Data -- ***Not (Accurate) Response Data***

@@ -2,9 +2,15 @@ import { HTTP } from "@iac-factory/api-schema";
 
 import Application = HTTP.Application;
 
-import Request = HTTP.Request;
-import Response = HTTP.Response;
-import Callback = HTTP.Next;
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Body-Parser", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 const HTTPs = (server: Application) => {
     console.debug( "[Middleware] [HTTPs] [Debug] Instantiating HTTPs Check" );

@@ -172,26 +172,29 @@ export module Debugger {
             private static debug(instance: Logger) {
                 return {
                     debug: ($: any, module?: string, depth?: Depth, sorting?: boolean) => {
-                        console.log( instance.header( module ).debug, Utility.inspect( { ... $ }, {
+                        console.log( instance.header( module ).debug, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                             colors: true,
                             sorted: ( sorting ) ? sorting : instance.sorting,
                             depth: ( depth ) ? Depth(depth) : instance.depth
                         } ) )
                     },
-                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( { ... $ }, {
+                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) ),
-                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( { ... $ }, {
+                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) ),
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) )
                 };
             }
@@ -199,20 +202,23 @@ export module Debugger {
             private static info(instance: Logger) {
                 return {
                     debug: () => OS.devNull,
-                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( { ... $ }, {
+                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true,
                     } ) ),
-                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( { ... $ }, {
+                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) ),
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) )
                 };
             }
@@ -221,15 +227,17 @@ export module Debugger {
                 return {
                     debug: () => OS.devNull,
                     info: () => OS.devNull,
-                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( { ... $ }, {
+                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) ),
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) )
                 };
             }
@@ -239,10 +247,11 @@ export module Debugger {
                     debug: () => OS.devNull,
                     info: () => OS.devNull,
                     warn: () => OS.devNull,
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
                         colors: true,
                         sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth
+                        depth: ( depth ) ? Depth(depth) : instance.depth,
+                        showHidden: true
                     } ) )
                 };
             }

@@ -2,11 +2,15 @@ import { HTTP } from "@iac-factory/api-schema";
 
 import Application = HTTP.Application;
 
-import Request = HTTP.Request;
-import Response = HTTP.Response;
-import Callback = HTTP.Next;
+import { Debugger } from "@iac-factory/api-core";
 
-import { Logger } from "./log";
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Content-Type", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 /***
  * Content-Type
@@ -19,12 +23,12 @@ import { Logger } from "./log";
  */
 
 const Set = (server: Application) => {
-    console.debug( "[Middleware] [Content-Type] [Debug] Updating Content-Type ..." );
+    Logger.debug( "Updating Header := Content-Type ..." );
 
     server.use( async (request, response, callback) => {
         response.set( "Content-Type", "Application/JSON" );
 
-        process.stdout.write( Logger( request as object as HTTP.Request, response, response.get( "Content-Type" ) + "\n" ) );
+        /// process.stdout.write( Logger( request as object as HTTP.Request, response, response.get( "Content-Type" ) + "\n" ) );
 
         (callback) && callback();
     } );

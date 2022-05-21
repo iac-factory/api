@@ -1,5 +1,15 @@
 import HTTPs from "https";
 
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Body-Parser", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
+
 const $ = function (error: string | null, address: string | null | undefined, resolve: { (value: unknown): void; (value: unknown): void; (arg0: string | undefined): any }) {
     if ( error ) return console.log( error );
     if ( address != null ) { process.env[ "ip" ] = address; }

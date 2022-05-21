@@ -1,6 +1,6 @@
 import { Controller } from "@iac-factory/api-services";
 
-const Router = Controller("IaC.Factory.API");
+export const Router = Controller("IaC.Factory.API");
 
 Router.use( "/:route", async (request, response, next) => next() );
 Router.param( "route", (request, response, next) => {
@@ -15,7 +15,6 @@ Router.get("/", async (request, response) => {
     });
 });
 
-export { Router };
 export default Router;
 
 void import("./routes");

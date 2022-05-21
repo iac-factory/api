@@ -7,6 +7,16 @@ import Request = HTTP.Request;
 import Response = HTTP.Response;
 import Callback = HTTP.Next;
 
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Body-Parser", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
+
 const Split = (input: string) => {
     return (input.includes( "?" ) ) ? input.split( "?" )[ 0 ] as string
         : input as string;

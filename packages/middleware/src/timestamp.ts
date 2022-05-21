@@ -1,9 +1,16 @@
-import type { Response, NextFunction } from "express-serve-static-core";
-import type { Application } from "express";
-
 import { HTTP } from "@iac-factory/api-schema";
 
-import { Logger } from "./log";
+import { Debugger } from "@iac-factory/api-core";
+
+import Application = HTTP.Application;
+
+/*** @experimental */
+const Log = Debugger.hydrate( {
+    namespace: [ "Performance", "green" ],
+    module: [ "Timestamp", "blue" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 /***
  * Middleware that establishes a timestamp on the Response object
@@ -18,24 +25,24 @@ import { Logger } from "./log";
  * @constructor
  *
  */
-const Timestamp = ( server: Application ) => {
-    console.debug( "[Middleware] [Timestamp] [Debug] Initializing Response Timestamp ..." );
+const Timestamp = (server: Application) => {
+    Log.debug( "Setting Response Timestamp ..." );
 
-    server.use( async ( request, response: Response, callback: NextFunction ) => {
+    server.use( async (request, response, callback) => {
         /// Unix Timestamp (C-Time)
-        Reflect.set(response, "x-time-initial", Date.now());
+        response.locals[ "X-Time-Initial" ] = new Date().getTime();
+        Log.debug( "Set Timestamp (Pre-Flight)" );
 
-        response.on("close", () => {
+        response.on( "close", () => {
+            const initial = response.locals[ "X-Time-Initial" ];
 
-            Reflect.set(response, "x-time-final", Date.now());
-        });
+            const delta = ( new Date().getTime() - initial ) / 1000;
 
-        process.stdout.write( Logger( request as object as HTTP.Request, response, "Timestamp" + ":" + " " + Reflect.get( response, "timestamp" ) + "\n" ));
+            Log.debug( "Timestamp (Delta)" + " " + delta + " " + "Second(s)" );
+        } );
 
-        callback();
+        void callback();
     } );
-
-    console.debug( "[Middleware] [Timestamp] [Debug] Established Timestamp Middleware" );
 };
 
 export default { Timestamp };

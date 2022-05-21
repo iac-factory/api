@@ -3,17 +3,16 @@ import Framework from "express";
 import API, { Router } from "express";
 
 type Options = { strict: boolean; casing: boolean; merge: boolean };
-export type Reflection = ( name: string, options?: Options ) => Router;
+export type Reflection = ( name: string, options?: Options ) => Router & Register;
 
 const Global = Reflect.construct(Object, []);
 
-console.debug("[API-Services] [Global] [Debug]", "Initializing Global Reflection Registry ...");
+export type Register = { registry: { symbol: Symbol } };
+
 Reflect.set(Framework, "Reflection", (name: string, options?: { strict: boolean; casing: boolean; merge: boolean }) => {
     if (Global[name]) throw new Error("Global-Namespace-Clash-Exception");
 
-    console.debug("[API-Services] [Registry] [Debug]", "Adding", name, "to Global Registry ...");
-
-    const symbol = { symbol: Symbol.for(name), name: name };
+    const symbol = Symbol.for(name);
 
     Global[name] = symbol;
 
@@ -24,7 +23,7 @@ Reflect.set(Framework, "Reflection", (name: string, options?: { strict: boolean;
         mergeParams: options?.merge ?? false
     });
 
-    Reflect.set(instance, "registry", symbol);
+    Reflect.set(instance, "registry", { symbol } );
 
     return instance;
 });

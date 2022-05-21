@@ -8,6 +8,15 @@ import type { NextFunction } from "express-serve-static-core";
 
 type Callback = NextFunction;
 
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "User-Agent", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 /***
  * User-Agent Middleware Function
@@ -37,11 +46,9 @@ const UA = (request: Request, response: Response, callback: Callback) => {
  */
 
 const Agent = (server: Application) => {
-    console.debug( "[Middleware] [CORS] [Debug] Establishing User-Agent Capture ..." );
+    Logger.debug("Establishing User-Agent Capture ..." );
 
     server.use( UA );
-
-    console.debug( "[Middleware] [CORS] [Debug] Capturing User-Agent" );
 
     return server;
 };

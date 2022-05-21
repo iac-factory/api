@@ -1,6 +1,6 @@
 import { Controller } from "@iac-factory/api-services";
 
-export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Environment-Variables");
+export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Variables");
 Router.get( "/aws/lambda/functions/filter/environment-variables/:environment-variable", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
     const functions = await Lambda.Client.Functions();

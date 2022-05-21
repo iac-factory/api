@@ -2,9 +2,15 @@ import { HTTP } from "@iac-factory/api-schema";
 
 import Application = HTTP.Application;
 
-import Request = HTTP.Request;
-import Response = HTTP.Response;
-import Callback = HTTP.Next;
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Body-Parser", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 import { json, urlencoded } from "body-parser";
 
@@ -39,10 +45,10 @@ const Parsers = {
  */
 
 export const Body = (server: Application) => {
-    console.debug( "[Middleware] [Body-Parser] [Debug] Initializing Body Parser(s) ..." );
+    Logger.debug( "Initializing Body Parser(s) ..." );
 
     for (const [parser, module] of Object.entries(Parsers)) {
-        console.debug( "[Middleware] [Body-Parser] [Debug] Adding" + " " + parser + " " + "Module ..." );
+        Logger.debug( "Adding Module" + " " + parser + " " + "...", parser);
 
         const { Module } = module;
         const { Parameters } = module;

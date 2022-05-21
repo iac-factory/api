@@ -2,9 +2,15 @@ import { HTTP } from "@iac-factory/api-schema";
 
 import Application = HTTP.Application;
 
-import Request = HTTP.Request;
-import Response = HTTP.Response;
-import Callback = HTTP.Next;
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "CORS", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 import CORs from "cors";
 
@@ -28,7 +34,7 @@ export const Options = {
  */
 
 export const CORS = (server: Application) => {
-    console.debug("[Middleware] [CORS] [Debug] Setting CORS Policy ...");
+    Logger.debug("Setting CORS Policy ...");
 
     const Middleware = CORs(Options);
 

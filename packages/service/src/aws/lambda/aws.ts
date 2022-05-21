@@ -1,5 +1,7 @@
 import * as AWS from "@aws-sdk/client-lambda";
 
+import { Debugger } from "@iac-factory/api-core";
+
 import { Resolve } from ".";
 
 export module Client {
@@ -12,7 +14,7 @@ export module Client {
                 command: Functions.Command;
                 handler: Functions.Paginator;
 
-                private max: number = 50;
+                private max: number = 25;
                 private file: string = Resolve("lambda-data.json");
                 private region: string = "us-east-2";
 
@@ -37,8 +39,16 @@ export module Client {
                 private paginator = () => Object.create( { data: [], token: undefined, response: undefined } );
 
                 private async paginate( state: { page: number; errors: Array<Error | string> } ) {
+                    /*** @experimental */
+                    const Logger = Debugger.hydrate( {
+                        namespace: [ "AWS (Lambda)", "red" ],
+                        module: [ "Functions", "blue" ],
+                        level: [ "Debug", "cyan" ],
+                        depth: [ 1, true ]
+                    } );
+
                     const lambda = async () => {
-                        console.debug( "[Debug]", "Lambda Paginator", "(" + state.page + ")" );
+                        Logger.debug("Traversing Lambda Function(s) ...", "Paginator" + " " + "(" + state.page + ")"  );
 
                         const command = this.arguments( { Marker: this.handler.token } );
                         const response = await this.client.send( command );
@@ -113,7 +123,7 @@ export module Client {
                         await evaluate();
                     } while ( this.handler.token );
 
-                    console.debug( "[Debug]", "Lambda Paginator", "(" + state.page + ")" );
+                    // Logger.debug("Lambda Paginator", "(" + state.page + ")" );
                 }
 
                 private async log() {

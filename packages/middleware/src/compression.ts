@@ -2,9 +2,15 @@ import { HTTP } from "@iac-factory/api-schema";
 
 import Application = HTTP.Application;
 
-import Request = HTTP.Request;
-import Response = HTTP.Response;
-import Callback = HTTP.Next;
+import { Debugger } from "@iac-factory/api-core";
+
+/*** @experimental */
+const Logger = Debugger.hydrate( {
+    namespace: [ "Middleware", "yellow" ],
+    module: [ "Body-Parser", "green" ],
+    level: [ "Debug", "cyan" ],
+    depth: [ 1, true ]
+} );
 
 /*** Compression
  * @module Compression
@@ -24,7 +30,7 @@ import Compression from "compression";
  */
 
 export const Compress = (server: Application) => {
-    console.debug("[Middleware] [Compression] [Debug] Setting Compression Configuration(s) ...");
+    Logger.debug("Setting Compression Configuration(s) ...");
 
     server.use(Compression() as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
 
