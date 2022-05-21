@@ -1,6 +1,6 @@
 import HTTP from "http";
 
-export const methods = () => {
+export let methods = () => {
     return HTTP.METHODS && HTTP.METHODS.map( (method) => {
         return method.toLowerCase();
     } );

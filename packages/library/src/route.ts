@@ -1,10 +1,9 @@
-import Methods from "methods";
-
-import { Layer } from "./layer";
-
 import { HTTP } from ".";
 import { Await } from ".";
 import { Flatten } from ".";
+
+import { Layer } from "./layer";
+import { Methods } from "./methods";
 
 /**
  * Initialize `Route` with the given `path`,
@@ -189,7 +188,7 @@ Route.prototype.all = function all(handler: any) {
     return this;
 };
 
-Methods.forEach( function (method) {
+Methods().forEach( function (method) {
     Route.prototype[ method ] = function (handler: any) {
         // @ts-ignore
         var callbacks = Flatten( Array.prototype.slice.call( arguments ) );
