@@ -1,13 +1,9 @@
-import methods from "./methods";
-
 import { HTTP } from "./http";
 import { Layer } from "./layer";
 import { Route } from "./route";
+import { Methods } from "./methods";
 
-import("./handle");
-import("./parameter");
-import("./process");
-import("./use");
+import("./module");
 
 /***
  *
@@ -16,6 +12,8 @@ import("./use");
  * @constructor
  */
 export function Router(this: Construct, options?: Options): Function {
+    console.debug("[Debug] Constructing Router ...");
+
     if ( !( ( this as object ) instanceof Router ) ) {
         return Reflect.construct( Router, [ options ] );
     }
@@ -48,11 +46,11 @@ export function Router(this: Construct, options?: Options): Function {
 }
 
 /**
- * Router prototype inherits from a Function.
+ * Router Proxy Prototype-based Inheritance
+ * ---
+ * @experimental
  */
-
-// eslint-disable-next-line max-len
-Router.prototype = new Proxy( Function as Function & object & { params: any; param: Function; handle: Function; stack: any; mergeParams: any; parse: Function; use: Function; caseSensitive: boolean; route: any; strict?: boolean; dispatch: Function }, {} );
+Router.prototype = new Proxy( Function as object as Interface, {} );
 Router.prototype.route = function route(path: string) {
     const route = new Route( path );
 
@@ -72,7 +70,7 @@ Router.prototype.route = function route(path: string) {
     return route;
 };
 
-methods().concat( "all" ).forEach( (method: string) => {
+Methods().concat( "all" ).forEach( (method: string) => {
     Object.assign( Router.prototype, {
         [ method ]: function (this: Construct, path: string) {
             const route = ( this && this[ "route" ] ) ? this[ "route" ]( path ) : null;
@@ -98,6 +96,20 @@ export * from "./route";
 export * from "./methods";
 export * from "./async";
 export * from "./utility";
+
+export interface Interface {
+    parse: Function;
+    use: Function;
+    dispatch: Function;
+    param: Function;
+    handle: Function;
+    params: any;
+    stack: any;
+    mergeParams: any;
+    caseSensitive: boolean;
+    route: any;
+    strict?: boolean;
+}
 
 export type Construct = typeof Router.prototype;
 export type Options = { caseSensitive: boolean; mergeParams: boolean; strict: boolean }

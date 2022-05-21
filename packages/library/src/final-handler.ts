@@ -241,7 +241,7 @@ export async function finalhandler(req, res, options) {
  */
 
 // @ts-ignore
-function getErrorHeaders(err) {
+export function getErrorHeaders(err) {
     if ( !err.headers || typeof err.headers !== "object" ) {
         return undefined;
     }
@@ -270,7 +270,7 @@ function getErrorHeaders(err) {
  */
 
 // @ts-ignore
-function getErrorMessage(err, status, env) {
+export function getErrorMessage(err, status, env) {
     var msg;
 
     if ( env !== "production" ) {
@@ -295,7 +295,7 @@ function getErrorMessage(err, status, env) {
  */
 
 // @ts-ignore
-function getErrorStatusCode(err) {
+export function getErrorStatusCode(err) {
     // check err.status
     if ( typeof err.status === "number" && err.status >= 400 && err.status < 600 ) {
         return err.status;
@@ -321,7 +321,7 @@ function getErrorStatusCode(err) {
  */
 
 // @ts-ignore
-function getResourceName(req) {
+export function getResourceName(req) {
     try {
         return parseUrl.original( req ).pathname;
     } catch ( e ) {
@@ -338,7 +338,7 @@ function getResourceName(req) {
  */
 
 // @ts-ignore
-function getResponseStatusCode(res) {
+export function getResponseStatusCode(res) {
     var status = res.statusCode;
 
     // default status code to 500 if outside valid range
@@ -376,51 +376,35 @@ function headersSent(res) {
  */
 
 // @ts-ignore
-function send(req: import("http2").Http2ServerRequest, res, status, headers, message) {
-    function write() {
-        // response body
-        var body = createHtmlDocument( message );
+export async function send(req: import("http2").Http2ServerRequest, res, status, headers, message) {
+    req.on("end", (error: NodeJS.ErrnoException, code: number) => {
+        if (error) console.log("Error", error, code);
+    });
 
-        // response status
-        res.statusCode = status;
-        /// not supported for http2.0
-        /// res.statusMessage = statuses.message[ status ];
+    void await new Promise ((resolve) => {
+        setTimeout( async () => {
+            const identifier = req.stream.id;
 
-        // remove any content headers
-        res.removeHeader( "Content-Encoding" );
-        res.removeHeader( "Content-Language" );
-        res.removeHeader( "Content-Range" );
+            console.log( "Closing Duplex HTTP Stream)" );
+            req.unpipe( req.stream );
 
-        // response headers
-        setHeaders( res, headers );
+            console.log( "Flushing Open File-System Buffer(s)" );
 
-        // security headers
-        res.setHeader( "Content-Security-Policy", "default-src 'none'" );
-        res.setHeader( "X-Content-Type-Options", "nosniff" );
+            void await new Promise( (resolve) => {
+                ( identifier ) ? fs.fdatasync( identifier, resolve ) : resolve;
+            } );
 
-        // standard headers
-        res.setHeader( "Content-Type", "text/html; charset=utf-8" );
-        res.setHeader( "Content-Length", Buffer.byteLength( body, "utf8" ) );
+            console.log( "Manually Closing Stream Handler" );
 
-        if ( req.method === "HEAD" ) {
-            res.end();
-            return;
-        }
+            req.stream.end();
 
-        res.end( body, "utf8" );
-    }
+            resolve(true);
+        }, 1000 );
+    });
 
-    /// detach
-    req.unpipe( req.stream );
-
-    // flush the request
-    return new Promise( (resolve) => ( req.stream.id ) ?
-        fs.fdatasync( req.stream.id, resolve )
-        : resolve ).then( () => {
-            req.resume();
-        }
-    );
+    req.resume();
 }
+
 
 /**
  * Set response headers from an object.
@@ -431,7 +415,7 @@ function send(req: import("http2").Http2ServerRequest, res, status, headers, mes
  */
 
 // @ts-ignore
-function setHeaders(res, headers) {
+export function setHeaders(res, headers) {
     if ( !headers ) {
         return;
     }

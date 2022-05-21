@@ -3,7 +3,6 @@ import * as Specification from "@iac-factory/api-schema";
 import { Router } from "..";
 import Utility from "util";
 
-
 export const Schema: Specification.OpenAPIV3.PathsObject = {
     "/test": {
         servers: [

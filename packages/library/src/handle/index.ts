@@ -10,12 +10,28 @@ import { Protocol } from "..";
 import { Router } from "..";
 import { Await } from "..";
 
-/***
- *
- * @type {(request: HTTP.Request, response: HTTP.Response, callback: HTTP.Next) => void}
- */
+export const Log = (message: string) => {
+    /***
+     *  Non-Await'd Promise
+     *  ---
+     *
+     *  The following Buffer Write to Standard-Output is not awaited by design; such log event(s) are unimportant,
+     *  where they do not impede HTTP functional requirements.
+     *
+     *  <br/>
+     *
+     *  The system is allowed to flush output to standard-output whenever available.
+     *
+     *  */
+    void new Promise( (resolve) => process.stdout.write( "[Debug]" + " " + message + " " + "\n", resolve ) );
+};
+
 export const Handle = Router.prototype.handle = function (request: HTTP.Request, response: HTTP.Response, callback: HTTP.Next) {
-    if ( !( callback ) ) throw new TypeError( "argument callback is required" );
+    Log( "Evaluating Response Handler(s)" );
+
+    /// if ( !( callback ) ) throw new TypeError( "argument callback is required" );
+
+    callback = ( callback ) ? callback as HTTP.Next : send( request, response, 200, {}, "OK" ) as object as HTTP.Next;
 
     let idx = 0;
     let methods: any[];
@@ -150,6 +166,7 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
         // Capture one-time layer values
 
         request.params = self.mergeParams ? Merge( layer.params, parentParams ) : layer.params;
+
         const layerPath = layer.path;
 
         self.parse( layer, paramcalled, request, response, function (err: any) {
@@ -203,7 +220,64 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
     }
 };
 
+async function send(req: import("http2").Http2ServerRequest, res, status, headers, message) {
+    const handler = async () => new Promise( async (resolve) => {
+        const identifier = req.stream.id;
+
+        Log( "Initializing Request-End Handler" );
+
+        req.on( "end", (error: NodeJS.ErrnoException, code: number) => {
+            if ( error ) Log( "Error" + " " + JSON.stringify( { error } ) + " " + JSON.stringify( { code } ) );
+        } );
+
+        Log( "Closing Duplex HTTP Stream" );
+
+        req.unpipe( req.stream );
+
+        Log( "Flushing File-System Buffer(s)" );
+
+        /***
+         * Low-Level File Descriptor Metadata
+         * ---
+         * At a later time, provide a means for debug vs. tracing log levels to limit both output
+         * and awaitable promises from getting invoked.
+         *
+         * @todo - Log Levels
+         * @experimental
+         *
+         * @type {fs.Stats}
+         */
+        const statistics: () => Promise<fs.Stats> = async () => new Promise( (resolve) => {
+            ( identifier ) && fs.fstat( identifier, { bigint: false }, (exception, data) => {
+                if ( exception ) throw exception;
+
+                resolve( data );
+            } );
+        } );
+
+        void await new Promise( (resolve) => {
+            ( identifier ) && Log( "Verified Open File Descriptor" );
+            /// ( identifier ) && Log( "File Descriptor Metadata" + ":" + JSON.stringify( { ... statistics } ) );
+
+            ( identifier ) ? fs.fdatasync( identifier, resolve ) : resolve;
+        } );
+
+        Log( "Manually Closing Stream Handler" );
+
+        req.stream.end();
+
+        resolve( true );
+    } );
+
+    await handler().finally( () => {
+        Log("Submitting HTTP Response ...");
+
+        req.resume();
+    } );
+}
+
 import type { HTTP } from "..";
+import fs from "fs";
 
 export * from "./options";
 export * from "./wrap";

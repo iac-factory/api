@@ -1,4 +1,4 @@
-/*** ArchiveRoute Imports via Importable Side-Effects */
+/*** Route Imports via Importable Side-Effects */
 
 export default void ( async () => {
     const Routing = [

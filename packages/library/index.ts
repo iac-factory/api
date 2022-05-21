@@ -1,3 +1,5 @@
+import HTTP from "./src/http";
+
 const CJS = {
     cache: false,
     esModule: true,
@@ -17,6 +19,8 @@ module.exports = require( "./main" );
 import * as crypto from "crypto";
 import * as subprocess from "child_process";
 
+import { Handle } from "./src/handle/index";
+
 module.exports = require( "./src" );
 
 export * from "./main";
@@ -25,8 +29,9 @@ var http2 = require( "http2" );
 var { Router } = require( "./src" );
 var { finalhandler } = require( "./src" );
 
+
 var router = Router();
-router.get( "/:test", async (request: any, response: import("http2").Http2ServerResponse) => {
+router.get( "/", async (request: any, response: import("http2").Http2ServerResponse) => {
     response.setHeader("Content-Type", "Application/JSON");
     response.end(JSON.stringify({
         Key: "Value"
@@ -69,7 +74,8 @@ const options: Options = {
 };
 
 var server = http2.createSecureServer( { allowHTTP1: true, ... options }, async (request: import("http2").Http2ServerRequest, response: import("http2").Http2ServerResponse) => {
-    router( request, response, await finalhandler( request, response ) );
+    /// router( request, response, await finalhandler( request, response ) );
+    router(request, response);
 } );
 
 server.listen( 3000, "localhost", "8192", () => {
