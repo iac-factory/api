@@ -1,9 +1,10 @@
-import { Router } from "..";
+import { Controller } from "@iac-factory/api-services";
 
-export default Router.get( "/aws/lambda", async (request, response) => {
+export const Router = Controller("IaC.Factory.API.AWS.Lambda");
+Router.get( "/aws/lambda", async (request, response) => {
     response.status( 200 ).send( {
         message: true
     } );
 } );
 
-export { Router };
+export default Router;

@@ -1,8 +1,10 @@
-/***
- *  HTTPs Redirect
- */
+import { HTTP } from "@iac-factory/api-schema";
 
-import type { Application } from "express";
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
 
 const HTTPs = (server: Application) => {
     console.debug( "[Middleware] [HTTPs] [Debug] Instantiating HTTPs Check" );

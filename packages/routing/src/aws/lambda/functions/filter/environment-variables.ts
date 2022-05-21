@@ -1,6 +1,7 @@
-import { Router } from "..";
+import { Controller } from "@iac-factory/api-services";
 
-export default Router.get( "/aws/lambda/functions/filter/environment-variables/:environment-variable", async (request, response) => {
+export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Environment-Variables");
+Router.get( "/aws/lambda/functions/filter/environment-variables/:environment-variable", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
     const functions = await Lambda.Client.Functions();
 
@@ -16,4 +17,4 @@ export default Router.get( "/aws/lambda/functions/filter/environment-variables/:
     } );
 } );
 
-export { Router };
+export default Router;

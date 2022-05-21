@@ -32,7 +32,7 @@ export const CORS = (server: Application) => {
 
     const Middleware = CORs(Options);
 
-    server.use(Middleware);
+    server.use(Middleware as object as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
 
     /// console.debug("[Middleware] [CORS] [Debug] Updated & Enabled CORS");
 

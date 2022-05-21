@@ -26,7 +26,7 @@ import Compression from "compression";
 export const Compress = (server: Application) => {
     console.debug("[Middleware] [Compression] [Debug] Setting Compression Configuration(s) ...");
 
-    server.use(Compression());
+    server.use(Compression() as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
 
     /// console.debug("[Middleware] [Compression] [Debug] Enabled Compression");
 

@@ -1,4 +1,6 @@
-import { Router } from "..";
+import { Controller } from "@iac-factory/api-services";
+
+export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Filter");
 
 export module Index {
     export const Local = (local: Locality) => {
@@ -96,5 +98,6 @@ Router.get( "/aws/lambda/functions/:configuration-filter", async (request, respo
     } );
 } );
 
-export { Router };
 export type Locality = Record<string, {}>;
+
+export default Router;

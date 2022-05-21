@@ -1,4 +1,10 @@
-import type { Application } from "express";
+import { HTTP } from "@iac-factory/api-schema";
+
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
 
 const Initialize = (server: Application) => {
     console.debug("[Middleware] [Framework] [Debug] Configuring API Framework ...");

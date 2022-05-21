@@ -21,12 +21,12 @@ import { Logger } from "./log";
 const Set = (server: Application) => {
     console.debug( "[Middleware] [Content-Type] [Debug] Updating Content-Type ..." );
 
-    server.use( async (request: Request, response: Response, callback: Callback) => {
+    server.use( async (request, response, callback) => {
         response.set( "Content-Type", "Application/JSON" );
 
-        process.stdout.write( Logger( request, response, response.get( "Content-Type" ) + "\n" ) );
+        process.stdout.write( Logger( request as object as HTTP.Request, response, response.get( "Content-Type" ) + "\n" ) );
 
-        callback();
+        (callback) && callback();
     } );
 
     /// console.debug( "[Middleware] [Content-Type] [Debug] Set Content-Type Middleware" );

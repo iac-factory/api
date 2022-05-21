@@ -24,7 +24,7 @@ const Headers = (server: Application, headers = Overwrites) => {
         callback();
     };
 
-    server.use($);
+    server.use($ as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
 
     /// console.debug("[Middleware] [Headers] [Debug] Enabled Custom Response Headers");
 };

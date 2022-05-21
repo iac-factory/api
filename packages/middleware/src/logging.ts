@@ -1,12 +1,18 @@
-import type { Request, Response, NextFunction } from "express-serve-static-core";
-import type { Application } from "express";
+import { HTTP } from "@iac-factory/api-schema";
+
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
+import { RouteParameters } from "express-serve-static-core";
 
 /// @todo Lift up request number and put it into the Middleware's `index.js` File for Cross Usage in `log.js`, too
 const $ = {
     requests: 0
 };
 
-const Logger = (request: Request, response: Response, message: string, level = "log", type = "request") => {
+const Logger = (request: Request, response: HTTP.Response, message: string, level: string = "log", type: string = "request") => {
     const Bracket = ($: string) => "[" + $ + "]";
     const Parentheses = ($: string) => "(" + $ + ")";
 
@@ -42,16 +48,16 @@ const Logger = (request: Request, response: Response, message: string, level = "
 const Logging = (server: Application) => {
     console.debug( "[Middleware] [Logging] [Debug] Instantiating HTTP Logger ..." );
 
-    server.use( async (request: Request, response: Response, callback: NextFunction) => {
+    server.use( async (request, response, callback) => {
         $.requests += 1;
 
-        process.stdout.write( Logger( request, response, "Endpoint" + ":" + " " + String( request.path ) ) + "\n" );
-        process.stdout.write( Logger( request, response, "Secure" + ":" + " " + String( request.secure ) ) + "\n" );
-        process.stdout.write( Logger( request, response, "XHR" + ":" + " " + String( request.xhr ) ) + "\n" );
+        process.stdout.write( Logger( request as object as Request, response, "Endpoint" + ":" + " " + String( request.path ) ) + "\n" );
+        process.stdout.write( Logger( request as object as Request, response, "Secure" + ":" + " " + String( request.secure ) ) + "\n" );
+        process.stdout.write( Logger( request as object as Request, response, "XHR" + ":" + " " + String( request.xhr ) ) + "\n" );
 
-        ( request.query && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( Logger( request, response, "Query" + ":" + " " + JSON.stringify( request.query, null, 4 ) ) + "\n" );
-        ( request.params && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( Logger( request, response, "Parameters" + ":" + " " + JSON.stringify( request.params, null, 4 ) ) + "\n" );
-        ( request.headers && JSON.stringify( request.headers ) !== "{}" ) && process.stdout.write( Logger( request, response, "Headers" + ":" + " " + JSON.stringify( request.headers, null, 4 ) ) + "\n" );
+        ( request.query && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( Logger( request as object as Request, response, "Query" + ":" + " " + JSON.stringify( request.query, null, 4 ) ) + "\n" );
+        ( request.params && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( Logger( request as object as Request, response, "Parameters" + ":" + " " + JSON.stringify( request.params, null, 4 ) ) + "\n" );
+        ( request.headers && JSON.stringify( request.headers ) !== "{}" ) && process.stdout.write( Logger( request as object as Request, response, "Headers" + ":" + " " + JSON.stringify( request.headers, null, 4 ) ) + "\n" );
 
         /// ( request.body && JSON.stringify( request.body ) !== "{}" ) && process.stdout.write( Logger( request, response, "Body" + ":" + " " + JSON.stringify( request.body, null, 4 ) ) + "\n" );
 

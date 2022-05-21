@@ -1,6 +1,11 @@
 import Crypto from "crypto";
-import type { Request, Response, NextFunction as Callback } from "express-serve-static-core";
-import type { Application } from "express";
+import { HTTP } from "@iac-factory/api-schema";
+
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
 
 const Split = (input: string) => {
     return (input.includes( "?" ) ) ? input.split( "?" )[ 0 ] as string
@@ -255,7 +260,7 @@ const URL = (client: Request, response: Response, callback: Callback) => {
 export const $ = (server: Application) => {
     /// console.debug( "[Middleware] [CORS] [Debug] Establishing User-Agent Capture ..." );
 
-    server.use( URL );
+    server.use( URL as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
 
     /// console.debug( "[Middleware] [CORS] [Debug] Capturing User-Agent" );
 

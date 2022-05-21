@@ -1,5 +1,7 @@
-import type { Request, Response, NextFunction } from "express-serve-static-core";
+import type { Response, NextFunction } from "express-serve-static-core";
 import type { Application } from "express";
+
+import { HTTP } from "@iac-factory/api-schema";
 
 import { Logger } from "./log";
 
@@ -19,7 +21,7 @@ import { Logger } from "./log";
 const Timestamp = ( server: Application ) => {
     console.debug( "[Middleware] [Timestamp] [Debug] Initializing Response Timestamp ..." );
 
-    server.use( async ( request: Request, response: Response, callback: NextFunction ) => {
+    server.use( async ( request, response: Response, callback: NextFunction ) => {
         /// Unix Timestamp (C-Time)
         Reflect.set(response, "x-time-initial", Date.now());
 
@@ -28,7 +30,7 @@ const Timestamp = ( server: Application ) => {
             Reflect.set(response, "x-time-final", Date.now());
         });
 
-        process.stdout.write( Logger( request, response, "Timestamp" + ":" + " " + Reflect.get(response, "timestamp") + "\n" ));
+        process.stdout.write( Logger( request as object as HTTP.Request, response, "Timestamp" + ":" + " " + Reflect.get( response, "timestamp" ) + "\n" ));
 
         callback();
     } );

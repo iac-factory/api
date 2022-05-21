@@ -1,6 +1,7 @@
-import { Router } from "..";
+import { Controller } from "@iac-factory/api-services";
 
-export default Router.get( "/test", async (request, response) => {
+export const Router = Controller("IaC.Factory.API.Utility");
+Router.get( "/utility", async (request, response) => {
     response.status( 200 );
 
     return response.json( {
@@ -8,4 +9,4 @@ export default Router.get( "/test", async (request, response) => {
     } );
 } );
 
-export { Router };
+export default Router;

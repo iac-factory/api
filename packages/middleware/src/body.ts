@@ -31,7 +31,6 @@ const Parsers = {
  *
  * @param server {Application}
  *
- * @param parsers {Parsers}
  *
  * @return {Application}
  *
@@ -39,7 +38,7 @@ const Parsers = {
  *
  */
 
-export const Body = (server: Application, parsers = Parsers) => {
+export const Body = (server: Application) => {
     console.debug( "[Middleware] [Body-Parser] [Debug] Initializing Body Parser(s) ..." );
 
     for (const [parser, module] of Object.entries(Parsers)) {
@@ -48,7 +47,7 @@ export const Body = (server: Application, parsers = Parsers) => {
         const { Module } = module;
         const { Parameters } = module;
 
-        server.use(Module(Parameters));
+        server.use(Module(Parameters)! as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
     }
 
     /// console.debug( "[Middleware] [Body-Parser] [Debug] Overwrote Application Request + Response Parser(s)" );

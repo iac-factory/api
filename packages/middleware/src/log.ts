@@ -1,4 +1,10 @@
-import type { Request } from "express";
+import { HTTP } from "@iac-factory/api-schema";
+
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
 
 /***
  * A Abstract Logger meant only for Logging Request Data -- ***Not (Accurate) Response Data***
@@ -10,15 +16,13 @@ import type { Request } from "express";
  * @param {Request} request
  * @param {any} response
  * @param {string} message
- * @param {Evaluations} level
- * @param {Types} type
  * @returns {string}
  *
  * @constructor
  *
  */
 
-const Logger = ( request: Request, response: any, message: string ) => {
+const Logger = (request: Request, response: Response, message: HTTP.Message) => {
     const Bracket = ( $: string ) => "[" + $ + "]";
     const Parentheses = ( $: string ) => "(" + $ + ")";
 

@@ -1,6 +1,7 @@
-import { Router } from "..";
+import { Controller } from "@iac-factory/api-services";
 
-export default Router.get( "/utility/awaitable", async (request, response) => {
+export const Router = Controller("IaC.Factory.API.Utility.Awaitable");
+Router.get( "/utility/awaitable", async (request, response) => {
     const { Awaitable } = await import("@iac-factory/api-services");
 
     const { duration } = request.query;
@@ -12,4 +13,4 @@ export default Router.get( "/utility/awaitable", async (request, response) => {
     });
 } );
 
-export { Router };
+export default Router;

@@ -17,7 +17,7 @@ export module Debugger {
      * @constructor
      */
     const Depth = (depth: Depth = 1) => {
-        return ( typeof depth === "number" ) ? depth : Infinity;
+        return ( typeof depth === "number" ) ? depth : (depth === "Infinity") ? Infinity : 1;
     };
 
     enum Color {
@@ -37,7 +37,6 @@ export module Debugger {
     type Levels = keyof typeof Level;
 
     type Depth = 1 | 5 | 10 | 15 | 25 | 50 | "Infinity";
-    type Overwrite = { depth: number, sorting: boolean };
 
     export interface Input {
         /***
@@ -57,7 +56,7 @@ export module Debugger {
          * @example
          * ["Routing", "magenta"]
          * */
-        module: [string, Colors],
+        module: [ string, Colors ],
         /***
          * The Debugger Log-Level, and Color for the Logging Enumeration
          *
@@ -126,9 +125,9 @@ export module Debugger {
                 ].join( "" )
             };
 
-            private constructors = () => {
+            private constructors = (local?: string) => {
                 const namespace = "[" + ( Reflect.get( this.color.bold, this.namespace.color )( ( this.namespace.name ) ) ) + "]";
-                const module = "[" + ( Reflect.get( this.color.bold, this.module.color )( ( this.module.name ) ) ) + "]";
+                const module = "[" + ( Reflect.get( this.color.bold, this.module.color )( ( ( local ) ? local : this.module.name ) ) ) + "]";
 
                 return [ namespace, module ];
             };
@@ -146,13 +145,13 @@ export module Debugger {
                 log: [ "[", this.color.bold.green( "Log" ), "]" ].join( "" )
             };
 
-            private header = () => {
+            private header = (overwrite?: string) => {
                 return {
-                    debug: [ ... this.constructors(), this.prefix.debug ].join( " " ),
-                    info: [ ... this.constructors(), this.prefix.info ].join( " " ),
-                    warn: [ ... this.constructors(), this.prefix.warn ].join( " " ),
-                    error: [ ... this.constructors(), this.prefix.error ].join( " " ),
-                    log: [ ... this.constructors(), this.prefix.log ].join( " " )
+                    debug: [ ... this.constructors( overwrite ), this.prefix.debug ].join( " " ),
+                    info: [ ... this.constructors( overwrite ), this.prefix.info ].join( " " ),
+                    warn: [ ... this.constructors( overwrite ), this.prefix.warn ].join( " " ),
+                    error: [ ... this.constructors( overwrite ), this.prefix.error ].join( " " ),
+                    log: [ ... this.constructors( overwrite ), this.prefix.log ].join( " " )
                 };
             };
 
@@ -170,78 +169,80 @@ export module Debugger {
                 this.log = Reflect.get( logger, settings.level[ 0 ] );
             }
 
-            private static debug(instance: Logger, overwrite?: Overwrite) {
+            private static debug(instance: Logger) {
                 return {
-                    debug: ($: any) => console.log( instance.header().debug, Utility.inspect( { ... $ }, {
+                    debug: ($: any, module?: string, depth?: Depth, sorting?: boolean) => {
+                        console.log( instance.header( module ).debug, Utility.inspect( { ... $ }, {
+                            colors: true,
+                            sorted: ( sorting ) ? sorting : instance.sorting,
+                            depth: ( depth ) ? Depth(depth) : instance.depth
+                        } ) )
+                    },
+                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) ),
-                    info: ($: any) => console.log( instance.header().info, Utility.inspect( { ... $ }, {
+                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) ),
-                    warn: ($: any) => console.log( instance.header().warn, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
-                    } ) ),
-                    error: ($: any) => console.log( instance.header().error, Utility.inspect( { ... $ }, {
-                        colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) )
                 };
             }
 
-            private static info(instance: Logger, overwrite?: Overwrite) {
+            private static info(instance: Logger) {
                 return {
                     debug: () => OS.devNull,
-                    info: ($: any) => console.log( instance.header().info, Utility.inspect( { ... $ }, {
+                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) ),
-                    warn: ($: any) => console.log( instance.header().warn, Utility.inspect( { ... $ }, {
+                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) ),
-                    error: ($: any) => console.log( instance.header().error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) )
                 };
             }
 
-            private static warn(instance: Logger, overwrite?: Overwrite) {
+            private static warn(instance: Logger) {
                 return {
                     debug: () => OS.devNull,
                     info: () => OS.devNull,
-                    warn: ($: any) => console.log( instance.header().warn, Utility.inspect( { ... $ }, {
+                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) ),
-                    error: ($: any) => console.log( instance.header().error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) )
                 };
             }
 
-            private static error(instance: Logger, overwrite?: Overwrite) {
+            private static error(instance: Logger) {
                 return {
                     debug: () => OS.devNull,
                     info: () => OS.devNull,
                     warn: () => OS.devNull,
-                    error: ($: any) => console.log( instance.header().error, Utility.inspect( { ... $ }, {
+                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( { ... $ }, {
                         colors: true,
-                        sorted: ( overwrite ) ? overwrite.sorting : instance.sorting,
-                        depth: ( overwrite ) ? overwrite.depth : instance.depth
+                        sorted: ( sorting ) ? sorting : instance.sorting,
+                        depth: ( depth ) ? Depth(depth) : instance.depth
                     } ) )
                 };
             }
@@ -251,12 +252,12 @@ export module Debugger {
     }
 
     export interface Type {
-        debug: (message: object, depth?: { overwrite: { depth: number } }) => void;
-        info: (message: object, depth?: { overwrite: { depth: number } }) => void;
-        warn: (message: object, depth?: { overwrite: { depth: number } }) => void;
-        error: (message: object, depth?: { overwrite: { depth: number } }) => void;
+        debug: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
+        info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
+        warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
+        error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
 
-        log: Function;
+        log: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
     }
 
     export type Types = keyof Type;

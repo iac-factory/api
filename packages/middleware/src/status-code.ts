@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express-serve-static-core"
 import type { Application } from "express";
 
 import { Logger } from "./log";
+import { HTTP } from "@iac-factory/api-schema";
 
 /***
  * Middleware that overwrites the default `response` object's statusCode early on in the client-response `callback()`
@@ -44,7 +45,7 @@ const Status = ( server: Application ) => {
         /// Unix Timestamp (C-Time)
         Reflect.set(response, "time", Date.now());
 
-        process.stdout.write( Logger( request, response, "Partial-Status" + ":" + message(response) ));
+        process.stdout.write( Logger( request as object as HTTP.Request, response, "Partial-Status" + ":" + message( response ) ));
 
         callback();
     } );
