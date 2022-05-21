@@ -1,20 +1,30 @@
+import { Debugger } from "@iac-factory/api-core";
+
 /*** Route Imports via Importable Side-Effects */
+
+const Logger = Debugger.hydrate( {
+    namespace: ["Routing", "magenta"],
+    module: ["Routing", "magenta"],
+    level: ["Debug", "cyan"],
+    depth: [ 1, true ]
+});
 
 export default void ( async () => {
     const Routing = [
-        import("./test").then((route) => console.log(route)),
-        import("./schema").then((route) => console.log(route)),
-        import("./schema/typescript").then((route) => console.log(route)),
-        import("./utility").then((route) => console.log(route)),
-        import("./utility/health").then((route) => console.log(route)),
-        import("./utility/awaitable").then((route) => console.log(route)),
-        import("./aws/lambda").then((route) => console.log(route)),
-        import("./aws/lambda/functions").then((route) => console.log(route)),
-        import("./aws/lambda/functions/filter").then((route) => console.log(route)),
-        import("./aws/lambda/functions/filter/environment-variables").then((route) => console.log(route))
+        import("./schema").then( (route) => {
+            Logger.debug( route.default );
+        } )
+        // import("./schema/typescript").then((route) => console.log(route.Router)),
+        // import("./utility").then((route) => console.log(route.Router)),
+        // import("./utility/health").then((route) => console.log(route.Router)),
+        // import("./utility/awaitable").then((route) => console.log(route.Router)),
+        // import("./aws/lambda").then((route) => console.log(route.Router)),
+        // import("./aws/lambda/functions").then((route) => console.log(route.Router)),
+        // import("./aws/lambda/functions/filter").then((route) => console.log(route.Router)),
+        // import("./aws/lambda/functions/filter/environment-variables").then((route) => console.log(route.Router))
     ];
 
-    return Promise.allSettled(Routing);
+    return Promise.allSettled( Routing );
 
 } )();
 

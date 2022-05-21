@@ -1,7 +1,16 @@
+import { HTTP } from "@iac-factory/api-schema";
+
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
+
 import { json, urlencoded } from "body-parser";
 
-import type { Application } from "express";
-
+/***
+ * @type {{"URL-Encoded": {Parameters: {extended: boolean, parameterLimit: number}, Module: (options?: bodyParser.OptionsUrlencoded) => createServer.NextHandleFunction}, JSON: {Parameters: {strict: boolean}, Module: (options?: bodyParser.OptionsJson) => createServer.NextHandleFunction}}}
+ */
 const Parsers = {
     "URL-Encoded": {
         Module: urlencoded,
@@ -30,25 +39,21 @@ const Parsers = {
  *
  */
 
-const Body = (server: Application, parsers = Parsers) => {
+export const Body = (server: Application, parsers = Parsers) => {
     console.debug( "[Middleware] [Body-Parser] [Debug] Initializing Body Parser(s) ..." );
 
-    Object.keys( parsers ).forEach( (Parser) => {
-        // @ts-ignore
-        const Function = parsers[ Parser ].Module;
+    for (const [parser, module] of Object.entries(Parsers)) {
+        console.debug( "[Middleware] [Body-Parser] [Debug] Adding" + " " + parser + " " + "Module ..." );
 
-        // @ts-ignore
-        const Parameters = parsers[ Parser ].Parameters;
+        const { Module } = module;
+        const { Parameters } = module;
 
-        server.use( Function( Parameters ) );
-    } );
+        server.use(Module(Parameters));
+    }
 
-    console.debug( "[Middleware] [Body-Parser] [Debug] Overwrote Application Request + Response Parser(s)" );
+    /// console.debug( "[Middleware] [Body-Parser] [Debug] Overwrote Application Request + Response Parser(s)" );
 
     return server;
 };
 
-
-export { Body };
-
-export default { Body };
+export default Body;

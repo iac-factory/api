@@ -6,12 +6,14 @@
 	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
 	"license": "BSD-2-Clause",
 	"scripts": {
-		"start": "cd $(git rev-parse --show-toplevel) && npm run start"
+		"start": "cd $(git rev-parse --show-toplevel) && npm run start",
+		"build": "tsc --build $(dirname $(npm root)/tsconfig.json"
 	},
 	"dependencies": {
 		"@iac-factory/api-services": "file:../service",
 		"@iac-factory/api-middleware": "file:../middleware",
 		"@iac-factory/api-routing": "file:../routing",
+		"ansi-colors": "^4.1.3",
 		"esm": "^3.2.25"
 	},
 	"devDependencies": {

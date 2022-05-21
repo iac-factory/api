@@ -45,6 +45,7 @@
     "scripts": {
         "preinstall": "lerna init && lerna link",
         "install": "lerna bootstrap --npm-client npm",
+        "build": "lerna exec 'tsc'",
         "release": "lerna version patch --no-private",
         "postversion": "lerna publish from-git --canary --no-private",
         "post-version-git": "lerna publish from-git --registry https://npm.pkg.github.com/ --canary --no-private",
@@ -53,7 +54,7 @@
         "test": "node --experimental-vm-modules $(command -v jest) --config jest.config.js --injectGlobals --detectOpenHandles",
         "commit": "git add --all && commit",
         "prestart": "tsc",
-        "start": "ts-node $(npm root)",
+        "start": "ts-node $(dirname $(npm root))",
         "development": "nodemon --ext ts --ignore js --exec \"tsc --diagnostics && ts-node .\"",
         "test-commit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
         "uninstall-husky": "npm uninstall husky && git config --unset core.hooksPath",

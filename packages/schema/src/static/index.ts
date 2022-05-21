@@ -1,5 +1,8 @@
 import * as Path from "path";
 
+// @ts-ignore
+export { TS } from "./tsconfig.json";
+
 export const Schema = {
     TS: {
         name: "tsconfig",
@@ -12,7 +15,7 @@ export const Schema = {
 }
 
 export type TS = {
-    [$ in keyof typeof import("./tsconfig.json")]: (typeof import("./tsconfig.json"))[$]
+    [$ in keyof typeof TS]: (typeof TS)[$]
 }
 
 export default Schema;

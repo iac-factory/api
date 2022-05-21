@@ -218,7 +218,7 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
     }
 };
 
-async function send(req: import("http2").Http2ServerRequest, res, status, headers, message) {
+async function send(req: HTTP.Request, res: HTTP.Response, status: HTTP.Status, headers: HTTP.Headers, message: HTTP.Message) {
     const handler = async () => new Promise( (resolve, reject) => {
         /// If the HTTP Request is HTTP 1.1, and not HTTP 2.0
         if (!(req.stream) || !(req.stream.id)) reject();

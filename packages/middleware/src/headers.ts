@@ -1,23 +1,22 @@
-/*** Default Headers
- * @type {[{Value: string, Key: string}, {Value: string, Key: string}]}
- */
+import { HTTP } from "@iac-factory/api-schema";
+
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
 
 const Overwrites = [
     {
         Key: "Server",
         Value: "Nexus-API"
-    },
-    {
-        Key: "X-Powered-By",
-        Value: "Cloud-Technology"
     }
 ];
 
-import type { Application, Request, Response, NextFunction } from "express";
 const Headers = (server: Application, headers = Overwrites) => {
     console.debug("[Middleware] [Headers] [Debug] Instantiating Default Header(s) ...");
 
-    const $ = (_: Request, response: Response, callback: NextFunction) => {
+    const $ = (_: Request, response: Response, callback: Callback) => {
         headers.forEach((Element) => {
             response.setHeader(Element.Key, Element.Value);
         });
@@ -27,8 +26,7 @@ const Headers = (server: Application, headers = Overwrites) => {
 
     server.use($);
 
-    console.debug("[Middleware] [Headers] [Debug] Enabled Custom Response Headers");
-
+    /// console.debug("[Middleware] [Headers] [Debug] Enabled Custom Response Headers");
 };
 
 export { Headers };

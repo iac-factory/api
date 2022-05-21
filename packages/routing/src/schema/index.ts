@@ -1,14 +1,7 @@
-import { Router } from "..";
+import { Controller } from "@iac-factory/api-services";
 
-Router.options( "/schema", async (request, response) => {
-    const { Directory } = await import("@iac-factory/api-services");
-
-    const directories = Directory( __filename );
-
-    response.status( 200 ).send( directories );
-} );
-
-export default Router.get( "/schema", async (request, response) => {
+export const Router = Controller("IaC.Factory.API.Schema");
+Router.get( "/schema", async (request, response) => {
     const { Schema } = await import("@iac-factory/api-schema");
 
     const schemas = Object.entries( Schema ).map( (value, index) => {
@@ -25,4 +18,4 @@ export default Router.get( "/schema", async (request, response) => {
     response.status( 200 ).send( schemas );
 } );
 
-export { Router };
+export default Router;

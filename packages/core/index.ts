@@ -16,4 +16,4 @@ module.exports = require( "./src" );
 
 void (async () => import("./src"))();
 
-export {};
+export * from "./src";

@@ -1,8 +1,8 @@
-import { Application } from "@iac-factory/api-services";
 import { Router } from "@iac-factory/api-routing";
+import { Middleware } from "@iac-factory/api-middleware";
+import { Application } from "@iac-factory/api-services";
 
 async function Main (): Promise<void> {
-    const { Middleware } = await import("@iac-factory/api-middleware");
     await Middleware( Application );
 
     Application.use( "/", Router );
@@ -11,3 +11,6 @@ async function Main (): Promise<void> {
 }
 
 void (async () => Main())();
+
+export * from "./debugger";
+export * from "./generic";

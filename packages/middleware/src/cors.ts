@@ -1,8 +1,10 @@
-/*** CORs */
+import { HTTP } from "@iac-factory/api-schema";
 
-/*** Default CORS Options
- * @type {{credentials: boolean, origin: string, optionsSuccessStatus: number, preflightContinue: boolean}}
- */
+import Application = HTTP.Application;
+
+import Request = HTTP.Request;
+import Response = HTTP.Response;
+import Callback = HTTP.Next;
 
 import CORs from "cors";
 
@@ -12,8 +14,6 @@ export const Options = {
     optionsSuccessStatus: 200,
     preflightContinue: true
 };
-
-import type { Application } from "express";
 
 /*** CORS Middleware Loader
  *
@@ -34,7 +34,7 @@ export const CORS = (server: Application) => {
 
     server.use(Middleware);
 
-    console.debug("[Middleware] [CORS] [Debug] Updated & Enabled CORS");
+    /// console.debug("[Middleware] [CORS] [Debug] Updated & Enabled CORS");
 
     return server;
 };

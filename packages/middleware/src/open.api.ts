@@ -1,7 +1,15 @@
+import Crypto from "crypto";
 import type { Request, Response, NextFunction as Callback } from "express-serve-static-core";
 import type { Application } from "express";
 
+const Split = (input: string) => {
+    return (input.includes( "?" ) ) ? input.split( "?" )[ 0 ] as string
+        : input as string;
+};
+
 const Trim = (input: string) => {
+    input = Split(input);
+
     const index = input.length - 1;
 
     if ( input[ index ] === "/" ) {
@@ -118,7 +126,7 @@ const Intercept = (response: Response, callback: Callback) => (content: Object |
 const URL = (client: Request, response: Response, callback: Callback) => {
     response.on( "finish", () => {
         const initialize = () => {
-            const $: Local = {};
+            const store: Local = {};
 
             interface Local<Type = Object> {
                 [ $: string ]: string | number | { [ $: string ]: string | number | object | Type };
@@ -130,15 +138,20 @@ const URL = (client: Request, response: Response, callback: Callback) => {
 
             const content = Reflect.get( response, "content" );
 
-            $[
-                Trim( [ client.baseUrl, Object.keys( client.params ).map(
-                    ($) => {
-                        return "{" + $ + "}";
-                    } ).join( "/" ) ].join( "/" ) )
-                ] = {
+            const index = Trim( [ client.url, Object.keys( client?.params ?? {} ).map(
+                ($) => {
+                    return "{" + $ + "}";
+                } ).join( "/" ) ].join( "/" )
+            );
+
+            store[ index ] = {
                 [ client.method.toLowerCase() ]: {
+                    summary: [
+                        client.method.toUpperCase(), Split(client.url)
+                    ].join( " " ),
+                    operationId: "IaC.Factory.API" + "." + Crypto.randomUUID().toUpperCase(),
                     parameters: [
-                        ... Object.entries( client.params ).map( (tuple) => {
+                        ... Object.entries( client?.params ?? {} ).map( (tuple) => {
                             return ( Integer( ( tuple[ 1 ] ) ? tuple[ 1 ] : null ) ) ? {
                                 name: tuple[ 0 ],
                                 in: "path",
@@ -154,8 +167,8 @@ const URL = (client: Request, response: Response, callback: Callback) => {
                                     type: "string"
                                 }
                             };
-                        } ), ... Object.entries( client.query ).map( (tuple) => {
-                            return ( Integer( ( tuple[ 1 ] ) ? tuple[ 1 ] : null ) ) ? {
+                        } ), ... Object.entries( client.query ).map( (tuple, index) => {
+                            const evaluation = ( Integer( ( tuple[ 1 ] ) ? tuple[ 1 ] : null ) ) ? {
                                 name: tuple[ 0 ],
                                 in: "query",
                                 schema: {
@@ -169,26 +182,50 @@ const URL = (client: Request, response: Response, callback: Callback) => {
                                     type: "string"
                                 }
                             };
+
+                            const boolean = ( tuple[ 1 ] === "true" || tuple[ 1 ] === "false" ) ?
+                                {
+                                    name: tuple[ 0 ],
+                                    in: "query",
+                                    required: false,
+                                    schema: {
+                                        type: "boolean"
+                                    }
+                                } : null;
+
+                            return ( evaluation && boolean ) ? [
+                                { ... evaluation }, { ... boolean }
+                            ] : {
+                                ... ( evaluation ) ? evaluation : boolean
+                            };
                         } )
                     ],
                     responses: {
                         [ String( response.statusCode ) ]: {
-                            description: response.statusMessage,
+                            description: [ response.statusCode, response.statusMessage ].join( " " ),
                             headers: headers,
-                            $ref: {
+                            schema: {
                                 type: typeof ( Type( content ) ),
                                 properties: Deconstruct( content )
+                            },
+                            content: {
+                                "*/*": {},
+                                "application/json": {},
+                                "application/xml": {}
+                            }
+                        },
+                        "405": {
+                            "description": "Method Not Allowed",
+                            "content": {
+                                "application/json": {},
+                                "application/xml": {}
                             }
                         }
-                    },
-                    summary: [
-                        client.method.toUpperCase(),
-                        client.originalUrl.substring( 1 )
-                    ].join( " " )
+                    }
                 }
             };
 
-            Object.assign( response.locals, $ );
+            Object.assign( response.locals, store );
 
             return response.locals;
         };

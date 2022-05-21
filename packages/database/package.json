@@ -6,7 +6,8 @@
     "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
     "license": "BSD-3-Clause",
     "scripts": {
-        "start": "cd $(git rev-parse --show-toplevel) && npm run start"
+        "start": "cd $(git rev-parse --show-toplevel) && npm run start",
+        "build": "tsc --build $(dirname $(npm root)/tsconfig.json"
     },
     "dependencies": {
         "esm": "^3.2.25",

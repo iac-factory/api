@@ -10,6 +10,9 @@ export module HTTP {
     export type Route = Framework.IRoute;
     export type Application = Framework.Application;
     export type Handler = Framework.Handler;
+    export type Status = number;
+    export type Headers = NodeJS.Dict<number | string | string[]>
+    export type Message = string;
 }
 
 declare module Framework {

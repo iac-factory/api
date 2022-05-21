@@ -1,0 +1,614 @@
+{
+    "info": {
+        "_postman_id": "d07ed5e5-34ae-47f9-8d04-c48bd812657c",
+        "name": "Documentation",
+        "description": "IaC API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "aws",
+            "item": [
+                {
+                    "name": "lambda",
+                    "item": [
+                        {
+                            "name": "functions",
+                            "item": [
+                                {
+                                    "name": "GET aws/lambda/functions",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/aws/lambda/functions",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "aws",
+                                                "lambda",
+                                                "functions"
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "name": "OK",
+                                            "originalRequest": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "url": {
+                                                    "raw": "http://localhost:3000/aws/lambda/functions",
+                                                    "protocol": "http",
+                                                    "host": [
+                                                        "localhost"
+                                                    ],
+                                                    "port": "3000",
+                                                    "path": [
+                                                        "aws",
+                                                        "lambda",
+                                                        "functions"
+                                                    ]
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "_postman_previewlanguage": "text",
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "text/plain"
+                                                }
+                                            ],
+                                            "cookie": [],
+                                            "body": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "GET aws/lambda/functions/filter/environment-variables/{environment-variable}",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/aws/lambda/functions/filter/environment-variables/:environment-variable",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "aws",
+                                                "lambda",
+                                                "functions",
+                                                "filter",
+                                                "environment-variables",
+                                                ":environment-variable"
+                                            ],
+                                            "variable": [
+                                                {
+                                                    "key": "environment-variable",
+                                                    "value": "<string>",
+                                                    "description": "(Required) An arbitrary required path-related string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "name": "OK",
+                                            "originalRequest": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "url": {
+                                                    "raw": "http://localhost:3000/aws/lambda/functions/filter/environment-variables/:environment-variable",
+                                                    "protocol": "http",
+                                                    "host": [
+                                                        "localhost"
+                                                    ],
+                                                    "port": "3000",
+                                                    "path": [
+                                                        "aws",
+                                                        "lambda",
+                                                        "functions",
+                                                        "filter",
+                                                        "environment-variables",
+                                                        ":environment-variable"
+                                                    ],
+                                                    "variable": [
+                                                        {
+                                                            "key": "environment-variable",
+                                                            "value": "<string>",
+                                                            "description": "(Required) An arbitrary required path-related string"
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "_postman_previewlanguage": "text",
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "text/plain"
+                                                }
+                                            ],
+                                            "cookie": [],
+                                            "body": ""
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "GET aws/lambda/functions/{lambda-function}",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{baseUrl}}/aws/lambda/functions/:configuration-filter",
+                                            "host": [
+                                                "{{baseUrl}}"
+                                            ],
+                                            "path": [
+                                                "aws",
+                                                "lambda",
+                                                "functions",
+                                                ":configuration-filter"
+                                            ],
+                                            "variable": [
+                                                {
+                                                    "key": "configuration-filter",
+                                                    "value": "<string>",
+                                                    "description": "(Required) A Path Filter used via Lambda Function Endpoint(s)"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": [
+                                        {
+                                            "name": "OK",
+                                            "originalRequest": {
+                                                "method": "GET",
+                                                "header": [],
+                                                "url": {
+                                                    "raw": "http://localhost:3000/aws/lambda/functions/:configuration-filter",
+                                                    "protocol": "http",
+                                                    "host": [
+                                                        "localhost"
+                                                    ],
+                                                    "port": "3000",
+                                                    "path": [
+                                                        "aws",
+                                                        "lambda",
+                                                        "functions",
+                                                        ":configuration-filter"
+                                                    ],
+                                                    "variable": [
+                                                        {
+                                                            "key": "configuration-filter",
+                                                            "value": "<string>",
+                                                            "description": "(Required) A Path Filter used via Lambda Function Endpoint(s)"
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "status": "OK",
+                                            "code": 200,
+                                            "_postman_previewlanguage": "text",
+                                            "header": [
+                                                {
+                                                    "key": "Content-Type",
+                                                    "value": "text/plain"
+                                                }
+                                            ],
+                                            "cookie": [],
+                                            "body": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "GET aws/lambda",
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/aws/lambda",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "aws",
+                                        "lambda"
+                                    ]
+                                }
+                            },
+                            "response": [
+                                {
+                                    "name": "OK",
+                                    "originalRequest": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "http://localhost:3000/aws/lambda",
+                                            "protocol": "http",
+                                            "host": [
+                                                "localhost"
+                                            ],
+                                            "port": "3000",
+                                            "path": [
+                                                "aws",
+                                                "lambda"
+                                            ]
+                                        }
+                                    },
+                                    "status": "OK",
+                                    "code": 200,
+                                    "_postman_previewlanguage": "text",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "text/plain"
+                                        }
+                                    ],
+                                    "cookie": [],
+                                    "body": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "GET aws",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/aws",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "aws"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3000/aws",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "3000",
+                                    "path": [
+                                        "aws"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "text/plain"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "utility",
+            "item": [
+                {
+                    "name": "GET utility/health",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/utility/health",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "utility",
+                                "health"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3000/utility/health",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "3000",
+                                    "path": [
+                                        "utility",
+                                        "health"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "text/plain"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET utility/awaitable",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/utility/awaitable",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "utility",
+                                "awaitable"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3000/utility/awaitable",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "3000",
+                                    "path": [
+                                        "utility",
+                                        "awaitable"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "text/plain"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "schema",
+            "item": [
+                {
+                    "name": "GET schema",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/schema",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "schema"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3000/schema",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "3000",
+                                    "path": [
+                                        "schema"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "text/plain"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET schema/typescript",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/schema/typescript",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "schema",
+                                "typescript"
+                            ]
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "http://localhost:3000/schema/typescript",
+                                    "protocol": "http",
+                                    "host": [
+                                        "localhost"
+                                    ],
+                                    "port": "3000",
+                                    "path": [
+                                        "schema",
+                                        "typescript"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "text/plain"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "GET ",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        ""
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "name": "OK",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                ""
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "text",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "text/plain"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": ""
+                }
+            ]
+        },
+        {
+            "name": "GET test",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/test",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "test"
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "name": "OK",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/test",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "test"
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "text/plain"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": ""
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        }
+    ]
+}

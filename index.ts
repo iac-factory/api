@@ -15,3 +15,5 @@ require = require( "esm" )( module, { cjs: CJS, mode: "auto", force: true, await
 module.exports = require( "@iac-factory/api-core" );
 
 void (async () => module.exports)();
+
+import("@iac-factory/api-schema");

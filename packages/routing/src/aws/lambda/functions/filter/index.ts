@@ -1,8 +1,5 @@
 import { Router } from "..";
 
-import {  } from "@iac-factory/api-services";
-import { Runtime } from "inspector";
-
 export module Index {
     export const Local = (local: Locality) => {
 
@@ -27,12 +24,12 @@ export module Index {
  *  Implementation is handled via the router in simple cases; increasingly complex
  *  solutions should be moved to the @iac-factory/api-services package.
  */
-Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
+Router.get( "/aws/lambda/functions/:configuration-filter", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
 
     Index.Local(response.locals);
 
-    const filter = request.params.filter;
+    const filter = request.params.configuration
     const error: { throw: boolean } = { throw: false };
     const data: ( string | undefined | { Variables?: object; Function?: string; ARN?: string } )[] = [];
 
