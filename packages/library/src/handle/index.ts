@@ -26,10 +26,8 @@ export const Log = (message: string) => {
     void new Promise( (resolve) => process.stdout.write( "[Debug]" + " " + message + " " + "\n", resolve ) );
 };
 
-export const Handle = Router.prototype.handle = function (request: HTTP.Request, response: HTTP.Response, callback: HTTP.Next) {
+export const Handle = Router.prototype.handle = function (request: HTTP.Request, response: HTTP.Response, callback?: HTTP.Next) {
     Log( "Evaluating Response Handler(s)" );
-
-    /// if ( !( callback ) ) throw new TypeError( "argument callback is required" );
 
     callback = ( callback ) ? callback as HTTP.Next : send( request, response, 200, {}, "OK" ) as object as HTTP.Next;
 

@@ -12,9 +12,9 @@ import("./module");
  * @constructor
  */
 export function Router(this: Construct, options?: Options): Function {
-    console.debug("[Debug] Constructing Router ...");
-
     if ( !( ( this as object ) instanceof Router ) ) {
+        console.debug("[Debug] Constructing Router ...");
+
         return Reflect.construct( Router, [ options ] );
     }
 
@@ -34,7 +34,6 @@ export function Router(this: Construct, options?: Options): Function {
 
     /*** Reasoning behind Object.setPrototypeOf is much more complicated than perhaps assumed */
     Object.setPrototypeOf( router, this );
-    /// router.prototype.prototype = this;
 
     router.caseSensitive = configuration.caseSensitive;
     router.mergeParams = configuration.mergeParams;

@@ -16,4 +16,8 @@ const server = HTTP.createServer(function(request, response) {
     router(request, response);
 });
 
-server.listen(3000);
+server.listen(3000, "localhost", 8192, () => {
+    console.debug("[Debug] Listening via http://localhost:3000");
+});
+
+export {};
