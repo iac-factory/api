@@ -83,7 +83,6 @@ Methods().concat( "all" ).forEach( (method: string) => {
     } );
 } );
 
-export * from "./final-handler";
 export * from "./flatten";
 export * from "./handle";
 export * from "./http";
