@@ -1,5 +1,3 @@
-import HTTP from "./src/http";
-
 const CJS = {
     cache: false,
     esModule: true,
@@ -18,17 +16,12 @@ module.exports = require( "./main" );
 
 import * as crypto from "crypto";
 import * as subprocess from "child_process";
-
-import { Handle } from "./src/handle/index";
-
-module.exports = require( "./src" );
+import * as fs from "fs";
 
 export * from "./main";
 
 var http2 = require( "http2" );
 var { Router } = require( "./src" );
-var { finalhandler } = require( "./src" );
-
 
 var router = Router();
 router.get( "/", async (request: any, response: import("http2").Http2ServerResponse) => {
@@ -37,9 +30,6 @@ router.get( "/", async (request: any, response: import("http2").Http2ServerRespo
         Key: "Value"
     }), "utf-8");
 } );
-
-// eslint-disable-next-line import/order
-const fs = require( "fs" );
 
 const {
     publicKey,

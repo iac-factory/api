@@ -221,7 +221,10 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
 };
 
 async function send(req: import("http2").Http2ServerRequest, res, status, headers, message) {
-    const handler = async () => new Promise( async (resolve) => {
+    const handler = async () => new Promise( (resolve, reject) => {
+        /// If the HTTP Request is HTTP 1.1, and not HTTP 2.0
+        if (!(req.stream) || !(req.stream.id)) reject();
+
         const identifier = req.stream.id;
 
         Log( "Initializing Request-End Handler" );
@@ -255,21 +258,23 @@ async function send(req: import("http2").Http2ServerRequest, res, status, header
             } );
         } );
 
-        void await new Promise( (resolve) => {
+        return new Promise( (resolve) => {
             ( identifier ) && Log( "Verified Open File Descriptor" );
             /// ( identifier ) && Log( "File Descriptor Metadata" + ":" + JSON.stringify( { ... statistics } ) );
 
             ( identifier ) ? fs.fdatasync( identifier, resolve ) : resolve;
         } );
-
-        Log( "Manually Closing Stream Handler" );
-
-        req.stream.end();
-
-        resolve( true );
     } );
 
-    await handler().finally( () => {
+    await handler().catch((exception) => {
+        // ...
+    }).finally( () => {
+        Log( "Manually Closing Stream Handler" );
+
+        try {
+            req.stream.end();
+        } catch (exception) {}
+
         Log("Submitting HTTP Response ...");
 
         req.resume();
