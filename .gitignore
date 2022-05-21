@@ -53,3 +53,7 @@ tsconfig.tsbuildinfo
 *.log
 
 openapitools.json
+
+certificate.crt
+private.pem
+public.pem
