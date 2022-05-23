@@ -7,7 +7,6 @@
         "es6": true
     },
     "plugins": [
-        "@typescript-eslint",
         "import"
     ],
     "overrides": [
@@ -182,7 +181,7 @@
             "off"
         ],
         "import/order": [
-            "error",
+            "off",
             {
                 "groups": [
                     "builtin",

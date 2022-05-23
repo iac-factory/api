@@ -4,16 +4,6 @@ import Application = HTTP.Application;
 
 import Request = HTTP.Request;
 
-import { Debugger } from "@iac-factory/api-core";
-
-/*** @experimental */
-const Log = Debugger.hydrate( {
-    namespace: [ "Middleware", "yellow" ],
-    module: [ "Body-Parser", "green" ],
-    level: [ "Debug", "cyan" ],
-    depth: [ 1, true ]
-} );
-
 /// @todo Lift up request number and put it into the Middleware's `index.js` File for Cross Usage in `log.js`, too
 const $ = {
     requests: 0

@@ -1,16 +1,15 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "display": "@iac-factory/tsc-configuration",
-    "exclude": ["iac", "coverage"],
     "ts-node": {
         "preferTsExts": true,
         "transpileOnly": true,
         "swc": true
     },
     "compilerOptions": {
-        "lib": ["ESNext"],
+        "lib": ["ES6", "ESNext"],
         "module": "CommonJS",
-        "target": "ES2018",
+        "target": "ESNext",
         "moduleResolution": "Node",
         "strict": true,
         "esModuleInterop": true,
@@ -23,6 +22,14 @@
         "resolveJsonModule": true,
         "incremental": false,
         "noEmitOnError": true,
-        "allowJs": true
-    }, "include": ["**/*.json", "**/*.ts"]
+        "outDir": "distribution",
+        "allowJs": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "declaration": true
+    },
+    "exclude": ["iac", "distribution"],
+    "include": ["**/*.json", "**/*.ts"]
 }

@@ -6,8 +6,7 @@ import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
-    namespace: [ "Middleware", "yellow" ],
-    module: [ "Content-Type", "green" ],
+    module: [ "Content-Type", "magenta" ],
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
 } );

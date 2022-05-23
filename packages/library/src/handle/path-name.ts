@@ -1,15 +1,8 @@
-import url from "url";
 import { HTTP } from "@iac-factory/api-schema";
+
+import url from "url";
 const parse = url.parse;
 const Url = url.URL;
-
-/**
- * Module exports.
- * @public
- */
-
-module.exports = parseurl;
-module.exports.original = originalurl;
 
 /***
  * Parse the `req` url with memoization.
@@ -17,7 +10,7 @@ module.exports.original = originalurl;
  * @param {HTTP.Request} req
  * @returns {object}
  */
-function parseurl(req: HTTP.Request): object | undefined {
+export function parseurl(req: HTTP.Request): object | undefined {
     var url = req.url;
 
     if ( url === undefined ) {
@@ -47,7 +40,7 @@ function parseurl(req: HTTP.Request): object | undefined {
  * @param {HTTP.Request} req
  * @returns {any}
  */
-function originalurl(req: HTTP.Request) {
+export function originalurl(req: HTTP.Request) {
     var url = req.originalUrl;
 
     if ( typeof url !== "string" ) {
@@ -79,7 +72,7 @@ function originalurl(req: HTTP.Request) {
  * @private
  */
 
-function fastparse(str: url.UrlWithStringQuery | string) {
+export function fastparse(str: url.UrlWithStringQuery | string) {
     if ( typeof str !== "string" || str.charCodeAt( 0 ) !== 0x2f /* / */ ) {
         return parse( str as string );
     }
@@ -146,7 +139,7 @@ function fastparse(str: url.UrlWithStringQuery | string) {
  * @private
  */
 
-function fresh(url: any, parsedUrl: any) {
+export function fresh(url: any, parsedUrl: any) {
     return typeof parsedUrl === "object" &&
         parsedUrl !== null &&
         ( Url === undefined || parsedUrl instanceof Url ) &&

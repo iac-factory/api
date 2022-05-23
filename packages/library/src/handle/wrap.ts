@@ -4,9 +4,8 @@
  * @private
  */
 
-// @ts-ignore
-export const Wrap = function (old, fn) {
-    return function proxy() {
+export function Wrap (old: () => any, fn: { (fn: any, err: any): any; apply?: any; }) {
+    return function proxy(this: any) {
         const args = new Array( arguments.length + 1 );
 
         args[ 0 ] = old;
@@ -16,7 +15,6 @@ export const Wrap = function (old, fn) {
             args[ i + 1 ] = arguments[ i ];
         }
 
-        // @ts-ignore
         fn.apply( this, args );
     };
 };

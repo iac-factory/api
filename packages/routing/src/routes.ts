@@ -2,7 +2,6 @@ import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
-    namespace: [ "Routing", "magenta" ],
     module: [ "Routing", "red" ],
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
@@ -14,43 +13,43 @@ import { Router } from ".";
 export default void ( async () => {
     const Routing = [
         import("./schema").then( (route) => {
-            Logger.debug(route.default.registry, "Schema" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./schema/typescript").then( (route) => {
-            Logger.debug(route.default.registry, "Schema (Typescript)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./utility").then( (route) => {
-            Logger.debug(route.default.registry, "Utility" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./utility/health").then( (route) => {
-            Logger.debug(route.default.registry, "Utility (Schema)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./utility/awaitable").then( (route) => {
-            Logger.debug(route.default.registry, "Utility (Awaitable)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./aws").then( (route) => {
-            Logger.debug(route.default.registry, "AWS" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./aws/lambda").then( (route) => {
-            Logger.debug(route.default.registry, "AWS (Lambda)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./aws/lambda/functions").then( (route) => {
-            Logger.debug(route.default.registry, "AWS (Lambda) (Functions)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./aws/lambda/functions/filter").then( (route) => {
-            Logger.debug(route.default.registry, "AWS (Lambda) (Functions) (Filter)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
         import("./aws/lambda/functions/filter/environment-variables").then( (route) => {
-            Logger.debug(route.default.registry, "AWS (Lambda) (Functions) (Variables)" );
+            Logger.debug( route.default.registry );
             Router.use( route.default );
         } )
     ];

@@ -17,7 +17,7 @@ export module Debugger {
      * @constructor
      */
     const Depth = (depth: Depth = 1) => {
-        return ( typeof depth === "number" ) ? depth : (depth === "Infinity") ? Infinity : 1;
+        return ( typeof depth === "number" ) ? depth : ( depth === "Infinity" ) ? Infinity : 1;
     };
 
     enum Color {
@@ -33,21 +33,12 @@ export module Debugger {
         grey = "grey"
     }
 
-    type Colors = keyof typeof Color;
-    type Levels = keyof typeof Level;
+    export type Colors = keyof typeof Color;
+    export type Levels = keyof typeof Level;
 
-    type Depth = 1 | 5 | 10 | 15 | 25 | 50 | "Infinity";
+    export type Depth = 1 | 5 | 10 | 15 | 25 | 50 | "Infinity";
 
     export interface Input {
-        /***
-         * The Caller Package, or Abstract Module
-         *
-         * @typeof [package {@link String}, color {@link Colors}]
-         *
-         * @example
-         * ["API-Services", "blue"]
-         * */
-        namespace: [ string, Colors ],
         /***
          * The Calling Package's Interface, or Module
          *
@@ -80,6 +71,160 @@ export module Debugger {
         depth: [ Depth, boolean ]
     }
 
+    export class Logger implements Type {
+        debug: Type["debug"];
+        info: Type["info"];
+        warn: Type["warn"];
+        error: Type["error"];
+        log: Type["log"];
+
+        private depth: number;
+        private sorting: boolean;
+        private input: Input;
+
+        private context: string;
+
+        private color = ANSI.create();
+
+        private prefix = {
+            debug: [ "[", this.color.bold.cyan( "Debug" ), "]" ].join( "" ),
+            info: [ "[", this.color.bold.blue( "Informational" ), "]" ].join( "" ),
+            warn: [ "[", this.color.bold.yellow( "Warning" ), "]" ].join( "" ),
+            error: [ "[", this.color.bold.red( "Error" ), "]" ].join( "" ),
+            log: [ "[", this.color.bold.green( "Log" ), "]" ].join( "" )
+        };
+
+        private colorize: (context?: string) => string;
+
+        constructor(settings: Input) {
+            this.input = settings;
+
+            const logger = ( settings.level[ 0 ] === "Debug" ) ? Logger.debug( this )
+                : ( settings.level[ 0 ] === "Informational" ) ? Logger.info( this )
+                    : ( settings.level[ 0 ] === "Warning" ) ? Logger.warn( this )
+                        : Logger.error( this );
+
+            this.context = this.input.module[0];
+            this.colorize = (context = this.context) => "[" + Reflect.get(this.color, this.input.module[1])(context) + "]";
+
+            this.depth = Depth( this.input.depth[ 0 ] );
+            this.sorting = this.input.depth[ 1 ];
+
+            this.debug = logger.debug;
+            this.info = logger.info;
+            this.warn = logger.warn;
+            this.error = logger.error;
+
+            this.log = Reflect.get( logger, settings.level[ 0 ] );
+        }
+
+        private static debug(instance: Logger) {
+            return {
+                debug: (input: object | string) => {
+                    console.log( instance.colorize(), instance.prefix.debug, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+                info: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.info, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+                warn: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.warn, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+                error: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.error, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+            };
+        }
+
+        private static info(instance: Logger) {
+            return {
+                debug: () => OS.devNull,
+                info: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.info, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+                warn: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.warn, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+                error: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.error, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+            };
+        }
+
+        private static warn(instance: Logger) {
+            return {
+                debug: () => OS.devNull,
+                info: () => OS.devNull,
+                warn: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.warn, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+                error: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.error, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+            };
+        }
+
+        private static error(instance: Logger) {
+            return {
+                debug: () => OS.devNull,
+                info: () => OS.devNull,
+                warn: () => OS.devNull,
+                error: (input: object | string) => {
+                    console.log( instance.context, instance.prefix.error, Utility.inspect( ( typeof input === "string" ) ? input : { ... input }, {
+                        colors: true,
+                        sorted: instance.sorting,
+                        depth: instance.depth,
+                        compact: true
+                    } ) );
+                },
+            };
+        }
+    }
+
     /***
      * Debugger
      * ---
@@ -87,186 +232,16 @@ export module Debugger {
      * @param settings
      */
     export function hydrate(settings: Input) {
-        /*** @private */
-        class Logger implements Type {
-            debug: Type["debug"];
-            info: Type["info"];
-            warn: Type["warn"];
-            error: Type["error"];
-            log: Type["log"];
-
-            private namespace = {
-                name: settings.namespace[ 0 ],
-                color: settings.namespace[ 1 ],
-                constructor: (instance: Logger) => [
-                    "[",
-                    ( Reflect.get(
-                        instance.color.bold,
-                        instance.namespace.color )
-                    (
-                        ( instance.namespace.name )
-                    ) ),
-                    "]"
-                ].join( "" )
-            };
-
-            private module = {
-                name: settings.module[ 0 ],
-                color: settings.module[ 1 ],
-                constructor: (instance: Logger) => [
-                    "[",
-                    ( Reflect.get(
-                        instance.color.bold,
-                        instance.module.color )
-                    (
-                        ( instance.module.name )
-                    ) ),
-                    "]"
-                ].join( "" )
-            };
-
-            private constructors = (local?: string) => {
-                const namespace = "[" + ( Reflect.get( this.color.bold, this.namespace.color )( ( this.namespace.name ) ) ) + "]";
-                const module = "[" + ( Reflect.get( this.color.bold, this.module.color )( ( ( local ) ? local : this.module.name ) ) ) + "]";
-
-                return [ namespace, module ];
-            };
-
-            private depth = Depth( settings.depth[ 0 ] );
-            private sorting = settings.depth[ 1 ];
-
-            private color = ANSI.create();
-
-            private prefix = {
-                debug: [ "[", this.color.bold.cyan( "Debug" ), "]" ].join( "" ),
-                info: [ "[", this.color.bold.blue( "Informational" ), "]" ].join( "" ),
-                warn: [ "[", this.color.bold.yellow( "Warning" ), "]" ].join( "" ),
-                error: [ "[", this.color.bold.red( "Error" ), "]" ].join( "" ),
-                log: [ "[", this.color.bold.green( "Log" ), "]" ].join( "" )
-            };
-
-            private header = (overwrite?: string) => {
-                return {
-                    debug: [ ... this.constructors( overwrite ), this.prefix.debug ].join( " " ),
-                    info: [ ... this.constructors( overwrite ), this.prefix.info ].join( " " ),
-                    warn: [ ... this.constructors( overwrite ), this.prefix.warn ].join( " " ),
-                    error: [ ... this.constructors( overwrite ), this.prefix.error ].join( " " ),
-                    log: [ ... this.constructors( overwrite ), this.prefix.log ].join( " " )
-                };
-            };
-
-            constructor() {
-                const logger = ( settings.level[ 0 ] === "Debug" ) ? Logger.debug( this )
-                    : ( settings.level[ 0 ] === "Informational" ) ? Logger.info( this )
-                        : ( settings.level[ 0 ] === "Warning" ) ? Logger.warn( this )
-                            : Logger.error( this );
-
-                this.debug = logger.debug;
-                this.info = logger.info;
-                this.warn = logger.warn;
-                this.error = logger.error;
-
-                this.log = Reflect.get( logger, settings.level[ 0 ] );
-            }
-
-            private static debug(instance: Logger) {
-                return {
-                    debug: ($: any, module?: string, depth?: Depth, sorting?: boolean) => {
-                        console.log( instance.header( module ).debug, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                            colors: true,
-                            sorted: ( sorting ) ? sorting : instance.sorting,
-                            depth: ( depth ) ? Depth(depth) : instance.depth
-                        } ) )
-                    },
-                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) ),
-                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) ),
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) )
-                };
-            }
-
-            private static info(instance: Logger) {
-                return {
-                    debug: () => OS.devNull,
-                    info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).info, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true,
-                    } ) ),
-                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) ),
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) )
-                };
-            }
-
-            private static warn(instance: Logger) {
-                return {
-                    debug: () => OS.devNull,
-                    info: () => OS.devNull,
-                    warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).warn, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) ),
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) )
-                };
-            }
-
-            private static error(instance: Logger) {
-                return {
-                    debug: () => OS.devNull,
-                    info: () => OS.devNull,
-                    warn: () => OS.devNull,
-                    error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => console.log( instance.header( module ).error, Utility.inspect( (typeof $ === "string") ? $ : { ... $ }, {
-                        colors: true,
-                        sorted: ( sorting ) ? sorting : instance.sorting,
-                        depth: ( depth ) ? Depth(depth) : instance.depth,
-                        showHidden: true
-                    } ) )
-                };
-            }
-        }
-
-        return new Logger();
+        return new Logger( settings );
     }
 
     export interface Type {
-        debug: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
-        info: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
-        warn: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
-        error: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
+        debug: (input: object | string) => void;
+        info: (input: object | string) => void;
+        warn: (input: object | string) => void;
+        error: (input: object | string) => void;
 
-        log: ($: any, module?: string, depth?: Depth, sorting?: boolean) => void;
+        log: (input: object | string) => void;
     }
 
     export type Types = keyof Type;

@@ -5,6 +5,8 @@ import Subprocess from "child_process";
 
 import { Router } from "./src";
 
+import type { HTTP as Types } from "@iac-factory/api-schema";
+
 function tls() {
     return Crypto.generateKeyPairSync( "rsa", {
         modulusLength: 4096,
@@ -44,6 +46,13 @@ function setup() {
 /*** @ts-ignore */
 const router = Router() as Router.prototype;
 router.get( "/", async (request: any, response: import("http2").Http2ServerResponse) => {
+    response.setHeader( "Content-Type", "Application/JSON" );
+    response.end( JSON.stringify( {
+        Key: "Value"
+    } ), "utf-8" );
+} );
+
+router.get( "/test", async (request: any, response: import("http2").Http2ServerResponse) => {
     response.setHeader( "Content-Type", "Application/JSON" );
     response.end( JSON.stringify( {
         Key: "Value"

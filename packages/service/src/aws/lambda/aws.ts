@@ -41,14 +41,13 @@ export module Client {
                 private async paginate( state: { page: number; errors: Array<Error | string> } ) {
                     /*** @experimental */
                     const Logger = Debugger.hydrate( {
-                        namespace: [ "AWS (Lambda)", "red" ],
                         module: [ "Functions", "blue" ],
                         level: [ "Debug", "cyan" ],
                         depth: [ 1, true ]
                     } );
 
                     const lambda = async () => {
-                        Logger.debug("Traversing Lambda Function(s) ...", "Paginator" + " " + "(" + state.page + ")"  );
+                        Logger.debug("Paginator" + " " + "(" + state.page + ")" );
 
                         const command = this.arguments( { Marker: this.handler.token } );
                         const response = await this.client.send( command );

@@ -1,19 +1,54 @@
 import { Controller } from "@iac-factory/api-services";
 
-export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Variables");
-Router.get( "/aws/lambda/functions/filter/environment-variables/:environment-variable", async (request, response) => {
-    const { Lambda } = await import("@iac-factory/api-services");
-    const functions = await Lambda.Client.Functions();
+export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Filter.Variables");
 
-    // @ts-ignore
-    const test = functions?.filter(($) => $.Environment).filter(($) => $!.Environment!.Variables).map((functional) => {
-        if (functional!.Environment!.Variables!["AUTH_AND_ENTITLEMENT_DB_USERNAME"]) {
-            return functional
-        }
-    }).filter((functional) => functional);
+Router.get( "/aws/lambda/functions/filter/environment-variables", async (request, response) => {
+    const { Lambda } = await import("@iac-factory/api-services");
+
+    // Filter based on query ("variable") parameter
+    const filter = request.query["variable"];
+
+    const functions = (filter) ? await Lambda.Client.Functions() : null;
+
+    /// Filtered Lambda Configurations
+    const configurations = (filter) ? (functions)?.map((configuration) => {
+        const variables = configuration.Environment?.Variables;
+        const keys = (variables) ? Object.keys(variables) : [];
+
+        /// Return Lambda configuration if environment-variable is found
+        if (keys.includes(filter as string)) {
+            return configuration
+        } return null;
+    }).filter((predicate) => predicate) : [{
+        warning: "A Query Parameter ('variable') Wasn't Found"
+    }];
 
     response.status( 200 ).send( {
-        test
+        configurations
+    } );
+} );
+
+Router.get( "/aws/lambda/functions/filter/environment-variables/:variable", async (request, response) => {
+    const { Lambda } = await import("@iac-factory/api-services");
+
+    // Filter based on path-name
+    const filter = request.params.variable;
+
+    const functions = (filter) ? await Lambda.Client.Functions() : [{}];
+
+    /// Filtered Lambda Configurations
+    const configurations = (functions)?.map((configuration) => {
+        const variables = configuration.Environment?.Variables;
+        const keys = (variables) ? Object.keys(variables) : [];
+
+        /// Return Lambda configuration if environment-variable is found
+        if (keys.includes(filter)) {
+            return configuration
+        } return null;
+    }).filter((predicate) => predicate);
+
+    response.status( 200 ).send( {
+        configurations
     } );
 } );
 

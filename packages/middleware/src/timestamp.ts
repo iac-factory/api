@@ -6,8 +6,7 @@ import Application = HTTP.Application;
 
 /*** @experimental */
 const Log = Debugger.hydrate( {
-    namespace: [ "Performance", "green" ],
-    module: [ "Timestamp", "blue" ],
+    module: [ "Timestamp", "magenta" ],
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
 } );

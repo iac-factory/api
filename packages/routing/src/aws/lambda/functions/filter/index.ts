@@ -2,19 +2,6 @@ import { Controller } from "@iac-factory/api-services";
 
 export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Filter");
 
-export module Index {
-    export const Local = (local: Locality) => {
-
-        const keys = Properties(local);
-
-        console.debug("[Debug] Local Property Key(s)" + ":", keys);
-    };
-
-    function Properties<Generic>($: Generic): Array<keyof Generic> {
-        return Object.keys($) as Array<keyof typeof $>;
-    }
-}
-
 /***
  * Types of available filter(s):
  *
@@ -26,12 +13,10 @@ export module Index {
  *  Implementation is handled via the router in simple cases; increasingly complex
  *  solutions should be moved to the @iac-factory/api-services package.
  */
-Router.get( "/aws/lambda/functions/:configuration-filter", async (request, response) => {
+Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
 
-    Index.Local(response.locals);
-
-    const filter = request.params.configuration
+    const filter = request.params.filter
     const error: { throw: boolean } = { throw: false };
     const data: ( string | undefined | { Variables?: object; Function?: string; ARN?: string } )[] = [];
 
@@ -97,7 +82,5 @@ Router.get( "/aws/lambda/functions/:configuration-filter", async (request, respo
         functions: data
     } );
 } );
-
-export type Locality = Record<string, {}>;
 
 export default Router;

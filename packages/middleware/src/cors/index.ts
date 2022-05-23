@@ -1,17 +1,4 @@
-import { HTTP } from "@iac-factory/api-schema";
-
-import Application = HTTP.Application;
-
-import { Debugger } from "@iac-factory/api-core";
-
-/*** @experimental */
-const Logger = Debugger.hydrate( {
-    module: [ "CORS", "magenta" ],
-    level: [ "Debug", "cyan" ],
-    depth: [ 1, true ]
-} );
-
-module CORs {
+export module CORs {
     var { assign } = Object;
 
     var vary = require( "vary" );
@@ -188,7 +175,7 @@ module CORs {
         }
     }
 
-    export function cors(options: { preflightContinue?: any; optionsSuccessStatus?: any; origin?: string | RegExp | string[] | undefined; credentials?: boolean; methods?: string | string[]; allowedHeaders?: any; headers?: any; maxAge?: { toString: () => any }; exposedHeaders?: any }, req: { method?: any; headers?: { origin: any } | { [ p: string ]: any } }, res: { statusCode?: any; setHeader: any; end?: any }, next: HTTP.Next | undefined) {
+    export function cors(options: { preflightContinue?: any; optionsSuccessStatus?: any; origin?: string | RegExp | string[] | undefined; credentials?: boolean; methods?: string | string[]; allowedHeaders?: any; headers?: any; maxAge?: { toString: () => any }; exposedHeaders?: any }, req: { method?: any; headers?: { origin: any } | { [ p: string ]: any } }, res: { statusCode?: any; setHeader: any; end?: any }, next: (arg0?: undefined) => void) {
         var headers = [],
             method = req.method && req.method.toUpperCase && req.method.toUpperCase();
 
@@ -204,8 +191,7 @@ module CORs {
             applyHeaders( headers, res );
 
             if ( options.preflightContinue ) {
-                (next) && next();
-
+                next();
             } else {
                 // Safari (and potentially other browsers) need content-length 0 for 204 or they just hang waiting for a body
                 res.statusCode = options.optionsSuccessStatus;
@@ -218,8 +204,7 @@ module CORs {
             headers.push( configureCredentials( options, req ) );
             headers.push( configureExposedHeaders( options, req ) );
             applyHeaders( headers, res );
-
-            (next) && next();
+            next();
         }
     }
 
@@ -271,32 +256,4 @@ module CORs {
     }
 }
 
-export const Options = {
-    origin: "*",
-    credentials: false,
-    optionsSuccessStatus: 200,
-    preflightContinue: true
-};
-
-/*** CORS Middleware Loader
- *
- * @param server {Application}
- *
- *
- * @return {Application}
- *
- * @constructor
- *
- */
-
-export const CORS = (server: Application) => {
-    Logger.debug( "Setting CORS Policy ..." );
-
-    server.use( (request, response, next) => {
-        CORs.cors( Options, request, response, next );
-    } );
-
-    return server;
-};
-
-export default CORS;
+export default CORs;

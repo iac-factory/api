@@ -7,8 +7,7 @@ import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Log = Debugger.hydrate( {
-    namespace: [ "Middleware", "yellow" ],
-    module: [ "Body-Parser", "green" ],
+    module: [ "Body-Parser", "magenta" ],
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
 } );
@@ -29,7 +28,7 @@ const Log = Debugger.hydrate( {
  *
  */
 
-const Logger = (request: Request, response: Response, message: HTTP.Message) => {
+export const Logger = (request: Request, response: Response, message: HTTP.Message) => {
     const Bracket = ( $: string ) => "[" + $ + "]";
     const Parentheses = ( $: string ) => "(" + $ + ")";
 
@@ -38,7 +37,7 @@ const Logger = (request: Request, response: Response, message: HTTP.Message) => 
     const Status = Parentheses( (response.statusCode === -1 ) ? "N/A" : String( response.statusCode ) );
 
     const Time = new Date();
-    
+
     const Stamp = Parentheses( [
             Time.getMonth(),
             Time.getDay(),
@@ -58,6 +57,4 @@ const Logger = (request: Request, response: Response, message: HTTP.Message) => 
     ].join( "\t" );
 };
 
-export default { Logger };
-
-export { Logger };
+export default Logger;

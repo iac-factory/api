@@ -1,19 +1,12 @@
-const CJS = {
-    cache: true,
-    esModule: true,
-    extensions: true,
-    mutableNamespace: true,
-    namedExports: true,
-    paths: true,
-    vars: true,
-    dedefault: false,
-    topLevelReturn: true
-}
+require = require( "esm" )( module, {} );
 
-require = require( "esm" )( module, { cjs: CJS, mode: "auto", force: true, await: true, cache: false, sourceMap: true } );
+// Technically, the following line could result in a race-condition between
+// the time of which "import()" is invoked & where "api-core" would initialize
+// the API server from "process.env" settings
+
+// Should a race-condition ever present itself, adjust the process start-up
+// method := "node --require dotenv/config $(npm root)"
+
+void ( async () => await import("./main") )();
 
 module.exports = require( "@iac-factory/api-core" );
-
-void (async () => module.exports)();
-
-import("@iac-factory/api-schema");

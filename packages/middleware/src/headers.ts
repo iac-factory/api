@@ -10,8 +10,7 @@ import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
-    namespace: [ "Middleware", "yellow" ],
-    module: [ "Response-Headers", "green" ],
+    module: [ "Headers", "magenta" ],
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
 } );
@@ -40,10 +39,11 @@ const Headers = (server: Application, headers = Overwrites) => {
 
     const $ = (_: Request, response: Response, callback: Callback) => {
         headers.forEach((Element) => {
-            Logger.debug("Assigning" + " " + Element.Key + " " + "to" + " " + Element.Value);
 
             response.set(Element.Key, Element.Value);
         });
+
+        Logger.debug("Set Default Response Headers");
 
         callback();
     };

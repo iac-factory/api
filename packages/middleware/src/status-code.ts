@@ -8,8 +8,7 @@ import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Log = Debugger.hydrate( {
-    namespace: [ "Middleware", "yellow" ],
-    module: [ "Body-Parser", "green" ],
+    module: [ "Body-Parser", "magenta" ],
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
 } );

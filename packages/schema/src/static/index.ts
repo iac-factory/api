@@ -1,21 +1,16 @@
 import * as Path from "path";
 
-// @ts-ignore
-export { TS } from "./tsconfig.json";
-
 export const Schema = {
     TS: {
         name: "tsconfig",
         file: "tsconfig.json",
         description: "Typescript Configuration Schema",
-        resolve: async function (): Promise<TS> {
-            return import("." + Path.sep + Schema.TS.file)
+        resolve: async function (): Promise<typeof import("./tsconfig.json")> {
+            const configuration: typeof import("./tsconfig.json") = await import("./tsconfig.json");
+
+            return configuration;
         }
     }
-}
-
-export type TS = {
-    [$ in keyof typeof TS]: (typeof TS)[$]
-}
+};
 
 export default Schema;
