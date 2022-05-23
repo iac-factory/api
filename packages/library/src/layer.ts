@@ -1,6 +1,4 @@
-// import pathToRegexp from "path-to-regexp";
-
-import pathToRegexp from "@iac-factory/api-path-matching";
+import { pathToRegexp } from "path-to-regexp";
 
 import { HTTP } from ".";
 
