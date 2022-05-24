@@ -30,6 +30,6 @@
         "strictNullChecks": true,
         "declaration": true
     },
-    "exclude": ["iac", "distribution"],
+    "exclude": ["ci", "iac", "distribution", "coverage", "scripts"],
     "include": ["**/*.json", "**/*.ts"]
 }

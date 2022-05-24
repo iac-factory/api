@@ -7,7 +7,6 @@
         "@commitlint/config-conventional": "^16.2.4",
         "@commitlint/prompt-cli": "^16.2.4",
         "@jest/globals": "^28.1.0",
-        "@openapitools/openapi-generator-cli": "^2.5.1",
         "@swc/core": "^1.2.182",
         "@tsconfig/esm": "^1.0.0",
         "@tsconfig/node16-strictest-esm": "^1.0.1",
@@ -36,7 +35,8 @@
         "@iac-factory/api-schema": "file:packages/schema",
         "@iac-factory/api-services": "file:packages/service",
         "@iac-factory/ecma": "file:packages/ecma",
-        "@iac-factory/local": "file:ci"
+        "dotenv": "^16.0.1",
+        "dotenv-expand": "^8.0.3"
     },
     "author": {
         "name": "Jacob B. Sanders",

@@ -1,24 +1,25 @@
 import * as AWS from "@aws-sdk/client-lambda";
-
 import { Debugger } from "@iac-factory/api-core";
-
-import { Resolve } from ".";
 
 export module Client {
     import Invoker = Client.Policy.Invoker;
 
     export const Functions = async function () {
         /*** Essentially namespaced "static" properties */
+
         const max: number = 25;
-        /*** Essentially namespaced "static" properties */
-        const file: string = Resolve( "lambda-data.json" );
-        /*** Essentially namespaced "static" properties */
         const region: string = "us-east-2";
 
+        /***
+         * The `Functions` "prototype" constructor
+         * ---
+         *
+         * @type {{client: Client.Functions.Client, command: Client.Functions.Command, handler: Client.Functions.Paginator, wait(duration: number): Promise<void>, instance: () => AWS.LambdaClient, arguments: (input?: Client.Functions.Input) => AWS.ListFunctionsCommand, paginator: () => any, paginate(state: {page: number, errors: Array<Error | string>}): Promise<void>, interface(): Promise<this>}}
+         */
         const constructor = new (
             class {
-                client: Functions.Client;
-                command: Functions.Command;
+                private client: Functions.Client;
+                private command: Functions.Command;
                 handler: Functions.Paginator;
 
                 constructor() {
