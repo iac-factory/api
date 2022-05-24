@@ -32,7 +32,7 @@ export module ESM {
     const Runtime: { mode: string; cache: boolean; sourceMap: boolean; await: boolean; force: boolean; } = { mode: "auto", force: true, await: true, cache: false, sourceMap: true };
 
     /***
-     * Complete ESM-related Settings
+     * ESM Settings
      * ---
      * @type {{mode: string, cache: boolean, sourceMap: boolean, await: boolean, force: boolean, cjs: {cache: boolean, extensions: boolean, topLevelReturn: boolean, dedefault: boolean, mutableNamespace: boolean, paths: boolean, esModule: boolean, vars: boolean, namedExports: boolean}}}
      * @public

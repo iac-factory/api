@@ -37,7 +37,7 @@ const Timestamp = (server: Application) => {
 
             const delta = ( new Date().getTime() - initial ) / 1000;
 
-            Log.debug( "Timestamp (Delta)" + " " + delta + " " + "Second(s)" );
+            Log.debug( "HTTP Response Duration" + ":" + " " + delta + " " + "Second(s)" );
         } );
 
         void callback();

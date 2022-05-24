@@ -28,7 +28,15 @@ export default void ( async () => {
             Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
+        import("./utility/health/postgresql").then( (route) => {
+            Logger.debug( route.default.registry );
+            Router.use( route.default );
+        } ),
         import("./utility/awaitable").then( (route) => {
+            Logger.debug( route.default.registry );
+            Router.use( route.default );
+        } ),
+        import("./login").then( (route) => {
             Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),

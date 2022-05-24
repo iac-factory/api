@@ -1,5 +1,5 @@
 # `ts-esm-standard` #
- 
+
 A Node.js ESM Standard Template Package -- Extended via TypeScript
 
 ## Distribution ##
@@ -28,4 +28,8 @@ app.param('user', function (req, res, next, id) {
     }
   })
 })
+```
+
+```shell
+brew install postgresql
 ```

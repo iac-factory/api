@@ -7,6 +7,7 @@
         "swc": true
     },
     "compilerOptions": {
+        "baseUrl": ".",
         "lib": ["ES6", "ESNext"],
         "module": "CommonJS",
         "target": "ESNext",
@@ -27,8 +28,7 @@
         "noImplicitAny": true,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "declaration": true
+        "strictNullChecks": true
     },
     "exclude": ["ci", "iac", "distribution", "coverage", "scripts"],
     "include": ["**/*.json", "**/*.ts"]

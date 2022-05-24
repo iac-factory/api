@@ -27,7 +27,7 @@ const Parsers = {
     "JSON": {
         Module: json,
         Parameters: {
-            strict: true
+            strict: false
         }
     }
 };
