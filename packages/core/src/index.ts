@@ -12,7 +12,6 @@ const Logger = Debugger.hydrate( {
 } );
 
 Logger.debug( "Starting Server ..." );
-
 async function Main(): Promise<void> {
     Logger.debug( "Establishing Global Registry" );
 
@@ -20,6 +19,7 @@ async function Main(): Promise<void> {
 
     Application.use( "/", Router );
 
+    /*** Inline Type `settings` for HTTP-Listen Event Listener */
     const settings: [ number, string, number, () => void ] = [
         parseInt( process.env[ "SERVER_PORT" ]! ),
         process.env[ "SERVER_HOSTNAME" ]!,

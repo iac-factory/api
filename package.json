@@ -35,6 +35,7 @@
         "@iac-factory/api-routing": "file:packages/routing",
         "@iac-factory/api-schema": "file:packages/schema",
         "@iac-factory/api-services": "file:packages/service",
+        "@iac-factory/ecma": "file:packages/ecma",
         "@iac-factory/local": "file:ci"
     },
     "author": {
