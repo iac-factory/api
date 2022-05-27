@@ -32,6 +32,10 @@ export default void ( async () => {
             Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),
+        import("./utility/health/document-db").then( (route) => {
+            Logger.debug( route.default.registry );
+            Router.use( route.default );
+        } ),
         import("./utility/awaitable").then( (route) => {
             Logger.debug( route.default.registry );
             Router.use( route.default );

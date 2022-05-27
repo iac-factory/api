@@ -1,23 +1,277 @@
 {
-	"name": "@iac-factory/ecma",
-	"version": "0.0.1",
-	"private": true,
-	"description": "...",
-	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
-	"license": "BSD-2-Clause",
-	"scripts": {
-		"start": "cd $(git rev-parse --show-toplevel) && npm run start",
-		"build": "tsc --build $(dirname $(npm root)/tsconfig.json"
-	},
-	"dependencies": {
-		"esm": "^3.2.25"
-	},
-	"devDependencies": {
-		"@types/esm": "^3.2.0"
-	},
-	"eslintConfig": {
-		"settings": {
-			"extends": "../.."
-		}
-	}
+    "name": "@iac-factory/ecma",
+    "version": "0.1.10",
+    "description": "...",
+    "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+    "license": "BSD-2-Clause",
+    "scripts": {
+        "start": "cd $(git rev-parse --show-toplevel) && npm run start",
+        "build": "tsc --build $(dirname $(npm root))/tsconfig.json",
+        "prepublishOnly": "npm run build"
+    },
+    "optionalDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.25.0",
+        "eslint": "^8.16.0",
+        "eslint-plugin-import": "^2.26.0",
+        "@swc/core": "^1.2.182",
+        "@swc/helpers": "^0.3.15",
+        "ts-node": "^10.8.0",
+        "@tsconfig/esm": "^1.0.0",
+        "@types/node": "^17.0.34"
+    },
+    "peerDependencies": {
+        "@types/esm": "^3.2.0",
+        "typescript": "^4.7.2"
+    },
+    "dependencies": {
+        "esm": "^3.2.25",
+        "tslib": "^2.4.0"
+    },
+    "publishConfig": {
+        "access": "public",
+        "tag": "latest"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "jest": true,
+            "node": true,
+            "commonjs": true,
+            "es6": true
+        },
+        "plugins": [
+            "import"
+        ],
+        "overrides": [
+            {
+                "files": ["*.ts"],
+                "rules": {
+                    "no-undef": "off"
+                }
+            }
+        ],
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+            "project": "./tsconfig.json",
+            "sourceType": "module",
+            "ecmaVersion": "latest",
+            "ecmaFeatures": {
+                "arrowFunctions": true,
+                "binaryLiterals": true,
+                "blockBindings": true,
+                "classes": true,
+                "defaultParams": true,
+                "destructuring": true,
+                "experimentalObjectRestSpread": true,
+                "forOf": true,
+                "generators": true,
+                "globalReturn": true,
+                "impliedStrict": true,
+                "jsx": false,
+                "modules": true,
+                "objectLiteralComputedProperties": true,
+                "objectLiteralDuplicateProperties": true,
+                "objectLiteralShorthandMethods": true,
+                "objectLiteralShorthandProperties": true,
+                "octalLiterals": true,
+                "regexUFlag": true,
+                "regexYFlag": true,
+                "restParams": true,
+                "spread": true,
+                "superInFunctions": true,
+                "templateStrings": true,
+                "unicodeCodePointEscapes": true
+            }
+        },
+        "extends": [
+            "eslint:recommended",
+            "plugin:import/typescript",
+            "plugin:import/typescript"
+        ],
+        "settings": {
+            "import/parsers": {
+                "@typescript-eslint/parser": [
+                    ".ts",
+                    ".tsx"
+                ]
+            },
+            "import/resolver": {
+                "node": {
+                    "extensions": [".js", ".jsx", ".ts", ".tsx", ".test.ts"]
+                }
+            }
+        },
+        "rules": {
+            "indent": [
+                "off"
+            ],
+            "@typescript-eslint/indent": [
+                "off"
+            ],
+            "quotes": [
+                "warn",
+                "double"
+            ],
+            "rest-spread-spacing": "off",
+            "comma-dangle": [
+                "error",
+                "never"
+            ],
+            "comma-spacing": [
+                "error",
+                {
+                    "before": false,
+                    "after": true
+                }
+            ],
+            "no-multi-spaces": [
+                "error",
+                {
+                    "ignoreEOLComments": false
+                }
+            ],
+            "array-bracket-spacing": [
+                "error",
+                "always"
+            ],
+            "array-bracket-newline": [
+                "error",
+                "consistent"
+            ],
+            "object-curly-spacing": [
+                "error",
+                "always"
+            ],
+            "object-curly-newline": [
+                "error",
+                {
+                    "multiline": true,
+                    "consistent": true
+                }
+            ],
+            "object-property-newline": [
+                "error",
+                {
+                    "allowAllPropertiesOnSameLine": true
+                }
+            ],
+            "keyword-spacing": [
+                "error"
+            ],
+            "brace-style": [
+                "error",
+                "1tbs",
+                {
+                    "allowSingleLine": true
+                }
+            ],
+            "space-before-blocks": [
+                "error"
+            ],
+            "curly": [
+                "off",
+                "multi-line",
+                "consistent"
+            ],
+            "@typescript-eslint/member-delimiter-style": [
+                "error"
+            ],
+            "semi": [
+                "error",
+                "always"
+            ],
+            "max-len": [
+                "error",
+                {
+                    "code": 210,
+                    "ignoreUrls": true,
+                    "ignoreStrings": true,
+                    "ignoreTemplateLiterals": true,
+                    "ignoreComments": true,
+                    "ignoreRegExpLiterals": true
+                }
+            ],
+            "quote-props": [
+                "error",
+                "consistent-as-needed"
+            ],
+            "@typescript-eslint/no-require-imports": [
+                "off"
+            ],
+            "import/no-extraneous-dependencies": [
+                "off",
+                {
+                    "devDependencies": [
+                        "**/test/**",
+                        "**/build-tools/**"
+                    ],
+                    "optionalDependencies": false,
+                    "peerDependencies": true
+                }
+            ],
+            "no-unused-vars": "off",
+            "import/no-unresolved": [
+                "off"
+            ],
+            "import/order": [
+                "off",
+                {
+                    "groups": [
+                        "builtin",
+                        "external"
+                    ]
+                }
+            ],
+            "no-duplicate-imports": [
+                "off"
+            ],
+            "no-shadow": [
+                "off"
+            ],
+            "@typescript-eslint/no-shadow": [
+                "off"
+            ],
+            "key-spacing": [
+                "error"
+            ],
+            "no-multiple-empty-lines": [
+                "error"
+            ],
+            "@typescript-eslint/no-floating-promises": [
+                "error"
+            ],
+            "no-return-await": [
+                "off"
+            ],
+            "@typescript-eslint/return-await": [
+                "error"
+            ],
+            "no-trailing-spaces": [
+                "off"
+            ],
+            "dot-notation": [
+                "off"
+            ],
+            "no-bitwise": [
+                "error"
+            ],
+            "no-global-assign": "off",
+            "@typescript-eslint/member-ordering": [
+                "off",
+                {
+                    "default": [
+                        "field",
+                        "public-static-field",
+                        "protected-static-field",
+                        "private-static-field",
+                        "constructor",
+                        "method",
+                        "public-static-method",
+                        "protected-static-method",
+                        "private-static-method"
+                    ]
+                }
+            ]
+        }
+    }
 }

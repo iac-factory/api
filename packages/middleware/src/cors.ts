@@ -11,7 +11,7 @@ const Logger = Debugger.hydrate( {
     depth: [ 1, true ]
 } );
 
-module CORs {
+module Middleware {
     var { assign } = Object;
 
     var vary = require( "vary" );
@@ -293,7 +293,7 @@ export const CORS = (server: Application) => {
     Logger.debug( "Setting CORS Policy ..." );
 
     server.use( (request, response, next) => {
-        CORs.cors( Options, request, response, next );
+        Middleware.cors( Options, request, response, next );
     } );
 
     return server;

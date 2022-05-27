@@ -1,13 +1,13 @@
 import { Controller } from "@iac-factory/api-services";
 
-export const Router = Controller( "IaC.Factory.API.Utility.Health.PostgreSQL" );
+export const Router = Controller( "IaC.Factory.API.Utility.Health.Document-DB" );
 Router.get( "/utility/health/document-db", async (request, response) => {
-    const { PG } = await import("@iac-factory/api-database");
+    const { User } = await import("@iac-factory/api-database");
 
-    const health = await PG.Health();
+    const connection = await User.db.getClient().connect();
 
     response.status( 200 ).send( {
-        status: ( health )
+        status: ( connection )
             ? "Online"
             : "Offline"
     } );

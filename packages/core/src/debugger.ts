@@ -76,7 +76,6 @@ export module Debugger {
         info: Type["info"];
         warn: Type["warn"];
         error: Type["error"];
-        log: Type["log"];
 
         private depth: number;
         private sorting: boolean;
@@ -114,8 +113,6 @@ export module Debugger {
             this.info = logger.info;
             this.warn = logger.warn;
             this.error = logger.error;
-
-            this.log = Reflect.get( logger, settings.level[ 0 ] );
         }
 
         private static debug(instance: Logger) {
@@ -240,8 +237,6 @@ export module Debugger {
         info: (input: object | string) => void;
         warn: (input: object | string) => void;
         error: (input: object | string) => void;
-
-        log: (input: object | string) => void;
     }
 
     export type Types = keyof Type;

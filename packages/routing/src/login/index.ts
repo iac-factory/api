@@ -13,7 +13,9 @@ Router.post( "/login", async (request, response) => {
     const { password } = ( credentials ) ? { password: credentials[ 1 ] } : request.body ?? { password: null };
 
     const error = ( !username || !password );
-    return ( !error ) ? await Validate( response, username, password )
+
+    const server = request.protocol + "://" + request.hostname;
+    return ( !error ) ? await Validate( request.get("origin") ?? server, response, username, password )
         : response.status( 401 ).send( {
             error: "Username + Password Required"
         } );

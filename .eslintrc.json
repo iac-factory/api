@@ -51,9 +51,7 @@
         }
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:import/typescript",
-        "plugin:import/typescript"
+        "eslint:recommended"
     ],
     "settings": {
         "import/parsers": {

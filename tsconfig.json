@@ -2,15 +2,16 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "display": "@iac-factory/tsc-configuration",
     "ts-node": {
+        "experimentalResolverFeatures": true,
         "preferTsExts": true,
         "transpileOnly": true,
         "swc": true
     },
     "compilerOptions": {
-        "baseUrl": ".",
+        "rootDir": ".",
         "lib": ["ES6", "ESNext"],
         "module": "CommonJS",
-        "target": "ESNext",
+        "target": "ES6",
         "moduleResolution": "Node",
         "strict": true,
         "esModuleInterop": true,
@@ -18,18 +19,28 @@
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
-        "noPropertyAccessFromIndexSignature": true,
         "noUncheckedIndexedAccess": true,
         "resolveJsonModule": true,
-        "incremental": false,
         "noEmitOnError": true,
         "outDir": "distribution",
         "allowJs": true,
+        "strictBindCallApply": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
+        "noImplicitOverride": true,
+        "noStrictGenericChecks": true,
         "strictFunctionTypes": true,
-        "strictNullChecks": true
+        "pretty": true,
+        "strictNullChecks": true,
+        "noErrorTruncation": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "declaration": true,
+        "inlineSources": true,
+        "sourceMap": true,
+        "composite": true,
+        "importHelpers": true
     },
-    "exclude": ["ci", "iac", "distribution", "coverage", "scripts"],
-    "include": ["**/*.json", "**/*.ts"]
+    "include": ["**/*.json", "**/*.ts"],
+    "exclude": ["ci", "iac", "distribution", "coverage", "scripts"]
 }

@@ -1,4 +1,5 @@
 import Module from "module";
+
 import type Options from "esm";
 
 const Import = Module.createRequire(__filename);
