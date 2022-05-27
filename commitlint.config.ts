@@ -18,9 +18,9 @@ export const Configuration = {
      */
     rules: {
         "type-enum": [ 2, "always", [ "Feature", "Fix", "Chore", "Documentation", "Style", "Refactor", "Test", "Reversion", "Syntax", "Bug", "CI", "Bump" ] ],
-        "type-case": [ 2, "always", ["start-case", "sentence-case", "kebab-case"]],
-        "scope-case": [ 2, "always", ["start-case", "sentence-case", "kebab-case"]],
-        "subject-case": [ 2, "always", [ "lower-case", "upper-case", "camel-case", "kebab-case", "pascal-case", "sentence-case", "snake-case", "start-case", ]],
+        "type-case": [ 2, "always", [ "start-case", "sentence-case", "kebab-case" ] ],
+        "scope-case": [ 2, "always", [ "start-case", "sentence-case", "kebab-case" ] ],
+        "subject-case": [ 2, "always", [ "lower-case", "upper-case", "camel-case", "kebab-case", "pascal-case", "sentence-case", "snake-case", "start-case" ] ]
     },
     /*
      * Functions that return true if commitlint should ignore the given message.
