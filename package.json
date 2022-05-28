@@ -11,7 +11,7 @@
         "@swc/helpers": "^0.3.16",
         "@tsconfig/esm": "^1.0.0",
         "@tsconfig/node16-strictest-esm": "^1.0.1",
-        "@types/jest": "^27.5.1",
+        "@jest/types": "^28.1.0",
         "@types/jsonwebtoken": "^8.5.8",
         "@types/node": "^17.0.34",
         "@typescript-eslint/eslint-plugin": "^5.25.0",
