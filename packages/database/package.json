@@ -10,20 +10,21 @@
         "build": "tsc --build $(dirname $(npm root)/tsconfig.json"
     },
     "dependencies": {
-        "esm": "^3.2.25",
-        "mongodb": "^4.6.0",
-        "pg": "^8.7.3",
-        "mongoose": "^6.3.4",
+        "@iac-factory/api-core": "*",
+        "@iac-factory/api-schema": "*",
         "bcrypt": "^5.0.1",
         "bcryptjs": "^2.4.3",
-        "@iac-factory/api-core": "*",
-        "@iac-factory/api-schema": "*"
+        "devops": "^0.0.0",
+        "esm": "^3.2.25",
+        "mongodb": "^4.6.0",
+        "mongoose": "^6.3.4",
+        "pg": "^8.7.3"
     },
     "devDependencies": {
-        "@types/esm": "^3.2.0",
-        "@types/pg": "^8.6.5",
         "@types/bcrypt": "^5.0.0",
-        "@types/bcryptjs": "^2.4.2"
+        "@types/bcryptjs": "^2.4.2",
+        "@types/esm": "^3.2.0",
+        "@types/pg": "^8.6.5"
     },
     "eslintConfig": {
         "settings": {

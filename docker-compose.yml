@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+    backend:
+        image:          "api:latest"
+        container_name: "api"
+        working_dir:    /Application
+        build:          .
+        ports:
+            - "3000:3000"
+        depends_on:
+            - postgres
+            - mongo
+
+    front-end:
+        image:          "web:latest"
+        container_name: "web"
+        working_dir:    /Application
+        build:          front-end
+        command: "serve --single . --listen 8080 --no-clipboard"
+        ports:
+            - "8080:8080"
+        depends_on:
+            - backend
+
+    postgres:
+        image:          postgres:latest
+        container_name: "postgres"
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: "postgres"
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "postgres"
+            POSTGRES_HOST_AUTH_METHOD: "trust"
+
+    mongo:
+        image:          mongo
+        container_name: mongodb
+        ports:
+            - "2717:27017"
+        volumes:
+            - "data:/data"
+
+volumes:
+    data: { }
+
+networks:
+    default:
+        name: iac-network

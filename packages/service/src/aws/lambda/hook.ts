@@ -80,13 +80,15 @@ export module Hook {
      *
      * Refer to the POSIX fdatasync(2) documentation for details.
      *
-     * Returns undefined
+     * Note - Does not work in non-tty-based environments. However, it is
+     * handled gracefully
      */
     const flush = async function (): Promise<void> {
         return new Promise( (resolve) => {
             FS.fdatasync( stdout.fd, (error) => {
-                if ( error ) throw error;
-
+                if (error?.errno !== -22) {
+                    if ( error ) throw error;
+                }
                 resolve();
             } );
         } );

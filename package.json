@@ -1,17 +1,16 @@
 {
     "name": "@iac-factory/api",
     "private": true,
-    "type": "commonjs",
     "devDependencies": {
         "@commitlint/cli": "^17.0.1",
         "@commitlint/config-conventional": "^17.0.0",
         "@commitlint/prompt-cli": "^17.0.0",
         "@jest/globals": "^28.1.0",
+        "@jest/types": "^28.1.0",
         "@swc/core": "^1.2.194",
         "@swc/helpers": "^0.3.16",
         "@tsconfig/esm": "^1.0.0",
         "@tsconfig/node16-strictest-esm": "^1.0.1",
-        "@jest/types": "^28.1.0",
         "@types/jsonwebtoken": "^8.5.8",
         "@types/node": "^17.0.34",
         "@typescript-eslint/eslint-plugin": "^5.25.0",
@@ -25,7 +24,6 @@
         "ts-jest": "^28.0.2",
         "ts-node": "^10.7.0",
         "typescript": "^4.7.2"
-
     },
     "dependencies": {
         "@iac-factory/api-core": "file:packages/core",
@@ -35,9 +33,9 @@
         "@iac-factory/api-schema": "file:packages/schema",
         "@iac-factory/api-services": "file:packages/service",
         "@iac-factory/ecma": "file:packages/ecma",
-        "tslib": "^2.4.0",
         "dotenv": "^16.0.1",
-        "dotenv-expand": "^8.0.3"
+        "dotenv-expand": "^8.0.3",
+        "tslib": "^2.4.0"
     },
     "author": {
         "name": "Jacob B. Sanders",
@@ -46,28 +44,23 @@
     },
     "scripts": {
         "production": "npm install --install-links --omit dev --omit optional --omit peer",
-        "setup": "lerna init && lerna link && npm run post-setup",
-        "post-setup": "lerna bootstrap --npm-client npm",
-        "build": "tsc --build $(dirname $(npm root))",
+        "setup": "lerna init && lerna link && npm run post-setup && lerna bootstrap --npm-client npm",
         "release": "lerna version patch --no-private",
+        "prepare": "chmod a+x ci/scripts/.husky/commit-msg",
+        "mongo": "mongod --bind_ip mongodb --port 27017 --dbpath data-dump",
         "postversion": "lerna publish from-git --canary --no-private",
-        "post-version-git": "lerna publish from-git --registry https://npm.pkg.github.com/ --canary --no-private",
         "ci": "npm run release",
-        "pretest": "tsc",
-        "test": "node --experimental-vm-modules $(command -v jest) --config jest.config.js --injectGlobals --detectOpenHandles",
+        "test": "tsc && node --experimental-vm-modules $(command -v jest) --config jest.config.js --injectGlobals --detectOpenHandles",
         "commit": "git add --all && commit",
         "prestart": "tsc",
         "start": "ts-node $(dirname $(npm root))",
-        "development": "nodemon --ext ts --ignore js --exec \"tsc --diagnostics && ts-node .\"",
-        "test-commit": "npx commitlint --from HEAD~1 --to HEAD --verbose",
-        "uninstall-husky": "npm uninstall husky && git config --unset core.hooksPath",
-        "maps": "find ./packages -type f -name '*.map' -exec rm -rf {} \\;",
-        "declarations": "find ./packages -type f -name '*.d.*' -exec rm -rf {} \\;",
-        "clean": "npm run declarations && npm run maps && find ./packages -type f -name '*.js' -exec rm -rf {} \\;"
+        "watch": "nodemon --ext ts --ignore js --exec \"tsc --diagnostics && ts-node .\"",
+        "compose": "bash ci/scripts/initialize",
+        "distributed-systems": "docker-compose --file ci/distribution-systems/docker-compose.yml up --build --force-recreate --always-recreate-deps --remove-orphans"
     },
     "husky": {
         "hooks": {
-            "commit-msg": "exec scripts/.husky/commit-msg"
+            "commit-msg": "exec ci/scripts/.husky/commit-msg"
         }
     }
 }

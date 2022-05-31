@@ -42,5 +42,5 @@
         "importHelpers": true
     },
     "include": ["**/*.json", "**/*.ts"],
-    "exclude": ["ci", "iac", "distribution", "coverage", "scripts"]
+    "exclude": ["ci", "iac", "distribution", "coverage", "ci/scripts", "front-end"]
 }

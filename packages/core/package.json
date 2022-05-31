@@ -10,12 +10,11 @@
 		"build": "tsc --build $(dirname $(npm root)/tsconfig.json"
 	},
 	"dependencies": {
-        "@iac-factory/ecma": "file:../ecma",
-		"@iac-factory/api-services": "file:../service",
 		"@iac-factory/api-middleware": "file:../middleware",
 		"@iac-factory/api-routing": "file:../routing",
-		"ansi-colors": "^4.1.3",
-		"esm": "^3.2.25"
+		"@iac-factory/api-services": "file:../service",
+		"@iac-factory/ecma": "file:../ecma",
+		"ansi-colors": "^4.1.3"
 	},
 	"devDependencies": {
 		"@types/esm": "^3.2.0"

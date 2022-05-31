@@ -10,13 +10,13 @@
         "build": "tsc --build $(dirname $(npm root)/tsconfig.json"
     },
     "dependencies": {
-        "esm": "^3.2.25",
         "body-parser": "^1.20.0",
-        "compression": "^1.7.4"
+        "compression": "^1.7.4",
+        "esm": "^3.2.25"
     },
     "devDependencies": {
-        "@types/esm": "^3.2.0",
-        "@types/compression": "^1.7.2"
+        "@types/compression": "^1.7.2",
+        "@types/esm": "^3.2.0"
     },
     "eslintConfig": {
         "settings": {

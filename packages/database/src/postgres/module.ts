@@ -38,7 +38,13 @@ import { Pool, QueryResultRow } from "pg";
 import { Debugger } from "@iac-factory/api-core";
 
 export module PG {
-    const Connection = new Pool();
+    const Connection = new Pool({
+        password: process.env["POSTGRES_PASSWORD"],
+        user: process.env["POSTGRES_USER"],
+        database: process.env["POSTGRES_DB"],
+        application_name: process.env["SERVER"],
+        keepAlive: process.env["POSTGRES_CONNECTION_KEEPALIVE"] === "true"
+    });
 
     export const Query = async function (input: string, parameters?: any) {
         const logger = Debugger.hydrate( {

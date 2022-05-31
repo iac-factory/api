@@ -178,41 +178,7 @@ resource "aws_security_group" "application-load-balancer-http-security-group" {
 
 resource "aws_s3_bucket" "application-load-balancer-logging-bucket" {
     bucket        = lower(join(".", [ "logging", local.fqdn ]))
-    acl           = "log-delivery-write"
     force_destroy = true
-    replication_configuration {
-        role = ""
-        rules {
-            status = ""
-            destination {
-                bucket = ""
-            }
-        }
-    }
-}
-
-resource "aws_s3_bucket" "log_bucket" {
-    bucket = "my-tf-log-bucket"
-    acl    = "log-delivery-write"
-
-    lifecycle_rule {
-        prefix = "config/"
-        enabled = true
-
-        noncurrent_version_transition {
-            days = 30
-            storage_class = "STANDARD_IA"
-        }
-        noncurrent_version_transition {
-            days = 60
-            storage_class = "GLACIER"
-        }
-    }
-}
-
-resource "aws_s3_bucket_acl" "primary-bucket-acl" {
-    bucket = aws_s3_bucket.application-load-balancer-logging-bucket.id
-    acl    = "log-delivery-write"
 }
 
 //resource "aws_s3_bucket_policy" "primary-bucket-policy" {

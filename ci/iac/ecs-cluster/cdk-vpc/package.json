@@ -1,0 +1,31 @@
+{
+    "name": "cdk-vpc",
+    "version": "0.1.0",
+    "bin": {
+        "cdk-vpc": "bin/cdk-vpc.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "test": "jest",
+        "cdk": "cdk",
+        "cfn": "cdk synth",
+        "deploy": "cdk deploy",
+        "destroy": "cdk destroy"
+    },
+    "devDependencies": {
+        "@jest/types": "^28.1.0",
+        "@types/node": "17.0.36",
+        "@types/prettier": "2.6.0",
+        "jest": "^28.1.0",
+        "ts-jest": "^28.0.3",
+        "aws-cdk": "2.26.0",
+        "ts-node": "^10.7.0",
+        "typescript": "4.7.2"
+    },
+    "dependencies": {
+        "aws-cdk-lib": "2.26.0",
+        "constructs": "^10.1.23",
+        "source-map-support": "^0.5.21"
+    }
+}

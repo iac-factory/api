@@ -6,6 +6,8 @@ Router.get( "/utility/health/document-db", async (request, response) => {
 
     const connection = await User.db.getClient().connect();
 
+    console.log(connection);
+
     response.status( 200 ).send( {
         status: ( connection )
             ? "Online"

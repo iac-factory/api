@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+    postgres:
+        image:          postgres:latest
+        container_name: "postgres"
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: "postgres"
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "postgres"
+            POSTGRES_HOST_AUTH_METHOD: "trust"
+
+    mongo:
+        image:          mongo
+        container_name: mongodb
+        ports:
+            - "2717:27017"
+        volumes:
+            - "data:/data"
+
+volumes:
+    data: { }
+
+networks:
+    default:
+        name: iac-network
