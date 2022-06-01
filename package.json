@@ -33,6 +33,7 @@
         "@iac-factory/api-schema": "file:packages/schema",
         "@iac-factory/api-services": "file:packages/service",
         "@iac-factory/ecma": "file:packages/ecma",
+        "@local/ci": "file:ci",
         "dotenv": "^16.0.1",
         "dotenv-expand": "^8.0.3",
         "tslib": "^2.4.0"

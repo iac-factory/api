@@ -4,12 +4,10 @@ import Awaitable from "node:async_hooks" ;
 const { fd: output } = process.stdout;
 const logger = { indent: 0 };
 
-export const Debug = ( process.argv.includes( "--debug" ) && process.argv.includes( "--runtime" ) );
 export const Runtime = Awaitable.createHook( {
     init( asyncId: number, type: string, triggerAsyncId: number ) {
         const eid = Awaitable.executionAsyncId();
         const indentation = " ".repeat( logger.indent );
-        FS.writeSync( output, `${ indentation }${ type }(${ asyncId }):` + ` trigger: ${ triggerAsyncId } execution: ${ eid }\n` );
     },
     before( asyncId: number ) {
         const indentation = " ".repeat( logger.indent );
@@ -24,8 +22,10 @@ export const Runtime = Awaitable.createHook( {
     destroy( asyncId: number ) {
         const indentation = " ".repeat( logger.indent );
         FS.writeSync( output, `${ indentation }destroy:  ${ asyncId }\n` );
-    },
+    }
 } );
+
+export const Debug = ( process.argv.includes( "--debug" ) && process.argv.includes( "--runtime" ) );
 
 export const Register = () => {
     (Debug) && Runtime.enable();
@@ -46,7 +46,6 @@ export const Main = async () => {
 };
 
 export default Main;
-
 
 import "dotenv/config";
 

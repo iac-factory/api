@@ -1,0 +1,18 @@
+{
+    "ts-node": {
+        "experimentalResolverFeatures": true,
+        "preferTsExts": false,
+        "transpileOnly": true,
+        "typeCheck": false,
+        "files": true,
+        "require": [
+            "./compile.cjs"
+        ]
+    },
+    "compilerOptions": {
+        "module": "ESNext",
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
+    }
+}

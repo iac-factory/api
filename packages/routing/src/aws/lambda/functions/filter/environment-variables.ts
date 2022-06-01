@@ -1,4 +1,10 @@
 import { Controller } from "@iac-factory/api-services";
+import { IaC } from "IaC.API.Controller";
+
+interface GetParams {
+    [key: string]: string
+    paramName: string
+}
 
 export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Filter.Variables");
 
