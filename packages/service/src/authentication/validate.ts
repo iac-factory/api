@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { v4 as UUID } from "uuid";
 import Cryptography from "bcryptjs";
 import Token, { SignOptions } from "jsonwebtoken";
@@ -6,7 +14,6 @@ import { User } from "@iac-factory/api-database";
 import { HTTP } from "@iac-factory/api-schema";
 
 import { Debugger } from "@iac-factory/api-core";
-import { randomUUID } from "crypto";
 
 /***
  * JWT Login Verification
@@ -31,14 +38,14 @@ export const Validate = async function (server: string, response: HTTP.Response,
         depth: [ 1, true ]
     } );
 
-    Logger.debug("Server" + ":" + " " + server);
+    Logger.debug( "Server" + ":" + " " + server );
 
     const verification = async () => ( Record ) ? new Promise( (resolve) => {
         const hash = Record.password as string;
 
         Cryptography.compare( password, hash, (error, success) => {
-            (error) && Logger.warn("Invalid Authorization Attempt" + " " + "(" + username + ")");
-            (success) && Logger.debug("Valid Authorization Attempt" + " " + "(" + username + ")");
+            ( error ) && Logger.warn( "Invalid Authorization Attempt" + " " + "(" + username + ")" );
+            ( success ) && Logger.debug( "Valid Authorization Attempt" + " " + "(" + username + ")" );
 
             if ( error ) throw error;
 
@@ -47,9 +54,11 @@ export const Validate = async function (server: string, response: HTTP.Response,
     } ) : null;
 
     const valid = await verification();
-    if ( ( !Record ) || ( !valid ) ) return response.status( 401 )
-        .set("WWW-Authenticate", "Token-Exchange")
-        .send( "Invalid Username & Password Combination" );
+    if ( ( !Record ) || ( !valid ) ) {
+        return response.status( 401 )
+            .set( "WWW-Authenticate", "Token-Exchange" )
+            .send( "Invalid Username & Password Combination" );
+    }
 
     const { id } = Record;
     const uid = UUID();
@@ -59,7 +68,7 @@ export const Validate = async function (server: string, response: HTTP.Response,
         audience: [
             server,
             "Internal",
-            "Access", // "Refresh",
+            "Access" // "Refresh",
         ],
         issuer: "IaC-API",
         expiresIn: "1d",
@@ -72,13 +81,16 @@ export const Validate = async function (server: string, response: HTTP.Response,
         }
     };
 
-    const payload = { id, uid };
+    const payload = {
+        id,
+        uid
+    };
 
     const token = Token.sign( payload, process.env[ "SECRET" ]!, fields );
 
-    Logger.debug("JWT Token" + " " + "(" + token + ")");
+    Logger.debug( "JWT Token" + " " + "(" + token + ")" );
 
-    response.set("Content-Type", "Application/JWT")
+    response.set( "Content-Type", "Application/JWT" )
         .status( 200 ).send( token );
 };
 

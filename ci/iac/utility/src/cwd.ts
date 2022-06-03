@@ -1,5 +1,5 @@
 /// The actual current directory for the process if running external (`npx`)
-const Initial = process.env?.["INIT_CWD"] ?? null;
+const Initial = process.env?.[ "INIT_CWD" ] ?? null;
 
 ( Initial !== null ) && process.chdir( Initial );
 

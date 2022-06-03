@@ -1,5 +1,4 @@
-import { Controller } from "@iac-factory/api-services";
-import { Validate } from "@iac-factory/api-services";
+import { Controller, Validate } from "@iac-factory/api-services";
 
 export const Router = Controller( "IaC.Factory.API.Login" );
 Router.post( "/login", async (request, response) => {
@@ -15,7 +14,7 @@ Router.post( "/login", async (request, response) => {
     const error = ( !username || !password );
 
     const server = request.protocol + "://" + request.hostname;
-    return ( !error ) ? await Validate( request.get("origin") ?? server, response, username, password )
+    return ( !error ) ? await Validate( request.get( "origin" ) ?? server, response, username, password )
         : response.status( 401 ).send( {
             error: "Username + Password Required"
         } );

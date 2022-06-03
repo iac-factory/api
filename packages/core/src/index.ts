@@ -12,6 +12,7 @@ const Logger = Debugger.hydrate( {
 } );
 
 Logger.debug( "Starting Server ..." );
+
 async function Main(): Promise<void> {
     Logger.debug( "Establishing Global Registry" );
 

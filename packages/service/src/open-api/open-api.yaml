@@ -2,39 +2,39 @@
 openapi: 3.1.0
 
 info:
-    title: IaC API
+    title:       IaC API
     description: IaC API
-    version: 1.0.0
+    version:     1.0.0
 
 servers:
-    - url: http://localhost:3000
-    - url: http://{hostname}:{port}/
-      description: "..."
-      variables:
-          base:
-              enum:
-                  - ''
-                  - v1
-                  - v2
-                  - api
-              default: ''
-          hostname:
-              enum:
-                  - localhost
-              default: localhost
-          port:
-              enum:
-                  - '8443'
-                  - '443'
-                  - '3000'
-                  - '80'
-              default: '3000'
-          protocol:
-              enum:
-                  - http
-                  - https
-                  - git
-              default: http
+    -   url: http://localhost:3000
+    -   url:         http://{hostname}:{port}/
+        description: "..."
+        variables:
+            base:
+                enum:
+                    - ''
+                    - v1
+                    - v2
+                    - api
+                default: ''
+            hostname:
+                enum:
+                    - localhost
+                default: localhost
+            port:
+                enum:
+                    - '8443'
+                    - '443'
+                    - '3000'
+                    - '80'
+                default: '3000'
+            protocol:
+                enum:
+                    - http
+                    - https
+                    - git
+                default: http
 
 paths:
     "/":
@@ -50,12 +50,12 @@ paths:
                 '200':
                     description: OK
             parameters:
-                - "$ref": "#/components/parameters/environment-variable"
+                -   "$ref": "#/components/parameters/environment-variable"
     "/aws/lambda/functions/{configuration-filter}":
         get:
             summary: GET aws/lambda/functions/{lambda-function}
             parameters:
-                - "$ref": "#/components/parameters/configuration"
+                -   "$ref": "#/components/parameters/configuration"
             responses:
                 '200':
                     description: OK
@@ -116,17 +116,17 @@ components:
             type: string
     parameters:
         environment-variable:
-            name: environment-variable
-            in: path
+            name:        environment-variable
+            in:          path
             description: An arbitrary required path-related string
-            required: true
+            required:    true
             schema:
                 type: string
         configuration:
-            name: configuration-filter
-            in: path
+            name:        configuration-filter
+            in:          path
             description: A Path Filter used via Lambda Function Endpoint(s)
-            required: true
+            required:    true
             schema:
                 type: string
     responses:
@@ -135,47 +135,47 @@ components:
             headers:
                 Content-Type:
                     schema:
-                        type: string
+                        type:    string
                         default: Application/JSON
-                    style: simple
+                    style:    simple
                     required: true
         '405':
             description: Method Not Allowed
             content:
-                "*/*": {}
-                application/json: {}
-                application/xml: {}
+                "*/*": { }
+                application/json: { }
+                application/xml: { }
     securitySchemes:
         Basic:
-            type: http
-            scheme: basic
+            type:        http
+            scheme:      basic
             description: "..."
         API:
             type: apiKey
             name: X-API-Key
-            in: header
+            in:   header
         JWT:
-            type: http
-            scheme: bearer
+            type:         http
+            scheme:       bearer
             bearerFormat: JWT
-            description: "..."
+            description:  "..."
         Flow:
             type: oauth2
             flows:
                 implicit:
                     authorizationUrl: https://example.com/api/oauth/dialog
-                    refreshUrl: ''
+                    refreshUrl:       ''
                     scopes:
                         write:pets: modify pets in your account
-                        read:pets: read your pets
+                        read:pets:  read your pets
                 authorizationCode:
                     authorizationUrl: https://example.com/api/oauth/dialog
-                    tokenUrl: https://example.com/api/oauth/token
+                    tokenUrl:         https://example.com/api/oauth/token
                     scopes:
                         write:pets: modify pets in your account
-                        read:pets: read your pets
+                        read:pets:  read your pets
 security:
-    - {}
-    - Basic: []
-    - API: []
-    - JWT: []
+    - { }
+    -   Basic: [ ]
+    -   API: [ ]
+    -   JWT: [ ]

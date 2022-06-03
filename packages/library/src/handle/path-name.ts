@@ -1,6 +1,7 @@
 import { HTTP } from "@iac-factory/api-schema";
 
 import url from "url";
+
 const parse = url.parse;
 const Url = url.URL;
 
@@ -19,7 +20,7 @@ export function parseurl(req: HTTP.Request): object | undefined {
     }
 
     // @ts-ignore
-    var parsed = req["_parsedUrl"];
+    var parsed = req[ "_parsedUrl" ];
 
     if ( fresh( url, parsed ) ) {
         // Return cached URL parse
@@ -49,7 +50,7 @@ export function originalurl(req: HTTP.Request) {
     }
 
     // @ts-ignore
-    var parsed = req["_parsedOriginalUrl"];
+    var parsed = req[ "_parsedOriginalUrl" ];
 
     if ( fresh( url, parsed ) ) {
         // Return cached URL parse
@@ -153,7 +154,7 @@ export function fresh(url: any, parsedUrl: any) {
  * @private
  */
 
-export const Path = function (req: HTTP.Request & { pathname?: string} ) {
+export const Path = function (req: HTTP.Request & { pathname?: string }) {
     try {
         // @ts-ignore
         return parseurl( req )?.pathname;

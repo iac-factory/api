@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Controller } from "@iac-factory/api-services";
 
 export const Router = Controller( "IaC.Factory.API" );
@@ -25,7 +33,7 @@ export interface Dictionary {
 
 export type Parameters = Dictionary;
 
-export interface Handler<
-    Parameter = Dictionary,
-    Locals extends Record<string, any> = Record<string, any>> {(callable: { dictionary: Dictionary, locals: Locals }): void;
+export interface Handler<Parameter = Dictionary,
+    Locals extends Record<string, any> = Record<string, any>> {
+    (callable: { dictionary: Dictionary, locals: Locals }): void;
 }

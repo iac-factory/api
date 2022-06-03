@@ -1,6 +1,6 @@
 import Dot from "dotenv";
 import Expansion from "dotenv-expand";
 
-Expansion.expand(Dot.config());
+Expansion.expand( Dot.config() );
 
-void (async () => import("./src"))();
+void ( async () => import("./src") )();

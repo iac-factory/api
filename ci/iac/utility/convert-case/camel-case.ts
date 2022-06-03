@@ -15,6 +15,7 @@ interface Node extends Element {
 }
 
 const Properties = new WeakMap();
+
 export function Abstract<Generic extends Object & { prototype: {} }>(node: Node): void {
     if ( !( this instanceof Abstract ) ) {
         return new Abstract( node );

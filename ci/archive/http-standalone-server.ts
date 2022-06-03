@@ -4,7 +4,7 @@ import HTTP from "http";
 import Process from "process";
 import Cluster from "cluster";
 
-import Threads from "worker_threads"
+import Threads from "worker_threads";
 
 import { Readable } from "stream";
 
@@ -27,7 +27,7 @@ export interface Outbound extends Response, HTTP.OutgoingMessage {}
  *
  */
 export interface Headers {
-    [header: string]: string;
+    [ header: string ]: string;
 }
 
 /***
@@ -50,7 +50,7 @@ export interface Message {
  *
  */
 export interface Parameters {
-    [parameter: string]: string | Array<string> | null;
+    [ parameter: string ]: string | Array<string> | null;
 }
 
 export interface Endpoint {
@@ -62,11 +62,6 @@ export interface Endpoint {
 }
 
 class Handler extends HTTP.Server {
-    /*** Can be used for debugging child processes (Actual HTTP Server(s) responding to /api-endpoint requests) */
-    /// static Base: Handler = new Handler();
-
-    initialize = (options: Listener) => HTTP.createServer(options);
-
     master: any;
 
     constructor(master: any) {
@@ -76,61 +71,66 @@ class Handler extends HTTP.Server {
     }
 
     static async handle(request: Request, response: Outbound, url: URL, handler?: Asynchronous) {
-        response.writeHead(200);
+        response.writeHead( 200 );
 
         /// console.log(request, response, url, handler ?? null);
 
-        response.end((handler) ? await handler(url, request, response) : () => null);
+        response.end( ( handler ) ? await handler( url, request, response ) : () => null );
     }
 
+    /*** Can be used for debugging child processes (Actual HTTP Server(s) responding to /api-endpoint requests) */
+        /// static Base: Handler = new Handler();
+
+    initialize = (options: Listener) => HTTP.createServer( options );
+
     async default(request: Request, response: Outbound, url: URL, handler?: Asynchronous) {
-        response.writeHead(200);
+        response.writeHead( 200 );
 
         /// console.log(request, response, url, handler ?? null);
 
-        response.end((handler) ? await handler(url, request, response) : () => null);
+        response.end( ( handler ) ? await handler( url, request, response ) : () => null );
     }
 
     async get(request: Request, response: Outbound, url: URL, handler?: Asynchronous) {
-        console.log(this.master);
+        console.log( this.master );
 
-        (request.method !== "GET") && response.writeHead(405);
-        (request.method !== "GET") && response.end();
+        ( request.method !== "GET" ) && response.writeHead( 405 );
+        ( request.method !== "GET" ) && response.end();
 
-        if (request.method === "GET") {
-            await Handler.handle(request, response, url, handler)
+        if ( request.method === "GET" ) {
+            await Handler.handle( request, response, url, handler );
         }
     }
 
     async post(request: Request, response: Outbound, url: URL, handler?: Asynchronous) {
-        (request.method !== "POST") && response.writeHead(405);
-        (request.method !== "POST") && response.end();
+        ( request.method !== "POST" ) && response.writeHead( 405 );
+        ( request.method !== "POST" ) && response.end();
 
-        if (request.method === "POST") {
-            await Handler.handle(request, response, url, handler)
+        if ( request.method === "POST" ) {
+            await Handler.handle( request, response, url, handler );
         }
     }
 
     async update(request: Request, response: Outbound, url: URL, handler?: Asynchronous) {
-        (request.method !== "UPDATE") && response.writeHead(405);
-        (request.method !== "UPDATE") && response.end();
+        ( request.method !== "UPDATE" ) && response.writeHead( 405 );
+        ( request.method !== "UPDATE" ) && response.end();
 
-        if (request.method === "UPDATE") {
-            await Handler.handle(request, response, url, handler)
+        if ( request.method === "UPDATE" ) {
+            await Handler.handle( request, response, url, handler );
         }
     }
 
     async delete(request: Request, response: Outbound, url: URL, handler?: Asynchronous) {
-        (request.method !== "DELETE") && response.writeHead(405);
-        (request.method !== "DELETE") && response.end();
+        ( request.method !== "DELETE" ) && response.writeHead( 405 );
+        ( request.method !== "DELETE" ) && response.end();
 
-        if (request.method === "DELETE") {
-            await Handler.handle(request, response, url, handler)
+        if ( request.method === "DELETE" ) {
+            await Handler.handle( request, response, url, handler );
         }
     }
 }
 
-const Server = new Handler(Cluster);
+const Server = new Handler( Cluster );
 
 /// After ... Some confusion, it was found that Node.js does not allow TCP-sharing between the Master --> Child processes
 ///
@@ -142,53 +142,55 @@ const Server = new Handler(Cluster);
 /// ... must only make asynchronous syscalls. But node.js's runtime is inherently asynchronous... Lucky catch,
 /// ... especially when the context comes down to clustering intra-system...ly.
 
-if (Cluster.isPrimary && Threads.isMainThread) { /// Parent Process
-    console.log("Main Event Loop", Process.pid);
+if ( Cluster.isPrimary && Threads.isMainThread ) { /// Parent Process
+    console.log( "Main Event Loop", Process.pid );
 
-    OS.cpus().forEach(() => {
+    OS.cpus().forEach( () => {
         Cluster.fork();
         /// --> new Worker(import.meta.url.replace("file://", ""));
-    });
+    } );
 
     // --> Track Total HTTP Requests
     let $ = 0;
     // <-- Count HTTP Requests
     const receiver = (message: Generic) => {
-        $ += (message?.cmd && message?.cmd === "reception") ? 1 : 0;
+        $ += ( message?.cmd && message?.cmd === "reception" ) ? 1 : 0;
 
-        (message?.cmd && message?.cmd === "reception") && console.log( "Request Closure" + " " + "(" + $ + ")" + "\t", message?.id[0], message?.id[1] );
+        ( message?.cmd && message?.cmd === "reception" ) && console.log( "Request Closure" + " " + "(" + $ + ")" + "\t", message?.id[ 0 ], message?.id[ 1 ] );
 
         /// ... Very interesting Effects on Cluster := `for (let n = 0; n < 1e10; n++)`
         /// --> Blocks given that communication through process.stdout requires a momentarily blocking state
-    }
+    };
 
-    Cluster.on("exit", (worker, code, signal) => {
-        if (signal) {
-            console.log("Worker (SIGKILL)" + ":", worker);
-        } else if (code) {
-            console.log("Worker (Error)" + ":", code);
+    Cluster.on( "exit", (worker, code, signal) => {
+        if ( signal ) {
+            console.log( "Worker (SIGKILL)" + ":", worker );
         } else {
-            console.log("Successful Termination", worker);
+            if ( code ) {
+                console.log( "Worker (Error)" + ":", code );
+            } else {
+                console.log( "Successful Termination", worker );
+            }
         }
 
-        console.log("Worker" + ":", "(" + worker + ")", "Code" + ":", "(" + code + ")", "Signal" + ":", "(" + signal + ")");
-    });
+        console.log( "Worker" + ":", "(" + worker + ")", "Code" + ":", "(" + code + ")", "Signal" + ":", "(" + signal + ")" );
+    } );
 
-    Cluster.on("shutdown", () => {
-        console.log("Shutdown ... Ahhhhhh");
-    })
+    Cluster.on( "shutdown", () => {
+        console.log( "Shutdown ... Ahhhhhh" );
+    } );
 
-    for (const $ in Cluster.workers) {
+    for ( const $ in Cluster.workers ) {
         // @ts-ignore
-        Cluster?.workers[$].on("message", receiver);
+        Cluster?.workers[ $ ].on( "message", receiver );
     }
 
     console.log( "  - HTTP Endpoint: http://127.0.0.1:8080/api-endpoint" );
 } else { /// Child Process(es)
-    console.log("Worker Process" + ":", Process.pid);
+    console.log( "Worker Process" + ":", Process.pid );
 
     Server.initialize( async (request: Request, response: Response) => {
-        console.log( "Request Initialization", "\t", Process.ppid, Process.pid);
+        console.log( "Request Initialization", "\t", Process.ppid, Process.pid );
         /***
          * Force a Heavy Computation
          * ---
@@ -214,19 +216,19 @@ if (Cluster.isPrimary && Threads.isMainThread) { /// Parent Process
          *
          */
 
-        /// await Wait(10000);
-        /// function Wait(time: number) {
-        ///     return new Promise((resolve) => {
-        ///         setTimeout(resolve.bind(null), time)
-        ///     })
-        /// }
+            /// await Wait(10000);
+            /// function Wait(time: number) {
+            ///     return new Promise((resolve) => {
+            ///         setTimeout(resolve.bind(null), time)
+            ///     })
+            /// }
 
-        // ... Well, here would be a decent example ... but boring
-        /// for (let n = 0; n < 1e7; n++) { /*** */ }
+            // ... Well, here would be a decent example ... but boring
+            /// for (let n = 0; n < 1e7; n++) { /*** */ }
 
         const Implementation = {
-            Default: Server.get
-        };
+                Default: Server.get
+            };
 
         const Options = new URL( String( request.url ), "http://127.0.0.1/" );
 
@@ -234,13 +236,16 @@ if (Cluster.isPrimary && Threads.isMainThread) { /// Parent Process
 
         /// console.debug( "[Debug]", (Utility.inspect( Server )) );
 
-        (Options.pathname === "/api-endpoint") && await Implementation.Default( request, response, Options);
+        ( Options.pathname === "/api-endpoint" ) && await Implementation.Default( request, response, Options );
 
-        (Options.pathname === "/api-endpoint") || response.writeHead( 404 );
-        (Options.pathname === "/api-endpoint") || response.end();
+        ( Options.pathname === "/api-endpoint" ) || response.writeHead( 404 );
+        ( Options.pathname === "/api-endpoint" ) || response.end();
 
         // @ts-ignore
-        Process?.send({ cmd: "reception", id: [Process.ppid, Process.pid] });
+        Process?.send( {
+            cmd: "reception",
+            id: [ Process.ppid, Process.pid ]
+        } );
 
         response.end();
     } ).listen( 8080, () => {

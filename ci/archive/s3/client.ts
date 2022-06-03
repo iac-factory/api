@@ -66,7 +66,7 @@ class Credential {
 
     constructor(profile: string = "default") {
         this.settings = fromIni( {
-            profile: (profile) ? profile : this.profile
+            profile: ( profile ) ? profile : this.profile
         } );
     }
 }
@@ -92,7 +92,7 @@ interface INI {
 
 class Client extends Credential {
     /*** AWS S3 API Client */
-    service?: S3Client
+    service?: S3Client;
 
     private credentials?: INI;
 
@@ -115,10 +115,11 @@ class Client extends Credential {
         this.key = credentials.secretAccessKey;
 
         this.credentials = {
-            accessKeyId: this.id, secretAccessKey: this.key
-        }
+            accessKeyId: this.id,
+            secretAccessKey: this.key
+        };
 
-        this.service = new S3Client({... this.credentials});
+        this.service = new S3Client( { ... this.credentials } );
 
         return this.service;
     }

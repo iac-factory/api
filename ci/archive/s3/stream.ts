@@ -8,11 +8,11 @@ import type { URL } from "url";
 import { Signer } from "./signer.js";
 
 class Stream extends Signer {
-    private static stream = ($: URL) => FS.createWriteStream( String( $ ) );
-
     constructor(expiration: number = 300) {
-        super(expiration);
+        super( expiration );
     }
+
+    private static stream = ($: URL) => FS.createWriteStream( String( $ ) );
 
     protected async download(local: Descriptor | Generic) {
         const method = "GET";
@@ -20,9 +20,13 @@ class Stream extends Signer {
         const protocol = !this.url.charAt( 4 )
             .localeCompare( "s" ) ? https : http;
         const file = Stream.stream( local );
-        const data: Object | Generic = { response: null, request: null, total: 0 };
+        const data: Object | Generic = {
+            response: null,
+            request: null,
+            total: 0
+        };
 
-        Assert.notEqual(this.settings, undefined);
+        Assert.notEqual( this.settings, undefined );
         const $: Promise<Generic> = new Promise( (resolve, reject) => {
             const request = protocol.get( this.settings, response => {
                 if ( response.statusCode !== 200 ) {
@@ -60,7 +64,7 @@ class Stream extends Signer {
             } );
 
             request.on( "response", (incoming: import("http").IncomingMessage | Generic) => {
-                data.total = Number.parseInt( incoming.headers["content-length"], 10 );
+                data.total = Number.parseInt( incoming.headers[ "content-length" ], 10 );
             } );
 
             file.on( "error", (error) => {

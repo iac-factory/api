@@ -28,9 +28,9 @@ paths:
         get:
             summary: "GET aws/lambda/functions/{filter}"
             parameters:
-                -   name: "filter"
+                -   name:     "filter"
                     required: true
-                    in:   "path"
+                    in:       "path"
             responses:
                 "200":
                     description: "OK"

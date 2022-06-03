@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 /**
  * HTTP request methods.
  *
@@ -67,18 +75,18 @@ enum Enumeration {
 
 export const Method = {
     method: Enumeration,
-    keys: Object.keys(Enumeration),
-    filter: (input: string) => Method.keys.filter((pattern) => pattern.includes(input)),
+    keys: Object.keys( Enumeration ),
+    filter: (input: string) => Method.keys.filter( (pattern) => pattern.includes( input ) ),
     type: (input: string) => {
         const instance = Method.keys.filter(
             (method) => {
-                return input.includes(method);
+                return input.includes( method );
             } );
 
         return ( instance.length === 1 )
-            ? (instance[0] !== "*/*")
-                ? instance[0] : "ANY"
-            : (instance && instance.length !== 0)
+            ? ( instance[ 0 ] !== "*/*" )
+                ? instance[ 0 ] : "ANY"
+            : ( instance && instance.length !== 0 )
                 ? instance
                 : null;
     }

@@ -5,7 +5,7 @@ import Context from "./context";
 import type { Request, Response } from "express-serve-static-core";
 
 const Controller = Router();
-Controller.get( "/", async ( request: Request, response: Response ) => {
+Controller.get( "/", async (request: Request, response: Response) => {
     const $ = new URLSearchParams( request.url.replace( "?", "" ).replace( "/", "" ) );
 
     const Duration = ( $.get( "Duration" ) || $.get( "duration" ) || 1000 );

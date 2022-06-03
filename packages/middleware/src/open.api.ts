@@ -1,13 +1,20 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import Crypto from "crypto";
 import { HTTP } from "@iac-factory/api-schema";
 
+import { Debugger } from "@iac-factory/api-core";
 import Application = HTTP.Application;
 
 import Request = HTTP.Request;
 import Response = HTTP.Response;
 import Callback = HTTP.Next;
-
-import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -17,12 +24,12 @@ const Logger = Debugger.hydrate( {
 } );
 
 const Split = (input: string) => {
-    return (input.includes( "?" ) ) ? input.split( "?" )[ 0 ] as string
+    return ( input.includes( "?" ) ) ? input.split( "?" )[ 0 ] as string
         : input as string;
 };
 
 const Trim = (input: string) => {
-    input = Split(input);
+    input = Split( input );
 
     const index = input.length - 1;
 
@@ -161,7 +168,7 @@ const URL = (client: Request, response: Response, callback: Callback) => {
             store[ index ] = {
                 [ client.method.toLowerCase() ]: {
                     summary: [
-                        client.method.toUpperCase(), Split(client.url)
+                        client.method.toUpperCase(), Split( client.url )
                     ].join( " " ),
                     operationId: "IaC.Factory.API" + "." + Crypto.randomUUID().toUpperCase(),
                     parameters: [
@@ -269,7 +276,7 @@ const URL = (client: Request, response: Response, callback: Callback) => {
 export const $ = (server: Application) => {
     /// console.debug( "[Middleware] [CORS] [Debug] Establishing User-Agent Capture ..." );
 
-    server.use( URL as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
+    server.use( URL as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing );
 
     /// console.debug( "[Middleware] [CORS] [Debug] Capturing User-Agent" );
 

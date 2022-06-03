@@ -18,23 +18,29 @@ npm run start
     ```bash
     ssh -L localhost:27017:document-db.abc.us-east-2.docdb.amazonaws.com:27017 ec2-user@bastion.organization.io -i ~/.ssh/bastion-key.pem -N
     ```
-   - Command Breakdown
-     - Proxy-Forwarding (`ssh -L localhost:27017:document-db.abc.us-east-2.docdb.amazonaws.com:27017`):
-         - `ssh`: `openssh` executable application binary interface (abi)
-         - `-L`: Specifies that connections to the given TCP port or Unix socket on the local (client) host are to be forwarded to the given host and port, or Unix socket, on the remote side; by allocating a socket to listen to either a TCP port on the local side,
-           optionally bound to the specified bind_address, or to a Unix socket.  Whenever a connection is made to the local port or socket, the connection is forwarded over the secure channel, and a connection is made to either host port hostport, or the Unix socket
-           remote_socket, from the remote machine
-         - `localhost`: Local hostname (used when connecting programmatically)
-         - `27017`: Local port (used when connecting programmatically)
-         - `document-db.abc.us-east-2.docdb.amazonaws.com`: AWS RDS server-name
-         - `27017`: AWS RDS document-db service port
-     - Tunnel Establishment (`ec2-user@bastion.organization.io -i ~/.ssh/bastion-key.pem`)
-       - `ec2-user`: Username to connect to bastion. Often, in the case with AWS infrastructure, `ec2-user` is the default username
-       - `bastion.organization.io`: The bastion's resolvable hostname
-       - `-i`: Identity key file; the private ssh key used to establish a secure connection to the bastion server
-       - `~/.ssh/bastion-key.pem`: The location to the private ssh filename
-     - (`-N`)
-       - Honestly, the `-N` flag is one of the most important parts. The purpose is to instruct the process to not forward any remote command(s)
+    - Command Breakdown
+        - Proxy-Forwarding (`ssh -L localhost:27017:document-db.abc.us-east-2.docdb.amazonaws.com:27017`):
+            - `ssh`: `openssh` executable application binary interface (abi)
+            - `-L`: Specifies that connections to the given TCP port or Unix socket on the local (client) host are to be
+              forwarded to the given host and port, or Unix socket, on the remote side; by allocating a socket to listen
+              to either a TCP port on the local side,
+              optionally bound to the specified bind_address, or to a Unix socket. Whenever a connection is made to the
+              local port or socket, the connection is forwarded over the secure channel, and a connection is made to
+              either host port hostport, or the Unix socket
+              remote_socket, from the remote machine
+            - `localhost`: Local hostname (used when connecting programmatically)
+            - `27017`: Local port (used when connecting programmatically)
+            - `document-db.abc.us-east-2.docdb.amazonaws.com`: AWS RDS server-name
+            - `27017`: AWS RDS document-db service port
+        - Tunnel Establishment (`ec2-user@bastion.organization.io -i ~/.ssh/bastion-key.pem`)
+            - `ec2-user`: Username to connect to bastion. Often, in the case with AWS infrastructure, `ec2-user` is the
+              default username
+            - `bastion.organization.io`: The bastion's resolvable hostname
+            - `-i`: Identity key file; the private ssh key used to establish a secure connection to the bastion server
+            - `~/.ssh/bastion-key.pem`: The location to the private ssh filename
+        - (`-N`)
+            - Honestly, the `-N` flag is one of the most important parts. The purpose is to instruct the process to not
+              forward any remote command(s)
 2. Install CA-Certificate
     ```bash
     wget https://truststore.pki.rds.amazonaws.com/us-east-2/us-east-2-bundle.pem
@@ -47,20 +53,20 @@ npm run start
 *Note* - Step 1 can be used for local development-related purposes, too.
 
 - And in large, enterprise environments, ***often it's a requirement(s)***. It's not at all difficult.
-However, internal solutions to such a problem... unfortunately almost always are.
+  However, internal solutions to such a problem... unfortunately almost always are.
 
 ### Mongoose (`mongoose`) Support ###
 
 ```typescript
 export module Context {
-    const state: { connection: null | any }  = { connection: null };
+    const state: { connection: null | any } = { connection: null };
 
-    export const Handler = async function() {
+    export const Handler = async function () {
         /*** mongodb://localhost:27017 */
-        const uri = process.env["DOCUMENTDB_URI"] as string;
+        const uri = process.env[ "DOCUMENTDB_URI" ] as string;
 
-        if (state.connection == null) {
-            state.connection = Mongoose.connect(uri, {
+        if ( state.connection == null ) {
+            state.connection = Mongoose.connect( uri, {
                 /***
                  * Defaults to "test"; Personally, I also capitalize
                  * database name(s) and always keep them singular.
@@ -79,9 +85,9 @@ export module Context {
                 /*** Required */
                 directConnection: true,
                 /*** Required (Redacted) */
-                user: process.env["DOCUMENTDB_USERNAME"],
+                user: process.env[ "DOCUMENTDB_USERNAME" ],
                 /*** Required (Redacted) */
-                pass: process.env["DOCUMENTDB_PASSWORD"],
+                pass: process.env[ "DOCUMENTDB_PASSWORD" ],
                 /*** Optional (But Helps Time Spent Debugging) */
                 serverSelectionTimeoutMS: 5000,
                 /*** Required */
@@ -92,8 +98,8 @@ export module Context {
                 /*** Required */
                 tls: true,
                 /*** Required */
-                tlsCAFile: Path.join(__dirname, "us-east-2-bundle.pem")
-            }).then(() => Mongoose);
+                tlsCAFile: Path.join( __dirname, "us-east-2-bundle.pem" )
+            } ).then( () => Mongoose );
 
             // `await`ing connection after assigning to the `conn` variable
             // to avoid multiple function calls, which creates new connections
@@ -103,7 +109,7 @@ export module Context {
         return state.connection;
     };
 
-    void (async () => Handler());
+    void ( async () => Handler() );
 }
 ```
 
@@ -125,12 +131,13 @@ export const Connection = async function (): Promise<void> {
             auth: {
                 username: "...",
                 password: "..."
-            }, connectTimeoutMS: 5000,
+            },
+            connectTimeoutMS: 5000,
             directConnection: true,
             replicaSet: "rs0",
             appName: "Nexus-API",
             authMechanism: "DEFAULT",
-            tlsCAFile: Path.join(__dirname, "us-east-2-bundle.pem"),
+            tlsCAFile: Path.join( __dirname, "us-east-2-bundle.pem" ),
             tls: true,
             tlsAllowInvalidHostnames: true,
             tlsAllowInvalidCertificates: true,
@@ -145,18 +152,18 @@ export const Connection = async function (): Promise<void> {
         // } )();
     }
 
-    async function Handler (): Promise<import("mongodb").MongoClient | undefined> {
+    async function Handler(): Promise<import("mongodb").MongoClient | undefined> {
         return new Promise( async (resolve) => {
-            const Client = await import("mongodb").then((Module) => Module.MongoClient);
+            const Client = await import("mongodb").then( (Module) => Module.MongoClient );
 
             /*** mongodb://localhost:27017 */
-            Client.connect(process.env["MONGO_URI"]!, Connection.options!, (exception, connection) => {
-                if (exception) throw exception;
+            Client.connect( process.env[ "MONGO_URI" ]!, Connection.options!, (exception, connection) => {
+                if ( exception ) throw exception;
 
                 Connection.client = connection;
 
-                resolve(connection);
-            });
+                resolve( connection );
+            } );
         } );
     }
 

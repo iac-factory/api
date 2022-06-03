@@ -1,12 +1,20 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Controller } from "@iac-factory/api-services";
 
-export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions");
+export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions" );
 Router.get( "/aws/lambda/functions", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
-    const functions = await Lambda.Client.Functions();
+    const { Functions } = Lambda.Client;
 
     response.status( 200 ).send( {
-        functions
+        Functions: await Functions()
     } );
 } );
 

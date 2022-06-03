@@ -5,8 +5,6 @@ import Subprocess from "child_process";
 
 import { Router } from "./src";
 
-import type { HTTP as Types } from "@iac-factory/api-schema";
-
 function tls() {
     return Crypto.generateKeyPairSync( "rsa", {
         modulusLength: 4096,

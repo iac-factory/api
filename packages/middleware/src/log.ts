@@ -1,9 +1,16 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { HTTP } from "@iac-factory/api-schema";
 
+import { Debugger } from "@iac-factory/api-core";
 import Request = HTTP.Request;
 import Response = HTTP.Response;
-
-import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Log = Debugger.hydrate( {
@@ -29,12 +36,12 @@ const Log = Debugger.hydrate( {
  */
 
 export const Logger = (request: Request, response: Response, message: HTTP.Message) => {
-    const Bracket = ( $: string ) => "[" + $ + "]";
-    const Parentheses = ( $: string ) => "(" + $ + ")";
+    const Bracket = ($: string) => "[" + $ + "]";
+    const Parentheses = ($: string) => "(" + $ + ")";
 
     const Application = Bracket( "API" );
     const Method = Bracket( request.method );
-    const Status = Parentheses( (response.statusCode === -1 ) ? "N/A" : String( response.statusCode ) );
+    const Status = Parentheses( ( response.statusCode === -1 ) ? "N/A" : String( response.statusCode ) );
 
     const Time = new Date();
 

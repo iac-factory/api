@@ -11,18 +11,20 @@ import Archiver from "archiver";
  * @constructor
  */
 
-const Compress = async ( source: string ): Promise<void> => {
+const Compress = async (source: string): Promise<void> => {
     const zip = "nodejs.zip";
 
     /// const internal = [ "nodejs", "node_modules" ].join( Path.sep );
 
     const internal = "distribution";
 
-    const archiver = async () => await new Promise<void>( ( resolve ) => {
+    const archiver = async () => await new Promise<void>( (resolve) => {
         const output = FS.createWriteStream( zip );
 
         const archive = Archiver.create( "zip", {
-            zlib: { level: 9 }, comment: "Archive", forceLocalTime: true
+            zlib: { level: 9 },
+            comment: "Archive",
+            forceLocalTime: true
         } );
 
         output.on( "close", () => {
@@ -33,23 +35,23 @@ const Compress = async ( source: string ): Promise<void> => {
             ///
         } );
 
-        archive.on( "warning", ( error ) => {
+        archive.on( "warning", (error) => {
             throw error;
         } );
 
-        archive.on( "error", ( error ) => {
+        archive.on( "error", (error) => {
             throw error;
         } );
 
-        archive.on( "entry", ( entry ) => {
+        archive.on( "entry", (entry) => {
             ///
         } );
 
-        archive.on( "data", ( data ) => {
+        archive.on( "data", (data) => {
             ///
         } );
 
-        archive.on( "progress", ( data ) => {
+        archive.on( "progress", (data) => {
             ///
         } );
 

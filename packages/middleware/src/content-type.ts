@@ -1,8 +1,15 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { HTTP } from "@iac-factory/api-schema";
 
-import Application = HTTP.Application;
-
 import { Debugger } from "@iac-factory/api-core";
+import Application = HTTP.Application;
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -29,7 +36,7 @@ const Set = (server: Application) => {
 
         /// process.stdout.write( Logger( request as object as HTTP.Request, response, response.get( "Content-Type" ) + "\n" ) );
 
-        (callback) && callback();
+        ( callback ) && callback();
     } );
 
     /// console.debug( "[Middleware] [Content-Type] [Debug] Set Content-Type Middleware" );

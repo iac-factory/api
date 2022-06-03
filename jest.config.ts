@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import OS from "os";
 
 export default {
@@ -150,7 +158,7 @@ export default {
     //     "**/unit-testing/*.test.js"
     // ],
 
-    extensionsToTreatAsEsm: [ ],
+    extensionsToTreatAsEsm: [],
 
     // This option allows the use of a custom results processor
     testResultsProcessor: undefined,

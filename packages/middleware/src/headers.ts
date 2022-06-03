@@ -1,12 +1,19 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { HTTP } from "@iac-factory/api-schema";
 
+import { Debugger } from "@iac-factory/api-core";
 import Application = HTTP.Application;
 
 import Request = HTTP.Request;
 import Response = HTTP.Response;
 import Callback = HTTP.Next;
-
-import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -35,20 +42,20 @@ const Overwrites = [
 ];
 
 const Headers = (server: Application, headers = Overwrites) => {
-    Logger.debug("Instantiating Default Header(s) ...");
+    Logger.debug( "Instantiating Default Header(s) ..." );
 
     const $ = (_: Request, response: Response, callback: Callback) => {
-        headers.forEach((Element) => {
+        headers.forEach( (Element) => {
 
-            response.set(Element.Key, Element.Value);
-        });
+            response.set( Element.Key, Element.Value );
+        } );
 
-        Logger.debug("Set Default Response Headers");
+        Logger.debug( "Set Default Response Headers" );
 
         callback();
     };
 
-    server.use($ as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing);
+    server.use( $ as HTTP.API.Handlers.Next & HTTP.API.Handlers.Pathing );
 
     /// console.debug("[Middleware] [Headers] [Debug] Enabled Custom Response Headers");
 };

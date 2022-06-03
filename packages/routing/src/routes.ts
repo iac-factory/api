@@ -1,4 +1,13 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Debugger } from "@iac-factory/api-core";
+import { Router } from ".";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -6,8 +15,6 @@ const Logger = Debugger.hydrate( {
     level: [ "Debug", "cyan" ],
     depth: [ 1, true ]
 } );
-
-import { Router } from ".";
 
 /*** Route Imports via Importable Side-Effects */
 export default void ( async () => {
@@ -53,6 +60,10 @@ export default void ( async () => {
             Router.use( route.default );
         } ),
         import("./aws/lambda/functions").then( (route) => {
+            Logger.debug( route.default.registry );
+            Router.use( route.default );
+        } ),
+        import("./aws/lambda/functions/code-locations").then( (route) => {
             Logger.debug( route.default.registry );
             Router.use( route.default );
         } ),

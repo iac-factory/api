@@ -13,7 +13,7 @@ import("./module");
  */
 export function Router(this: Construct, options?: Options): Function {
     if ( !( ( this as object ) instanceof Router ) ) {
-        console.debug("[Debug] Constructing Router ...");
+        console.debug( "[Debug] Constructing Router ..." );
 
         return Reflect.construct( Router, [ options ] );
     }

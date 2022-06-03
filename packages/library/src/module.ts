@@ -7,5 +7,5 @@ export default void ( async () => {
         import("./use")
     ];
 
-    return Promise.allSettled(Reflections);
+    return Promise.allSettled( Reflections );
 } )();

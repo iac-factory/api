@@ -14,22 +14,43 @@ declare module Framework {
     }
 
     // @ts-ignore
-    type PathParams = string | RegExp | (string | RegExp)[];
+    type PathParams = string | RegExp | ( string | RegExp )[];
 
     // @ts-ignore
-    type RequestHandlerParams = RequestHandler | ErrorRequestHandler | (RequestHandler | ErrorRequestHandler)[];
+    type RequestHandlerParams = RequestHandler | ErrorRequestHandler | ( RequestHandler | ErrorRequestHandler )[];
 
     interface IRouterMatcher<T> {
-        (path: PathParams, ...handlers: RequestHandler[]): T;
-        (path: PathParams, ...handlers: RequestHandlerParams[]): T;
+        (path: PathParams, ... handlers: RequestHandler[]): T;
+
+        (path: PathParams, ... handlers: RequestHandlerParams[]): T;
     }
 
     interface IRouterHandler<T> {
-        (...handlers: RequestHandler[]): T;
-        (...handlers: RequestHandlerParams[]): T;
+        (... handlers: RequestHandler[]): T;
+
+        (... handlers: RequestHandlerParams[]): T;
     }
 
     interface IRouter extends RequestHandler {
+        /**
+         * Special-cased "all" method, applying the given route `path`,
+         * middleware, and callback to _every_ HTTP method.
+         *
+         * @param path
+         * @param fn
+         */
+        all: IRouterMatcher<this>;
+
+        // Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param() API
+        get: IRouterMatcher<this>;
+        post: IRouterMatcher<this>;
+        put: IRouterMatcher<this>;
+        delete: IRouterMatcher<this>;
+        patch: IRouterMatcher<this>;
+        options: IRouterMatcher<this>;
+        head: IRouterMatcher<this>;
+        use: IRouterHandler<this> & IRouterMatcher<this>;
+
         /**
          * Map the given param placeholder `name`(s) to the given callback(s).
          *
@@ -51,7 +72,7 @@ declare module Framework {
          *            req.user = user;
          *            next();
          *          } else {
-         *            next(new Error('failed to load user'));
+         *            next(new Error("failed to load user"));
          *          }
          *        });
          *      });
@@ -60,27 +81,9 @@ declare module Framework {
          * @param fn
          */
         param(name: string, handler: RequestParamHandler): this;
-        // Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param() API
+
         // deprecated since express 4.11.0
         param(callback: (name: string, matcher: RegExp) => RequestParamHandler): this;
-
-        /**
-         * Special-cased "all" method, applying the given route `path`,
-         * middleware, and callback to _every_ HTTP method.
-         *
-         * @param path
-         * @param fn
-         */
-        all: IRouterMatcher<this>;
-        get: IRouterMatcher<this>;
-        post: IRouterMatcher<this>;
-        put: IRouterMatcher<this>;
-        delete: IRouterMatcher<this>;
-        patch: IRouterMatcher<this>;
-        options: IRouterMatcher<this>;
-        head: IRouterMatcher<this>;
-
-        use: IRouterHandler<this> & IRouterMatcher<this>;
 
         route(prefix: PathParams): IRoute;
     }
@@ -98,7 +101,7 @@ declare module Framework {
         head: IRouterHandler<this>;
     }
 
-    export interface Router extends IRouter { }
+    export interface Router extends IRouter {}
 
     interface CookieOptions {
         maxAge?: number;
@@ -107,12 +110,103 @@ declare module Framework {
         httpOnly?: boolean;
         path?: string;
         domain?: string;
-        secure?: boolean | 'auto';
+        secure?: boolean | "auto";
     }
 
-    interface Errback { (err: Error): void; }
+    interface Errback {(err: Error): void;}
 
-    interface Request extends http.ClientRequest /*, http2.Http2ServerRequest */ {
+    interface Request extends http.ClientRequest /*, http2.Http2ServerRequest */
+    {
+
+        headers: { [ key: string ]: string; };
+        /**
+         * Return an array of Accepted media types
+         * ordered from highest quality to lowest.
+         */
+        accepted: MediaType[];
+        /**
+         * Return the protocol string "http" or "https"
+         * when requested with TLS. When the "trust proxy"
+         * setting is enabled the "X-Forwarded-Proto" header
+         * field will be trusted. If you're running behind
+         * a reverse proxy that supplies https for you this
+         * may be enabled.
+         */
+        protocol: string;
+        /**
+         * Short-hand for:
+         *
+         *    req.protocol == 'https'
+         */
+        secure: boolean;
+        /**
+         * Return the remote address, or when
+         * "trust proxy" is `true` return
+         * the upstream addr.
+         */
+        ip: string;
+        /**
+         * When "trust proxy" is `true`, parse
+         * the "X-Forwarded-For" ip address list.
+         *
+         * For example if the value were "client, proxy1, proxy2"
+         * you would receive the array `["client", "proxy1", "proxy2"]`
+         * where "proxy2" is the furthest down-stream.
+         */
+        ips: string[];
+        /**
+         * Return subdomains as an array.
+         *
+         * Subdomains are the dot-separated parts of the host before the main domain of
+         * the app. By default, the domain of the app is assumed to be the last two
+         * parts of the host. This can be changed by setting "subdomain offset".
+         *
+         * For example, if the domain is "tobi.ferrets.example.com":
+         * If "subdomain offset" is not set, req.subdomains is `["ferrets", "tobi"]`.
+         * If "subdomain offset" is 3, req.subdomains is `["tobi"]`.
+         */
+        subdomains: string[];
+        /**
+         * Short-hand for `url.parse(req.url).pathname`.
+         */
+        path: string;
+        /**
+         * Parse the "Host" header field hostname.
+         */
+        hostname: string;
+        /**
+         * @deprecated Use hostname instead.
+         */
+        host: string;
+        /**
+         * Check if the request is fresh, aka
+         * Last-Modified and/or the ETag
+         * still match.
+         */
+        fresh: boolean;
+        /**
+         * Check if the request is stale, aka
+         * "Last-Modified" and / or the "ETag" for the
+         * resource has changed.
+         */
+        stale: boolean;
+        /**
+         * Check if the request was an _XMLHttpRequest_.
+         */
+        xhr: boolean;
+        //body: { username: string; password: string; remember: boolean; title: string; };
+        body: any;
+        //cookies: { string; remember: boolean; };
+        cookies: any;
+        method: string;
+        params: any;
+        query: any;
+        route: any;
+        signedCookies: any;
+        originalUrl: string;
+        url: string;
+        baseUrl: string;
+        app: Application;
 
         /**
          * Return request header.
@@ -138,8 +232,6 @@ declare module Framework {
         get(name: string): string;
 
         header(name: string): string;
-
-        headers: { [key: string]: string; };
 
         /**
          * Check if the given `type(s)` is acceptable, returning
@@ -179,9 +271,12 @@ declare module Framework {
          *     // => "json"
          */
         accepts(): string[];
+
         accepts(type: string): string | boolean;
+
         accepts(type: string[]): string | boolean;
-        accepts(...type: string[]): string | boolean;
+
+        accepts(... type: string[]): string | boolean;
 
         /**
          * Returns the first accepted charset of the specified character sets,
@@ -192,9 +287,12 @@ declare module Framework {
          * @param charset
          */
         acceptsCharsets(): string[];
+
         acceptsCharsets(charset: string): string | boolean;
+
         acceptsCharsets(charset: string[]): string | boolean;
-        acceptsCharsets(...charset: string[]): string | boolean;
+
+        acceptsCharsets(... charset: string[]): string | boolean;
 
         /**
          * Returns the first accepted encoding of the specified encodings,
@@ -205,9 +303,12 @@ declare module Framework {
          * @param encoding
          */
         acceptsEncodings(): string[];
+
         acceptsEncodings(encoding: string): string | boolean;
+
         acceptsEncodings(encoding: string[]): string | boolean;
-        acceptsEncodings(...encoding: string[]): string | boolean;
+
+        acceptsEncodings(... encoding: string[]): string | boolean;
 
         /**
          * Returns the first accepted language of the specified languages,
@@ -219,9 +320,12 @@ declare module Framework {
          * @param lang
          */
         acceptsLanguages(): string[];
+
         acceptsLanguages(lang: string): string | boolean;
+
         acceptsLanguages(lang: string[]): string | boolean;
-        acceptsLanguages(...lang: string[]): string | boolean;
+
+        acceptsLanguages(... lang: string[]): string | boolean;
 
         /**
          * Parse Range header field,
@@ -241,12 +345,6 @@ declare module Framework {
          * @param size
          */
         range(size: number): any[];
-
-        /**
-         * Return an array of Accepted media types
-         * ordered from highest quality to lowest.
-         */
-        accepted: MediaType[];
 
         /**
          * @deprecated Use either req.params, req.body or req.query, as applicable.
@@ -292,117 +390,12 @@ declare module Framework {
         is(type: string): boolean;
 
         /**
-         * Return the protocol string "http" or "https"
-         * when requested with TLS. When the "trust proxy"
-         * setting is enabled the "X-Forwarded-Proto" header
-         * field will be trusted. If you're running behind
-         * a reverse proxy that supplies https for you this
-         * may be enabled.
-         */
-        protocol: string;
-
-        /**
-         * Short-hand for:
-         *
-         *    req.protocol == 'https'
-         */
-        secure: boolean;
-
-        /**
-         * Return the remote address, or when
-         * "trust proxy" is `true` return
-         * the upstream addr.
-         */
-        ip: string;
-
-        /**
-         * When "trust proxy" is `true`, parse
-         * the "X-Forwarded-For" ip address list.
-         *
-         * For example if the value were "client, proxy1, proxy2"
-         * you would receive the array `["client", "proxy1", "proxy2"]`
-         * where "proxy2" is the furthest down-stream.
-         */
-        ips: string[];
-
-        /**
-         * Return subdomains as an array.
-         *
-         * Subdomains are the dot-separated parts of the host before the main domain of
-         * the app. By default, the domain of the app is assumed to be the last two
-         * parts of the host. This can be changed by setting "subdomain offset".
-         *
-         * For example, if the domain is "tobi.ferrets.example.com":
-         * If "subdomain offset" is not set, req.subdomains is `["ferrets", "tobi"]`.
-         * If "subdomain offset" is 3, req.subdomains is `["tobi"]`.
-         */
-        subdomains: string[];
-
-        /**
-         * Short-hand for `url.parse(req.url).pathname`.
-         */
-        path: string;
-
-        /**
-         * Parse the "Host" header field hostname.
-         */
-        hostname: string;
-
-        /**
-         * @deprecated Use hostname instead.
-         */
-        host: string;
-
-        /**
-         * Check if the request is fresh, aka
-         * Last-Modified and/or the ETag
-         * still match.
-         */
-        fresh: boolean;
-
-        /**
-         * Check if the request is stale, aka
-         * "Last-Modified" and / or the "ETag" for the
-         * resource has changed.
-         */
-        stale: boolean;
-
-        /**
-         * Check if the request was an _XMLHttpRequest_.
-         */
-        xhr: boolean;
-
-        //body: { username: string; password: string; remember: boolean; title: string; };
-        body: any;
-
-        //cookies: { string; remember: boolean; };
-        cookies: any;
-
-        method: string;
-
-        params: any;
-
-        /**
          * Clear cookie `name`.
          *
          * @param name
          * @param options
          */
         clearCookie(name: string, options?: any): Response;
-
-        query: any;
-
-        route: any;
-
-        signedCookies: any;
-
-        originalUrl: string;
-
-        url: string;
-
-        baseUrl: string;
-
-        app: Application;
     }
 
     interface MediaType {
@@ -414,10 +407,51 @@ declare module Framework {
 
     interface Send {
         (status: number, body?: any): Response;
+
         (body?: any): Response;
     }
 
-    interface Response extends http.ServerResponse /* http2.Http2ServerResponse */ {
+    interface Response extends http.ServerResponse /* http2.Http2ServerResponse */
+    {
+        /**
+         * Send a response.
+         *
+         * Examples:
+         *
+         *     res.send(new Buffer('wahoo'));
+         *     res.send({ some: 'json' });
+         *     res.send('<p>some html</p>');
+         *     res.send(404, 'Sorry, cant find that');
+         *     res.send(404);
+         */
+        send: Send;
+        /**
+         * Send JSON response.
+         *
+         * Examples:
+         *
+         *     res.json(null);
+         *     res.json({ user: 'tj' });
+         *     res.json(500, 'oh noes!');
+         *     res.json(404, 'I dont have that');
+         */
+        json: Send;
+        /**
+         * Send JSON response with JSONP callback support.
+         *
+         * Examples:
+         *
+         *     res.jsonp(null);
+         *     res.jsonp({ user: 'tj' });
+         *     res.jsonp(500, 'oh noes!');
+         *     res.jsonp(404, 'I dont have that');
+         */
+        jsonp: Send;
+        // Property indicating if HTTP headers has been sent for the response.
+        headersSent: boolean;
+        locals: any;
+        charset: string;
+
         /**
          * Set status `code`.
          *
@@ -453,43 +487,6 @@ declare module Framework {
          * @param links
          */
         links(links: any): Response;
-
-        /**
-         * Send a response.
-         *
-         * Examples:
-         *
-         *     res.send(new Buffer('wahoo'));
-         *     res.send({ some: 'json' });
-         *     res.send('<p>some html</p>');
-         *     res.send(404, 'Sorry, cant find that');
-         *     res.send(404);
-         */
-        send: Send;
-
-        /**
-         * Send JSON response.
-         *
-         * Examples:
-         *
-         *     res.json(null);
-         *     res.json({ user: 'tj' });
-         *     res.json(500, 'oh noes!');
-         *     res.json(404, 'I dont have that');
-         */
-        json: Send;
-
-        /**
-         * Send JSON response with JSONP callback support.
-         *
-         * Examples:
-         *
-         *     res.jsonp(null);
-         *     res.jsonp({ user: 'tj' });
-         *     res.jsonp(500, 'oh noes!');
-         *     res.jsonp(404, 'I dont have that');
-         */
-        jsonp: Send;
 
         /**
          * Transfer the file at the given `path`.
@@ -532,22 +529,28 @@ declare module Framework {
          * @api public
          */
         sendFile(path: string): void;
+
         sendFile(path: string, options: any): void;
+
         sendFile(path: string, fn: Errback): void;
+
         sendFile(path: string, options: any, fn: Errback): void;
 
         /**
          * @deprecated Use sendFile instead.
          */
         sendfile(path: string): void;
+
         /**
          * @deprecated Use sendFile instead.
          */
         sendfile(path: string, options: any): void;
+
         /**
          * @deprecated Use sendFile instead.
          */
         sendfile(path: string, fn: Errback): void;
+
         /**
          * @deprecated Use sendFile instead.
          */
@@ -564,8 +567,11 @@ declare module Framework {
          * This method uses `res.sendfile()`.
          */
         download(path: string): void;
+
         download(path: string, filename: string): void;
+
         download(path: string, fn: Errback): void;
+
         download(path: string, filename: string, fn: Errback): void;
 
         /**
@@ -617,11 +623,11 @@ declare module Framework {
          *
          *    res.format({
          *      'text/plain': function(){
-         *        res.send('hey');
+         *        res.send("hey");
          *      },
          *
          *      'text/html': function(){
-         *        res.send('<p>hey</p>');
+         *        res.send("<p>hey</p>");
          *      },
          *
          *      'appliation/json': function(){
@@ -634,11 +640,11 @@ declare module Framework {
          *
          *    res.format({
          *      text: function(){
-         *        res.send('hey');
+         *        res.send("hey");
          *      },
          *
          *      html: function(){
-         *        res.send('<p>hey</p>');
+         *        res.send("<p>hey</p>");
          *      },
          *
          *      json: function(){
@@ -676,13 +682,12 @@ declare module Framework {
          * Aliased as `res.header()`.
          */
         set(field: any): Response;
+
         set(field: string, value?: string): Response;
 
         header(field: any): Response;
-        header(field: string, value?: string): Response;
 
-        // Property indicating if HTTP headers has been sent for the response.
-        headersSent: boolean;
+        header(field: string, value?: string): Response;
 
         /**
          * Get value for header `field`.
@@ -717,7 +722,9 @@ declare module Framework {
          *    res.cookie('rememberme', '1', { maxAge: 900000, httpOnly: true })
          */
         cookie(name: string, val: string, options: CookieOptions): Response;
+
         cookie(name: string, val: any, options: CookieOptions): Response;
+
         cookie(name: string, val: any): Response;
 
         /**
@@ -767,7 +774,9 @@ declare module Framework {
          *    res.redirect('../login'); // /blog/post/1 -> /blog/login
          */
         redirect(url: string): void;
+
         redirect(status: number, url: string): void;
+
         redirect(url: string, status: number): void;
 
         /**
@@ -781,11 +790,8 @@ declare module Framework {
          *  - `filename`  filename of the view being rendered
          */
         render(view: string, options?: Object, callback?: (err: Error, html: string) => void): void;
+
         render(view: string, callback?: (err: Error, html: string) => void): void;
-
-        locals: any;
-
-        charset: string;
 
         /**
          * Adds the field to the Vary response header, if it is not there already.
@@ -797,13 +803,29 @@ declare module Framework {
         vary(field: string): Response;
     }
 
-    interface Handler extends RequestHandler { }
+    interface Handler extends RequestHandler {}
 
     interface RequestParamHandler {
         (req: Request, res: Response, next: NextFunction, value: any, name: string): any;
     }
 
     interface Application extends IRouter {
+        get: { (name: string): any; } & IRouterMatcher<this>;
+        router: string;
+        settings: any;
+        resource: any;
+        map: any;
+        locals: any;
+        /**
+         * The app.routes object houses all of the routes defined mapped by the
+         * associated HTTP verb. This object may be used for introspection
+         * capabilities, for example Express uses this internally not only for
+         * routing but to provide default OPTIONS behaviour unless app.options()
+         * is used. Your application or framework may also remove routes by
+         * simply by removing them from this object.
+         */
+        routes: any;
+
         /**
          * Initialize the server.
          *
@@ -864,9 +886,9 @@ declare module Framework {
          * @param val
          */
         set(setting: string, val: any): Application;
-        get: {(name: string): any;} & IRouterMatcher<this>;
 
         param(name: string | string[], handler: RequestParamHandler): this;
+
         // Alternatively, you can pass only a callback, in which case you have the opportunity to alter the app.param() API
         param(callback: (name: string, matcher: RegExp) => RequestParamHandler): this;
 
@@ -965,10 +987,15 @@ declare module Framework {
          * @param fn
          */
         configure(fn: Function): Application;
+
         configure(env0: string, fn: Function): Application;
+
         configure(env0: string, env1: string, fn: Function): Application;
+
         configure(env0: string, env1: string, env2: string, fn: Function): Application;
+
         configure(env0: string, env1: string, env2: string, env3: string, fn: Function): Application;
+
         configure(env0: string, env1: string, env2: string, env3: string, env4: string, fn: Function): Application;
 
         /**
@@ -987,8 +1014,8 @@ declare module Framework {
          * @param fn
          */
         render(name: string, options?: Object, callback?: (err: Error, html: string) => void): void;
-        render(name: string, callback: (err: Error, html: string) => void): void;
 
+        render(name: string, callback: (err: Error, html: string) => void): void;
 
         /**
          * Listen for connections.
@@ -1008,30 +1035,14 @@ declare module Framework {
          *    https.createServer({ ... }, app).listen(443);
          */
         listen(port: number, hostname: string, backlog: number, callback?: Function): http.Server;
+
         listen(port: number, hostname: string, callback?: Function): http.Server;
+
         listen(port: number, callback?: Function): http.Server;
+
         listen(path: string, callback?: Function): http.Server;
+
         listen(handle: any, listeningListener?: Function): http.Server;
-
-        router: string;
-
-        settings: any;
-
-        resource: any;
-
-        map: any;
-
-        locals: any;
-
-        /**
-         * The app.routes object houses all of the routes defined mapped by the
-         * associated HTTP verb. This object may be used for introspection
-         * capabilities, for example Express uses this internally not only for
-         * routing but to provide default OPTIONS behaviour unless app.options()
-         * is used. Your application or framework may also remove routes by
-         * simply by removing them from this object.
-         */
-        routes: any;
     }
 
     interface Express extends Application {
@@ -1044,6 +1055,9 @@ declare module Framework {
          * Expose mime.
          */
         mime: string;
+        application: any;
+        request: Request;
+        response: Response;
 
         (): Application;
 
@@ -1053,12 +1067,6 @@ declare module Framework {
         createApplication(): Application;
 
         createServer(): Application;
-
-        application: any;
-
-        request: Request;
-
-        response: Response;
     }
 }
 

@@ -1,5 +1,5 @@
 import Assert from "assert";
-import Utility from "util"
+import Utility from "util";
 import FS from "fs";
 
 function emitNewlineEvents(stream) {
@@ -10,21 +10,21 @@ function emitNewlineEvents(stream) {
 
     stream.write = function (data) {
         // eslint-disable-next-line prefer-rest-params
-        const rtn = write.apply(stream, arguments);
+        const rtn = write.apply( stream, arguments );
 
-        if ( stream.listeners("newline").length > 0 ) {
+        if ( stream.listeners( "newline" ).length > 0 ) {
             // eslint-disable-next-line prefer-const
-            const len = data.length
+            const len = data.length;
             let i = 0;
             // now try to calculate any deltas
             if ( typeof data == "string" ) {
                 for ( ; i < len; i++ ) {
-                    processByte(stream, data.charCodeAt(i));
+                    processByte( stream, data.charCodeAt( i ) );
                 }
             } else {
                 // buffer
                 for ( ; i < len; i++ ) {
-                    processByte(stream, data[ i ]);
+                    processByte( stream, data[ i ] );
                 }
             }
         }
@@ -40,9 +40,9 @@ function emitNewlineEvents(stream) {
  */
 
 function processByte(stream, character) {
-    Assert.equal(typeof character, "number");
+    Assert.equal( typeof character, "number" );
     if ( character === "\n" ) {
-        stream.emit("newline");
+        stream.emit( "newline" );
     }
 }
 
@@ -77,7 +77,10 @@ const codes = {
  */
 
 const styles = {
-    bold: 1, italic: 3, underline: 4, inverse: 7
+    bold: 1,
+    italic: 3,
+    underline: 4,
+    inverse: 7
 };
 
 /**
@@ -85,7 +88,10 @@ const styles = {
  */
 
 const reset = {
-    bold: 22, italic: 23, underline: 24, inverse: 27
+    bold: 22,
+    italic: 23,
+    underline: 24,
+    inverse: 27
 };
 
 /**
@@ -119,8 +125,8 @@ function Mutator(cursor) {
         bold: cursor.bold,
         italic: cursor.italic,
         underline: cursor.underline,
-        inverse: cursor.inverse,
-    }
+        inverse: cursor.inverse
+    };
 
     return {};
 }
@@ -131,10 +137,12 @@ function Mutator(cursor) {
 
 function Cursor(stream?, options?) {
     if ( typeof stream != "object" || typeof stream.write != "function" ) {
-        throw new Error("a valid Stream instance must be passed in");
-    } else if ( !( this instanceof Cursor ) ) {
-        // @ts-ignore
-        return new Cursor(stream, options);
+        throw new Error( "a valid Stream instance must be passed in" );
+    } else {
+        if ( !( this instanceof Cursor ) ) {
+            // @ts-ignore
+            return new Cursor( stream, options );
+        }
     }
 
     // the stream to use
@@ -153,13 +161,13 @@ function Cursor(stream?, options?) {
     this.buffer = [];
 
     // controls the foreground and background colors
-    this.fg = this.foreground = new Colorer(this, 0);
-    this.bg = this.background = new Colorer(this, 10);
+    this.fg = this.foreground = new Colorer( this, 0 );
+    this.bg = this.background = new Colorer( this, 10 );
 
     this.newline = options?.newline ?? false;
     this.debug = options?.debug ?? false;
 
-    this.mutator = Mutator(this);
+    this.mutator = Mutator( this );
 
     // keep track of the number of chains that get encountered
     this.chain = 0;
@@ -167,19 +175,19 @@ function Cursor(stream?, options?) {
     // keep track of the number of "newlines" that get encountered
     this.newlines = 0;
 
-    emitNewlineEvents(stream);
-    stream.on("newline", function () {
+    emitNewlineEvents( stream );
+    stream.on( "newline", function () {
         this.newlines++;
-    }.bind(this));
+    }.bind( this ) );
 
     /// Ensure to flush the buffer, and reset the cursor prior to process exit
-    process.on("beforeExit", () => {
+    process.on( "beforeExit", () => {
         ( this.buffering ) && this.flush();
 
-        ( ( this.stream?.fd ?? false ) === 1 ) && FS.fdatasyncSync(process.stdout.fd);
+        ( ( this.stream?.fd ?? false ) === 1 ) && FS.fdatasyncSync( process.stdout.fd );
 
         this.reset();
-    });
+    } );
 }
 
 Cursor.prototype.log = function (data) {
@@ -188,35 +196,37 @@ Cursor.prototype.log = function (data) {
     /// --> The anti-pattern could be argued due to memory constraints... but if these are the circumstances,
     /// --> debugging should not be enabled, and a different zero-buffer related package or runtime
     /// --> language... should be used.
-    if ( !data.includes(prefix) ) {
+    if ( !data.includes( prefix ) ) {
         // eslint-disable-next-line prefer-rest-params
-        process.stdout.write("\n" + "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect(arguments, {
+        process.stdout.write( "\n" + "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect( arguments, {
             colors: false,
             compact: false
-        }) + "\n");
-    } else if ( data !== "\x1B" + "[" + "0" + "m" ) {
-        // The following conditional could be argued a performance
-        // concern; again, if performance is the concern, don't allow
-        // the conditional to progress this far by disabling debug mode.
+        } ) + "\n" );
+    } else {
+        if ( data !== "\x1B" + "[" + "0" + "m" ) {
+            // The following conditional could be argued a performance
+            // concern; again, if performance is the concern, don't allow
+            // the conditional to progress this far by disabling debug mode.
 
-        // eslint-disable-next-line prefer-rest-params
-        process.stdout.write("[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect(arguments, {
-            colors: false,
-            compact: false
-        }) + "\n");
+            // eslint-disable-next-line prefer-rest-params
+            process.stdout.write( "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect( arguments, {
+                colors: false,
+                compact: false
+            } ) + "\n" );
+        }
     }
 };
 
 /// Evaluate stream file-descriptor for a trailing newline, and attributed options for debug mode
 Cursor.prototype.evaluate = function (data) {
     // eslint-disable-next-line prefer-rest-params
-    ( this.debug ) || this.stream.write.apply(( ( this.debug ) ? "" : this.stream ), arguments);
+    ( this.debug ) || this.stream.write.apply( ( ( this.debug ) ? "" : this.stream ), arguments );
 
-    if ( !( data.includes(prefix) ) && !( this.debug ) ) {
-        ( this.stream.fd === 1 ) && process.stdout.write("\n");
+    if ( !( data.includes( prefix ) ) && !( this.debug ) ) {
+        ( this.stream.fd === 1 ) && process.stdout.write( "\n" );
     }
 
-    ( this.debug ) && this.log(data);
+    ( this.debug ) && this.log( data );
 };
 
 /**
@@ -230,8 +240,10 @@ Cursor.prototype.evaluate = function (data) {
 Cursor.prototype.write = function (data) {
     if ( this.buffering ) {
         // eslint-disable-next-line prefer-rest-params
-        this.buffer.push(arguments);
-    } else this.evaluate(data);
+        this.buffer.push( arguments );
+    } else {
+        this.evaluate( data );
+    }
 
     this.chain += 1;
 
@@ -259,14 +271,14 @@ Cursor.prototype.buffer = function () {
 Cursor.prototype.flush = function () {
     this.buffering = false;
 
-    const str = this.buffer.map(function (args) {
-        if ( args.length !== 1 ) throw new Error("Invalid Invocation - *.buffer.map() takes exactly one arguments (received" + " " + args.length + ")");
+    const str = this.buffer.map( function (args) {
+        if ( args.length !== 1 ) throw new Error( "Invalid Invocation - *.buffer.map() takes exactly one arguments (received" + " " + args.length + ")" );
 
         return args[ 0 ];
-    }).join("");
+    } ).join( "" );
 
-    this.buffer.splice(0); // empty
-    this.write(str);
+    this.buffer.splice( 0 ); // empty
+    this.write( str );
 
     return this;
 };
@@ -286,11 +298,11 @@ function Colorer(cursor, base) {
  */
 
 Colorer.prototype.setColorCode = function setColorCode(code) {
-    const character = String(code);
+    const character = String( code );
 
     if ( this.current === character ) return;
 
-    this.cursor.enabled && this.cursor.write(prefix + character + suffix);
+    this.cursor.enabled && this.cursor.write( prefix + character + suffix );
     this.current = character;
 
     return this;
@@ -300,35 +312,35 @@ Colorer.prototype.setColorCode = function setColorCode(code) {
  * Set up the positional ANSI codes.
  */
 
-Object.keys(codes).forEach(function (name) {
-    const code = String(codes[ name ]);
+Object.keys( codes ).forEach( function (name) {
+    const code = String( codes[ name ] );
     Cursor.prototype[ name ] = function () {
         let c = code;
         if ( arguments.length > 0 ) {
             // eslint-disable-next-line prefer-rest-params
-            c = toArray(arguments).map(Math.round).join(";") + code;
+            c = toArray( arguments ).map( Math.round ).join( ";" ) + code;
         }
-        this.enabled && this.write(prefix + c);
+        this.enabled && this.write( prefix + c );
         return this;
     };
-});
+} );
 
 /**
  * Set up the functions for the rendering ANSI codes.
  */
 
-Object.keys(styles).forEach(function (style) {
-    const name = style[ 0 ].toUpperCase() + style.substring(1)
+Object.keys( styles ).forEach( function (style) {
+    const name = style[ 0 ].toUpperCase() + style.substring( 1 );
     const character = styles[ style ];
 
-    Reflect.set(reset, style, reset[ style ]);
+    Reflect.set( reset, style, reset[ style ] );
 
     Cursor.prototype[ style ] = function () {
         if ( this[ name ] ) {
             return this;
         }
 
-        this.enabled && this.write(prefix + character + suffix);
+        this.enabled && this.write( prefix + character + suffix );
         this[ name ] = true;
 
         return this;
@@ -336,37 +348,37 @@ Object.keys(styles).forEach(function (style) {
 
     Cursor.prototype[ "reset" + name ] = function () {
         if ( !this[ name ] ) return this;
-        this.enabled && this.write(prefix + character + suffix);
+        this.enabled && this.write( prefix + character + suffix );
         this[ name ] = false;
 
         return this;
     };
 
-});
+} );
 
 /**
  * Setup the functions for the standard colors.
  */
 
-Object.keys(colors).forEach(function (color) {
+Object.keys( colors ).forEach( function (color) {
     const code = colors[ color ];
 
     Colorer.prototype[ color ] = function () {
-        this.setColorCode(this.base + code);
+        this.setColorCode( this.base + code );
         return this.cursor;
     };
 
     Cursor.prototype[ color ] = function () {
         return this.foreground[ color ]();
     };
-});
+} );
 
 /**
  * Makes a beep sound!
  */
 
 Cursor.prototype.beep = function () {
-    this.enabled && this.write("\x07");
+    this.enabled && this.write( "\x07" );
     return this;
 };
 
@@ -377,7 +389,7 @@ Cursor.prototype.beep = function () {
 Cursor.prototype.goto = function (x, y) {
     x = x | 0;
     y = y | 0;
-    this.enabled && this.write(prefix + y + ";" + x + "H");
+    this.enabled && this.write( prefix + y + ";" + x + "H" );
     return this;
 };
 
@@ -386,7 +398,7 @@ Cursor.prototype.goto = function (x, y) {
  */
 
 Colorer.prototype.reset = function () {
-    this.setColorCode(this.base + 39);
+    this.setColorCode( this.base + 39 );
 
     return this.cursor;
 };
@@ -396,7 +408,7 @@ Colorer.prototype.reset = function () {
  */
 
 Cursor.prototype.reset = function () {
-    this.enabled && this.write(prefix + "0" + suffix);
+    this.enabled && this.write( prefix + "0" + suffix );
 
     this.bold = false;
     this.italic = false;
@@ -415,9 +427,9 @@ Cursor.prototype.reset = function () {
 
 Colorer.prototype.rgb = function (r, g, b) {
     const base = this.base + 38;
-    const code = rgb(r, g, b);
+    const code = rgb( r, g, b );
 
-    this.setColorCode(base + ";5;" + code);
+    this.setColorCode( base + ";5;" + code );
 
     return this.cursor;
 };
@@ -427,7 +439,7 @@ Colorer.prototype.rgb = function (r, g, b) {
  */
 
 Cursor.prototype.rgb = function (r, g, b) {
-    return this.foreground.rgb(r, g, b);
+    return this.foreground.rgb( r, g, b );
 };
 
 /**
@@ -437,7 +449,7 @@ Cursor.prototype.rgb = function (r, g, b) {
 
 Colorer.prototype.hex = function (color) {
     // eslint-disable-next-line prefer-spread
-    return this.rgb.apply(this, hex(color));
+    return this.rgb.apply( this, hex( color ) );
 };
 
 /**
@@ -445,7 +457,7 @@ Colorer.prototype.hex = function (color) {
  */
 
 Cursor.prototype.hex = function (color) {
-    return this.foreground.hex(color);
+    return this.foreground.hex( color );
 };
 
 // UTIL FUNCTIONS //
@@ -460,7 +472,7 @@ function rgb(r, g, b) {
     const green = g / 255 * 5;
     const blue = b / 255 * 5;
 
-    return rgb5(red, green, blue);
+    return rgb5( red, green, blue );
 }
 
 /**
@@ -468,9 +480,9 @@ function rgb(r, g, b) {
  */
 
 function rgb5(r, g, b) {
-    const red = Math.round(r);
-    const green = Math.round(g);
-    const blue = Math.round(b);
+    const red = Math.round( r );
+    const green = Math.round( g );
+    const blue = Math.round( b );
 
     return 16 + ( red * 36 ) + ( green * 6 ) + blue;
 }
@@ -487,13 +499,13 @@ function rgb5(r, g, b) {
  * @returns {number[]}
  */
 function hex(color) {
-    const c = color[ 0 ] === "#" ? color.substring(1) : color;
+    const c = color[ 0 ] === "#" ? color.substring( 1 ) : color;
 
-    const r = c.substring(0, 2);
-    const g = c.substring(2, 4);
-    const b = c.substring(4, 6);
+    const r = c.substring( 0, 2 );
+    const g = c.substring( 2, 4 );
+    const b = c.substring( 4, 6 );
 
-    return [ parseInt(r, 16), parseInt(g, 16), parseInt(b, 16) ];
+    return [ parseInt( r, 16 ), parseInt( g, 16 ), parseInt( b, 16 ) ];
 }
 
 /**
@@ -507,7 +519,7 @@ const toArray = (array) => {
     let $ = 0;
 
     for ( $; $ < Length; $++ ) {
-        Array.push(array[ $ ]);
+        Array.push( array[ $ ] );
     }
 
     return Array;
@@ -530,11 +542,11 @@ const toArray = (array) => {
  * @todo - Include additional examples
  */
 
-function ansi(stream: NodeJS.WriteStream & { fd: 1; } = process.stdout, options: { enabled: boolean; } = { enabled: true } ): NodeJS.WriteStream & { fd: 1 } {
-    if ( Reflect.get(stream, "cursor") ) {
-        return Reflect.get(stream, "cursor");
+function ansi(stream: NodeJS.WriteStream & { fd: 1; } = process.stdout, options: { enabled: boolean; } = { enabled: true }): NodeJS.WriteStream & { fd: 1 } {
+    if ( Reflect.get( stream, "cursor" ) ) {
+        return Reflect.get( stream, "cursor" );
     } else {
-        Reflect.set(stream, "cursor", Cursor(stream, options));
+        Reflect.set( stream, "cursor", Cursor( stream, options ) );
     }
 
     return stream;

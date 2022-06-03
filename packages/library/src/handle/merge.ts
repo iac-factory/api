@@ -4,7 +4,7 @@
  * @private
  */
 
-export const Merge = function(params: any, parent?: object) {
+export const Merge = function (params: any, parent?: object) {
     if ( !parent || typeof parent !== "object" ) {
         return params;
     }

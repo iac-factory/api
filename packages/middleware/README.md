@@ -1,5 +1,5 @@
 # `ts-esm-standard` #
- 
+
 A Node.js ESM Standard Template Package -- Extended via TypeScript
 
 ## Distribution ##

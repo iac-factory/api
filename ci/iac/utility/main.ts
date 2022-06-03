@@ -1,4 +1,4 @@
-void (async () => import("./src"))();
+void ( async () => import("./src") )();
 
 export default async () => import("./src");
 

@@ -1,9 +1,15 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import FS from "fs";
 import TTY from "tty";
 
-import { Escape } from ".";
-import { Construct } from ".";
-import { Resolve } from ".";
+import { Escape, Construct, Resolve } from ".";
 
 export module Hook {
     const stdin: NodeJS.ReadStream & { fd: 0; hook?: any; unhook?: any } = process.stdin;
@@ -86,7 +92,7 @@ export module Hook {
     const flush = async function (): Promise<void> {
         return new Promise( (resolve) => {
             FS.fdatasync( stdout.fd, (error) => {
-                if (error?.errno !== -22) {
+                if ( error?.errno !== -22 ) {
                     if ( error ) throw error;
                 }
                 resolve();
@@ -100,7 +106,7 @@ export module Hook {
         stdout.hook( event, function (string: string, encoding: string, fd: number, write: ($: string) => void) {
             const buffer = string.replace( Escape(), "" ).replaceAll( "'", "\"" );
 
-            FS.writeFileSync( Resolve(file), buffer );
+            FS.writeFileSync( Resolve( file ), buffer );
         } );
 
         console.table( data, columns );

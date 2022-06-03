@@ -1,5 +1,3 @@
-import * as Path from "path";
-
 export const Schema = {
     TS: {
         name: "tsconfig",

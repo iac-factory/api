@@ -25,7 +25,6 @@
         "outDir": "distribution",
         "allowJs": true,
         "strictBindCallApply": true,
-        "noImplicitAny": true,
         "noImplicitThis": true,
         "noImplicitOverride": true,
         "noStrictGenericChecks": true,

@@ -1,14 +1,19 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 /*** Useragent */
 
 import type { Application } from "express";
 
-import type { Request } from "express-serve-static-core";
-import type { Response } from "express-serve-static-core";
-import type { NextFunction } from "express-serve-static-core";
+import type { Request, Response, NextFunction } from "express-serve-static-core";
+import { Debugger } from "@iac-factory/api-core";
 
 type Callback = NextFunction;
-
-import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -45,7 +50,7 @@ const UA = (request: Request, response: Response, callback: Callback) => {
  */
 
 const Agent = (server: Application) => {
-    Logger.debug("Establishing User-Agent Capture ..." );
+    Logger.debug( "Establishing User-Agent Capture ..." );
 
     server.use( UA );
 

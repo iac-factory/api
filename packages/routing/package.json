@@ -1,29 +1,29 @@
 {
-	"name": "@iac-factory/api-routing",
-	"version": "0.0.1",
-	"private": true,
-	"description": "...",
-	"author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
-	"license": "BSD-2-Clause",
-	"scripts": {
-		"start": "cd $(git rev-parse --show-toplevel) && npm run start",
-		"build": "tsc --build $(dirname $(npm root)/tsconfig.json"
-	},
-	"dependencies": {
-		"@iac-factory/api-core": "file:../core",
-		"@iac-factory/api-services": "file:../service",
-		"bcryptjs": "^2.4.3",
-		"esm": "^3.2.25",
-		"jsonwebtoken": "^8.5.1"
-	},
-	"devDependencies": {
-		"@types/bcryptjs": "^2.4.2",
-		"@types/esm": "^3.2.0",
-		"@types/express": "^4.17.13"
-	},
-	"eslintConfig": {
-		"settings": {
-			"extends": "../.."
-		}
-	}
+    "name": "@iac-factory/api-routing",
+    "version": "0.0.1",
+    "private": true,
+    "description": "...",
+    "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+    "license": "BSD-2-Clause",
+    "scripts": {
+        "start": "cd $(git rev-parse --show-toplevel) && npm run start",
+        "build": "tsc --build $(dirname $(npm root)/tsconfig.json"
+    },
+    "dependencies": {
+        "@iac-factory/api-core": "file:../core",
+        "@iac-factory/api-services": "file:../service",
+        "bcryptjs": "^2.4.3",
+        "esm": "^3.2.25",
+        "jsonwebtoken": "^8.5.1"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "^2.4.2",
+        "@types/esm": "^3.2.0",
+        "@types/express": "^4.17.13"
+    },
+    "eslintConfig": {
+        "settings": {
+            "extends": "../.."
+        }
+    }
 }

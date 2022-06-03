@@ -2,7 +2,10 @@ import OS from "os";
 
 const $ = OS.platform();
 
-const Platform = { Name: "", Valid: false };
+const Platform = {
+    Name: "",
+    Valid: false
+};
 
 switch ( $ ) {
     case "aix": /*** @Unsupported */

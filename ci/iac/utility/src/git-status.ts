@@ -3,7 +3,14 @@ import Process from "process";
 
 const Transform = (linefeed: string[]) => {
     const Output = {
-        Lines: [ { Modify: false, Add: false, Delete: false, Rename: false } ], Modified: false, Total: 0
+        Lines: [ {
+            Modify: false,
+            Add: false,
+            Delete: false,
+            Rename: false
+        } ],
+        Modified: false,
+        Total: 0
     };
 
     linefeed.forEach( ($) => {
@@ -31,8 +38,9 @@ const Transform = (linefeed: string[]) => {
 };
 
 const Status = (directory: string = Process.cwd()) => {
-    const Output = Subprocess.spawnSync( "git",  ["status", "--porcelain"], {
-        cwd: directory, stdio: "pipe"
+    const Output = Subprocess.spawnSync( "git", [ "status", "--porcelain" ], {
+        cwd: directory,
+        stdio: "pipe"
     } ).toString().split( "\n" );
 
     return Transform( Output );

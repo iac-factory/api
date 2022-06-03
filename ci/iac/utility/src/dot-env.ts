@@ -52,8 +52,10 @@ export class Environment extends Object {
         ( strict ) && this.assert();
     }
 
-    private assert() {
-        Assertion.equal( this.internal.valid, true, "Unable to Locate Dot-Environment File" + ":" + " " + this.internal.path );
+    public static async construct(file: string) {
+        const instance = new Environment( file );
+
+        return instance.hydrate();
     }
 
     /***
@@ -122,6 +124,33 @@ export class Environment extends Object {
         }
     }
 
+    public debug() {
+        const logger = Debugger.hydrate( {
+            depth: [ 1, true ],
+            level: [ "Debug", "cyan" ],
+            module: [ "Main", "magenta" ],
+            namespace: [ "API", "red" ]
+        } );
+
+        logger.debug( this );
+    }
+
+    public export() {
+        // const file = FS.openSync(this.internal.file, "w", 0o666);
+
+        const lines: string[] = [];
+        for ( const [ key, assignment ] of Object.entries( this ) ) {
+            const t = `${ key }="${ assignment[ "Value" ] }"`;
+            lines.push( t );
+        }
+
+        console.log( lines );
+    }
+
+    private assert() {
+        Assertion.equal( this.internal.valid, true, "Unable to Locate Dot-Environment File" + ":" + " " + this.internal.path );
+    }
+
     /***
      * Compute the Key-Value(s)
      * ---
@@ -150,13 +179,16 @@ export class Environment extends Object {
                         }, {}
                     );
 
-                    console.log("Set", set);
+                    console.log( "Set", set );
 
-                    for (const [variable, assignment] of Object.entries(set)) {
-                        const mutator: object & { variable: string, assignment?: string } = { variable, assignment };
+                    for ( const [ variable, assignment ] of Object.entries( set ) ) {
+                        const mutator: object & { variable: string, assignment?: string } = {
+                            variable,
+                            assignment
+                        };
 
                         const clean = (input: string) => {
-                            input = (input) ? input : "";
+                            input = ( input ) ? input : "";
 
                             input = input.trim();
 
@@ -171,7 +203,7 @@ export class Environment extends Object {
                             input = input.replace( "}", "" );
 
                             /*** @todo - Update once `resolve()` is implemented */
-                            input = input.replace("$", "");
+                            input = input.replace( "$", "" );
 
                             return input;
                         };
@@ -186,33 +218,36 @@ export class Environment extends Object {
                          * @todo - Implement `resolve` Function
                          */
                         const resolve = (input: string) => {
-                            const resolver: object & {variable: string; assignment: string} = {variable: "", assignment: ""};
+                            const resolver: object & { variable: string; assignment: string } = {
+                                variable: "",
+                                assignment: ""
+                            };
 
-                            if (input.includes("$")) {
-                                resolver.variable = input.replace("$", "");
-                                resolver.assignment = Reflect.get(set, resolver.variable);
+                            if ( input.includes( "$" ) ) {
+                                resolver.variable = input.replace( "$", "" );
+                                resolver.assignment = Reflect.get( set, resolver.variable );
 
-                                if (resolver.assignment.includes("$")) {
-                                    resolver.assignment = resolver.assignment.replace("$", "");
+                                if ( resolver.assignment.includes( "$" ) ) {
+                                    resolver.assignment = resolver.assignment.replace( "$", "" );
 
-                                    resolver.assignment = Reflect.get(set, resolver.assignment);
+                                    resolver.assignment = Reflect.get( set, resolver.assignment );
                                 }
                             }
-                        }
+                        };
 
-                        mutator.variable = clean(mutator.variable);
+                        mutator.variable = clean( mutator.variable );
                         mutator.assignment = Reflect.get( set, variable );
 
-                        console.log("Test", mutator.assignment);
+                        console.log( "Test", mutator.assignment );
 
-                        mutator.assignment = (mutator.assignment) ? clean(mutator.assignment) : mutator.assignment;
+                        mutator.assignment = ( mutator.assignment ) ? clean( mutator.assignment ) : mutator.assignment;
 
                         const assessment: Assignment = {
                             Key: mutator.variable,
                             Value: mutator.assignment ?? null
                         };
 
-                        console.log(assessment);
+                        console.log( assessment );
                     }
 
                     Object.keys( set ).forEach( (variable) => {
@@ -232,10 +267,10 @@ export class Environment extends Object {
 
                             console.log( assignment );
 
-                            Reflect.set(this, variable, {
+                            Reflect.set( this, variable, {
                                 Key: value,
                                 Value: escape
-                            });
+                            } );
                         }
                     } );
 
@@ -243,35 +278,6 @@ export class Environment extends Object {
                 }
             );
         } );
-    }
-
-    public debug() {
-        const logger = Debugger.hydrate( {
-            depth: [ 1, true ],
-            level: [ "Debug", "cyan" ],
-            module: [ "Main", "magenta" ],
-            namespace: [ "API", "red" ]
-        } );
-
-        logger.debug( this );
-    }
-
-    public static async construct(file: string) {
-        const instance = new Environment( file );
-
-        return instance.hydrate();
-    }
-
-    public export() {
-        // const file = FS.openSync(this.internal.file, "w", 0o666);
-
-        const lines: string[] = [];
-        for ( const [ key, assignment ] of Object.entries( this ) ) {
-            const t = `${ key }="${ assignment[ "Value" ] }"`;
-            lines.push( t );
-        }
-
-        console.log( lines );
     }
 }
 

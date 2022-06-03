@@ -43,7 +43,7 @@ locals {
     elb-partition           = join(":", [ "arn", data.aws_partition.configuration.partition, "iam" ])
     elb-principal-partition = join(":", [
         local.elb-partition,
-        local.elb-account-identifiers[var.region],
+        local.elb-account-identifiers[ var.region ],
         "root"
     ])
 

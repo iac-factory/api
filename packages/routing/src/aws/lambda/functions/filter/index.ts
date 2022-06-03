@@ -1,6 +1,14 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Controller } from "@iac-factory/api-services";
 
-export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Filter");
+export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions.Filter" );
 
 /***
  * Types of available filter(s):
@@ -16,14 +24,16 @@ export const Router = Controller("IaC.Factory.API.AWS.Lambda.Functions.Filter");
 Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
 
-    const filter = request.params.filter
+    const filter = request.params.filter;
     const error: { throw: boolean } = { throw: false };
     const data: ( string | undefined | { Variables?: object; Function?: string; ARN?: string } )[] = [];
 
+    const { Functions } = Lambda.Client;
+
+    const functions = await Functions();
+
     switch ( filter ) {
         case "name": {
-            const functions = await Lambda.Client.Functions();
-
             ( functions ) && functions.filter( (lambda) => lambda )
                 .forEach( (configuration) => data
                     .push( configuration.FunctionName )
@@ -32,8 +42,6 @@ Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
         }
 
         case "arn": {
-            const functions = await Lambda.Client.Functions();
-
             ( functions ) && functions.filter( (lambda) => lambda )
                 .forEach( (configuration) => data
                     .push( configuration.FunctionArn )
@@ -42,8 +50,6 @@ Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
         }
 
         case "role": {
-            const functions = await Lambda.Client.Functions();
-
             ( functions ) && functions.filter( (lambda) => lambda )
                 .forEach( (configuration) => data
                     .push( configuration.Role )
@@ -52,8 +58,6 @@ Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
         }
 
         case "environment-variables": {
-            const functions = await Lambda.Client.Functions();
-
             ( functions ) && functions.filter( (lambda) => lambda )
                 .forEach( (configuration) => data
                     .push( {
@@ -71,14 +75,14 @@ Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
         }
     }
 
-    (error.throw) && response.status(406).send({
+    ( error.throw ) && response.status( 406 ).send( {
         code: 406,
         status: "Not Acceptable",
         error: "Invalid-Filter-Exception",
         message: "Filter Must be := 'name' | 'arn' | 'role' | 'environment-variables'"
-    });
+    } );
 
-    (error.throw) || response.status( 200 ).send( {
+    ( error.throw ) || response.status( 200 ).send( {
         functions: data
     } );
 } );

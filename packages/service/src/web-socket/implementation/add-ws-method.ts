@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import wrapMiddleware from "./wrap-middleware";
 import websocketUrl from "./websocket-url";
 import { ParsedQs } from "qs";
@@ -34,12 +42,54 @@ export default function addWsMethod(target: any) {
     }
 }
 
-export interface Response<
-    ResBody = any,
+export interface Response<ResBody = any,
     Locals extends Record<string, any> = Record<string, any>,
-    StatusCode extends number = number
-    > extends HTTP.ServerResponse,
+    StatusCode extends number = number> extends HTTP.ServerResponse,
     Express.Response {
+    /**
+     * Send a response.
+     *
+     * Examples:
+     *
+     *     res.send(new Buffer('wahoo'));
+     *     res.send({ some: 'json' });
+     *     res.send('<p>some html</p>');
+     *     res.status(404).send('Sorry, cant find that');
+     */
+    send: Send;
+    /**
+     * Send JSON response.
+     *
+     * Examples:
+     *
+     *     res.json(null);
+     *     res.json({ user: 'tj' });
+     *     res.status(500).json('oh noes!');
+     *     res.status(404).json('I dont have that');
+     */
+    json: Send;
+    /**
+     * Send JSON response with JSONP callback support.
+     *
+     * Examples:
+     *
+     *     res.jsonp(null);
+     *     res.jsonp({ user: 'tj' });
+     *     res.status(500).jsonp('oh noes!');
+     *     res.status(404).jsonp('I dont have that');
+     */
+    jsonp: Send;
+    // Property indicating if HTTP headers has been sent for the response.
+    headersSent: boolean;
+    locals: Locals;
+    charset: string;
+    app: Application;
+    /**
+     * After middleware.init executed, Response will contain req property
+     * See: express/lib/middleware/init.js
+     */
+    req: Request;
+
     /**
      * Set status `code`.
      */
@@ -69,42 +119,6 @@ export interface Response<
      *    });
      */
     links(links: any): this;
-
-    /**
-     * Send a response.
-     *
-     * Examples:
-     *
-     *     res.send(new Buffer('wahoo'));
-     *     res.send({ some: 'json' });
-     *     res.send('<p>some html</p>');
-     *     res.status(404).send('Sorry, cant find that');
-     */
-    send: Send
-
-    /**
-     * Send JSON response.
-     *
-     * Examples:
-     *
-     *     res.json(null);
-     *     res.json({ user: 'tj' });
-     *     res.status(500).json('oh noes!');
-     *     res.status(404).json('I dont have that');
-     */
-    json: Send
-
-    /**
-     * Send JSON response with JSONP callback support.
-     *
-     * Examples:
-     *
-     *     res.jsonp(null);
-     *     res.jsonp({ user: 'tj' });
-     *     res.status(500).jsonp('oh noes!');
-     *     res.status(404).jsonp('I dont have that');
-     */
-    jsonp: Send
 
     /**
      * Transfer the file at the given `path`.
@@ -147,20 +161,24 @@ export interface Response<
      * @api public
      */
     sendFile(path: string, fn?: Errback): void;
+
     sendFile(path: string, options: any, fn?: Errback): void;
 
     /**
      * @deprecated Use sendFile instead.
      */
     sendfile(path: string): void;
+
     /**
      * @deprecated Use sendFile instead.
      */
     sendfile(path: string, options: any): void;
+
     /**
      * @deprecated Use sendFile instead.
      */
     sendfile(path: string, fn: Errback): void;
+
     /**
      * @deprecated Use sendFile instead.
      */
@@ -180,7 +198,9 @@ export interface Response<
      * This method uses `res.sendfile()`.
      */
     download(path: string, fn?: Errback): void;
+
     download(path: string, filename: string, fn?: Errback): void;
+
     download(path: string, filename: string, options: any, fn?: Errback): void;
 
     /**
@@ -228,11 +248,11 @@ export interface Response<
      *
      *    res.format({
      *      'text/plain': function(){
-     *        res.send('hey');
+     *        res.send("hey");
      *      },
      *
      *      'text/html': function(){
-     *        res.send('<p>hey</p>');
+     *        res.send("<p>hey</p>");
      *      },
      *
      *      'appliation/json': function(){
@@ -245,11 +265,11 @@ export interface Response<
      *
      *    res.format({
      *      text: function(){
-     *        res.send('hey');
+     *        res.send("hey");
      *      },
      *
      *      html: function(){
-     *        res.send('<p>hey</p>');
+     *        res.send("<p>hey</p>");
      *      },
      *
      *      json: function(){
@@ -283,13 +303,12 @@ export interface Response<
      * Aliased as `res.header()`.
      */
     set(field: any): this;
+
     set(field: string, value?: string | string[]): this;
 
     header(field: any): this;
-    header(field: string, value?: string | string[]): this;
 
-    // Property indicating if HTTP headers has been sent for the response.
-    headersSent: boolean;
+    header(field: string, value?: string | string[]): this;
 
     /** Get value for header `field`. */
     get(field: string): string;
@@ -315,7 +334,9 @@ export interface Response<
      *    res.cookie('rememberme', '1', { maxAge: 900000, httpOnly: true })
      */
     cookie(name: string, val: string, options: CookieOptions): this;
+
     cookie(name: string, val: any, options: CookieOptions): this;
+
     cookie(name: string, val: any): this;
 
     /**
@@ -363,7 +384,9 @@ export interface Response<
      *    res.redirect('../login'); // /blog/post/1 -> /blog/login
      */
     redirect(url: string): void;
+
     redirect(status: number, url: string): void;
+
     redirect(url: string, status: number): void;
 
     /**
@@ -377,11 +400,8 @@ export interface Response<
      *  - `filename`  filename of the view being rendered
      */
     render(view: string, options?: object, callback?: (err: Error, html: string) => void): void;
+
     render(view: string, callback?: (err: Error, html: string) => void): void;
-
-    locals: Locals;
-
-    charset: string;
 
     /**
      * Adds the field to the Vary response header, if it is not there already.
@@ -391,8 +411,6 @@ export interface Response<
      *
      */
     vary(field: string): this;
-
-    app: Application;
 
     /**
      * Appends the specified value to the HTTP response header field.
@@ -404,19 +422,13 @@ export interface Response<
      * @since 4.11.0
      */
     append(field: string, value?: string[] | string): this;
-
-    /**
-     * After middleware.init executed, Response will contain req property
-     * See: express/lib/middleware/init.js
-     */
-    req: Request;
 }
 
 
 export interface Dictionary<T> {
-    [key: string]: T;
+    [ key: string ]: T;
 }
 
 export interface ParamsDictionary {
-    [key: string]: string;
+    [ key: string ]: string;
 }

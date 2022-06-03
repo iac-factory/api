@@ -1,5 +1,12 @@
-import { HTTP } from "@iac-factory/api-schema";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
 
+import { HTTP } from "@iac-factory/api-schema";
 import Application = HTTP.Application;
 
 import Request = HTTP.Request;
@@ -25,10 +32,10 @@ const Logger = (request: Request, response: HTTP.Response, message: string, leve
     const Modules = request.path.split( "/" ).map( ($) => Bracket( $ ) ).join( " " );
 
     const Stamp = Parentheses( [
-            Time.getMonth(),
-            Time.getDay(),
-            Time.getFullYear()
-        ].join( "-" ) );
+        Time.getMonth(),
+        Time.getDay(),
+        Time.getFullYear()
+    ].join( "-" ) );
 
     const Micro = Parentheses( [
             Time.getHours(),

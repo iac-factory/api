@@ -526,7 +526,7 @@ class MyStack extends TerraformStack {
         } );
 
         new aws.accessanalyzer.AccessanalyzerAnalyzer( this, "access-analysis", {
-            analyzerName: Utility.format("%s-Access-Analysis", name),
+            analyzerName: Utility.format( "%s-Access-Analysis", name ),
             type: "ACCOUNT"
         } );
 

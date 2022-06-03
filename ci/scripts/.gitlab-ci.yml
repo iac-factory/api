@@ -1,16 +1,16 @@
-.Target:        &Environment    Development
-.Git:           &Strategy       clone
-.Setup:         &Alpine         apk update && apk upgrade && apk add bash git jq zip unzip tree
+.Target: &Environment    Development
+.Git: &Strategy          clone
+.Setup: &Alpine          apk update && apk upgrade && apk add bash git jq zip unzip tree
 
 .Token: &TOKEN
-    -   |
+    - |
         cat << EOF > ~/.npmrc
         ; Instance Level Configuration
         @iac-factory:registry = https://gitlab.cloud-technology.com/api/v4/packages/npm/
-        
+
         ; Package Level Configuration
         @iac-factory:registry = https://gitlab.cloud-technology.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
-        
+
         ; Important Configuration(s) - These are not comments
         //gitlab.cloud-technology.com/api/v4/packages/npm/:_authToken=${CI_JOB_TOKEN}
         //gitlab.cloud-technology.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}
@@ -37,7 +37,7 @@ Publish:
         - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
         - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
         - git remote set-url --push origin https://git:${GIT_PUSH_TOKEN}@gitlab.cloud-technology.com/${CI_GROUP_DIR}/npm/git-clone.git
-        -   |
+        - |
             cat << EOF > ~/.npmrc
             ; Instance Level Configuration
             @iac-factory:registry = https://gitlab.cloud-technology.com/api/v4/packages/npm/

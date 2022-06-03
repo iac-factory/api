@@ -2,12 +2,7 @@ import * as Provider from "@cdktf/provider-github";
 
 import { Construct } from "constructs";
 
-import { Application, Output } from "./cdk";
-import { Variable } from "./cdk";
-import { Backend } from "./cdk";
-import { Stack } from "./cdk";
-
-import Input from "./cdk";
+import Input, { Application, Output, Variable, Backend, Stack } from "./cdk";
 
 class Instance extends Stack {
     constructor(scope: Construct, name: string = "cli-utilities") {

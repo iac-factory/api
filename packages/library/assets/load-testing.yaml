@@ -6,7 +6,7 @@ config:
     tls:
         rejectUnauthorized: false
     http:
-        pool: 10
+        pool:            10
         extendedMetrics: true
 
 scenarios:
@@ -14,5 +14,5 @@ scenarios:
         flow:
             -   log: "Executing Baseline Flow"
             -   get:
-                    url: "/"
+                    url:  "/"
                     gzip: true

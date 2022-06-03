@@ -29,7 +29,7 @@ interface CJS {
 
 interface ESM {
     /*** An array of fields checked when importing a package */
-    "mainFields":["main"]
+    "mainFields": [ "main" ];
 
     /***
      * A string mode:

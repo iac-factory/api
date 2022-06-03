@@ -135,8 +135,16 @@ const Command = async ($: Argv) => {
     Configuration( Arguments );
 
     Arguments.check( async ($: { [ p: string ]: unknown, _: ( string | number )[], $0: string }) => {
-        await Remove( Path.join( Process.cwd(), "distribution" ), { recursive: true, force: true, maxRetries: 5 } );
-        await Remove( Path.join( Process.cwd(), "factory" ), { recursive: true, force: true, maxRetries: 5 } );
+        await Remove( Path.join( Process.cwd(), "distribution" ), {
+            recursive: true,
+            force: true,
+            maxRetries: 5
+        } );
+        await Remove( Path.join( Process.cwd(), "factory" ), {
+            recursive: true,
+            force: true,
+            maxRetries: 5
+        } );
 
         $.debug = ( $?.debug === true ) ? $.debug : false;
 

@@ -1,6 +1,4 @@
-import { HTTP } from ".";
-import { Await } from ".";
-import { Flatten } from ".";
+import { HTTP, Await, Flatten } from ".";
 
 import { Layer } from "./layer";
 import { Methods } from "./methods";

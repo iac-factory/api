@@ -11,7 +11,7 @@ export function Flatten(list: any[], depth?: number) {
     const flat = function (list: Array<[][]>, level: number): [][] {
         return list.reduce( function (array, item) {
 
-            if ( (depth) && Array.isArray( item ) && (level < depth!) ) {
+            if ( ( depth ) && Array.isArray( item ) && ( level < depth! ) ) {
                 return array.concat( flat( item, level + 1 ) );
             } else {
                 return array.concat( item );

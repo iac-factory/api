@@ -1,5 +1,12 @@
-import { ARN } from ".";
-import { Method } from ".";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
+import { ARN, Method } from ".";
 
 /***
  * Complex String - `Endpoint`
@@ -83,7 +90,7 @@ import { Method } from ".";
  *
  * @constructor
  */
-export default function Identifier( input: string ): Identification.ARN {
+export default function Identifier(input: string): Identification.ARN {
     const reflect: Identification.ARN = Reflect.construct( String, [ ( input ) ? input : null ] );
 
     function parse(): string[] {
@@ -123,7 +130,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 0 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );
@@ -137,7 +144,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 1 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );
@@ -151,7 +158,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 2 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );
@@ -165,7 +172,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 3 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );
@@ -179,7 +186,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 4 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );
@@ -193,7 +200,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 5 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );
@@ -207,7 +214,7 @@ export default function Identifier( input: string ): Identification.ARN {
                 regex[ 6 ]!.lastIndex++;
             }
 
-            copy.evaluation.forEach( ( match, index ) => {
+            copy.evaluation.forEach( (match, index) => {
                 const target = copy.evaluation![ index + 1 ];
 
                 ( index !== 0 && target ) && copy.fields.push( target );

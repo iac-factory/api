@@ -4,7 +4,7 @@
  * @private
  */
 
-export function Wrap (old: () => any, fn: { (fn: any, err: any): any; apply?: any; }) {
+export function Wrap(old: () => any, fn: { (fn: any, err: any): any; apply?: any; }) {
     return function proxy(this: any) {
         const args = new Array( arguments.length + 1 );
 

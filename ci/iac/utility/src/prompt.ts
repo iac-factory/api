@@ -4,7 +4,6 @@
  * @copyright   Cloud-Technology LLC. & Affiliates
  */
 
-import Process from "process";
 import Input from "readline";
 import Utility from "util";
 import FS from "fs";
@@ -18,21 +17,21 @@ import TTY from "tty";
  * @constructor
  *
  */
-const Handler = ( timeout = Handler?.["timeout"], ci = !Handler?.["ci"], debug = Handler?.["debug"]) => {
-    (debug) && console.debug("[Debug] Standard-Input Handler" + ":",Utility.inspect(Handler));
+const Handler = (timeout = Handler?.[ "timeout" ], ci = !Handler?.[ "ci" ], debug = Handler?.[ "debug" ]) => {
+    ( debug ) && console.debug( "[Debug] Standard-Input Handler" + ":", Utility.inspect( Handler ) );
 
-    (ci) && process?.stdout?.write( "\u001B[?25l" + "\r" );
-    (ci) && process?.stdin?.setRawMode( true );
+    ( ci ) && process?.stdout?.write( "\u001B[?25l" + "\r" );
+    ( ci ) && process?.stdin?.setRawMode( true );
 
-    process?.stdin?.on("open", () => {
-        process?.stdin?.setTimeout(timeout);
+    process?.stdin?.on( "open", () => {
+        process?.stdin?.setTimeout( timeout );
 
-        (debug) && console.debug("[Debug] Standard-Input Event Listener(s)" + ":",process?.stdin?.eventNames());
-        (debug) && console.debug("[Debug] Standard-Input Input Timeout" + ":",timeout);
+        ( debug ) && console.debug( "[Debug] Standard-Input Event Listener(s)" + ":", process?.stdin?.eventNames() );
+        ( debug ) && console.debug( "[Debug] Standard-Input Input Timeout" + ":", timeout );
 
-        process?.stdin?.on("timeout", () => {
-            (debug) && console.debug("[Debug] Standard-Input Timeout Event Trigger");
-            (debug) && console.debug("[Debug] Input Stream Never Received Data" + ":",timeout);
+        process?.stdin?.on( "timeout", () => {
+            ( debug ) && console.debug( "[Debug] Standard-Input Timeout Event Trigger" );
+            ( debug ) && console.debug( "[Debug] Input Stream Never Received Data" + ":", timeout );
 
 //            /// @todo - Better Warning
 //            process.emitWarning("Input Stream Never Received Data", {
@@ -49,10 +48,10 @@ const Handler = ( timeout = Handler?.["timeout"], ci = !Handler?.["ci"], debug =
 //                name: "Timeout-Exception",
 //                detail: "[Warning Detail Information ...]"
 //            });
-        });
-    });
+        } );
+    } );
 
-    process?.stdin?.on( "data", ( $ ) => {
+    process?.stdin?.on( "data", ($) => {
         /// Exit if User Inputs := CTRL + C
         /// @ts-ignore
         Buffer.from( [ 0x3 ], "hex" ).equals( $ ) && process?.exit( 0 );
@@ -82,14 +81,14 @@ const Handler = ( timeout = Handler?.["timeout"], ci = !Handler?.["ci"], debug =
 
         process?.stdout?.emit( "drain" );
 
-        process?.exit(code ? code : 0);
+        process?.exit( code ? code : 0 );
     } );
 };
 
-Reflect.set(Handler, "ci", process.env?.["CI"] || !process?.stdin);
-Reflect.set(Handler, "timeout", process.env?.["TIMEOUT"] ?? 15000);
-Reflect.set(Handler, "interactive", TTY.isatty(process.stdin.fd));
-Reflect.set(Handler, "debug", process.argv.map(($) => $.toLowerCase() ?? true).indexOf("--debug") !== -1);
+Reflect.set( Handler, "ci", process.env?.[ "CI" ] || !process?.stdin );
+Reflect.set( Handler, "timeout", process.env?.[ "TIMEOUT" ] ?? 15000 );
+Reflect.set( Handler, "interactive", TTY.isatty( process.stdin.fd ) );
+Reflect.set( Handler, "debug", process.argv.map( ($) => $.toLowerCase() ?? true ).indexOf( "--debug" ) !== -1 );
 
 /***
  *
@@ -102,35 +101,35 @@ Reflect.set(Handler, "debug", process.argv.map(($) => $.toLowerCase() ?? true).i
  */
 
 const Prompt = async (query) => {
-    process?.stdin?.emit("open");
-    return new Promise((resolve, reject) => {
+    process?.stdin?.emit( "open" );
+    return new Promise( (resolve, reject) => {
         let $;
 
-        const Interface = Input.createInterface({
+        const Interface = Input.createInterface( {
             input: process.stdin,
             output: process.stdout,
             terminal: process.stdout.isTTY,
             historySize: 0
-        });
+        } );
 
-        Interface.setPrompt(query);
+        Interface.setPrompt( query );
 
-        Interface.on("line", (data) => {
+        Interface.on( "line", (data) => {
             $ += data;
 
-            FS.fdatasyncSync(process.stdout.fd);
+            FS.fdatasyncSync( process.stdout.fd );
 
             Interface.close();
-        });
+        } );
 
-        const prompt = Utility.promisify(Interface.question).bind(Interface);
+        const prompt = Utility.promisify( Interface.question ).bind( Interface );
 
         try {
-            $ = prompt(query);
-        } catch (_) { reject(_) }
+            $ = prompt( query );
+        } catch ( _ ) { reject( _ ); }
 
-        resolve($);
-    });
+        resolve( $ );
+    } );
 };
 
 export { Prompt };

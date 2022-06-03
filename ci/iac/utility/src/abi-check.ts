@@ -13,7 +13,10 @@ function $(bin: string | FS.PathLike) {
 }
 
 const Binary = (bin: string | FS.PathLike) => {
-    const Data = { Valid: false, Path: "" };
+    const Data = {
+        Valid: false,
+        Path: ""
+    };
     const Target = $( bin );
     const Iterator = Target.length;
 

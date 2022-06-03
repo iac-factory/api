@@ -13,9 +13,7 @@
  * @public
  */
 
-import { Flatten } from ".";
-import { Router } from ".";
-import { Layer } from ".";
+import { Flatten, Router, Layer } from ".";
 
 export const Use = Router.prototype.use = function use(handler: string | Function) {
     let offset = 0;

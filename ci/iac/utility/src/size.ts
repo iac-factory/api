@@ -17,22 +17,31 @@ import Path from "path";
  * @returns {Promise<{Total: number, Statistics: FS.Stats[], Directories: {Total: number}, Files: {Objects: FS.Stats[], Total: number}, Entries: {Total: number}}>}
  * @constructor
  */
-const Size = async ( directory: string ): Promise<{ Total: number, Statistics: FS.Stats[], Directories: { Total: number }, Files: { Objects: FS.Stats[], Total: number }, Entries: { Total: number } }> => {
+const Size = async (directory: string): Promise<{ Total: number, Statistics: FS.Stats[], Directories: { Total: number }, Files: { Objects: FS.Stats[], Total: number }, Entries: { Total: number } }> => {
     /// ... mmmm ... definitely needs some clean-up ...
-    const Collection: { Total: number, Statistics: FS.Stats[], Directories: { Total: number }, Files: { Objects: FS.Stats[], Total: number }, Entries: { Total: number } } = { Total: 0, Statistics: [], Directories: { Total: 0 }, Files: { Objects: [], Total: 0 }, Entries: { Total: 0 } };
+    const Collection: { Total: number, Statistics: FS.Stats[], Directories: { Total: number }, Files: { Objects: FS.Stats[], Total: number }, Entries: { Total: number } } = {
+        Total: 0,
+        Statistics: [],
+        Directories: { Total: 0 },
+        Files: {
+            Objects: [],
+            Total: 0
+        },
+        Entries: { Total: 0 }
+    };
 
-    return new Promise( async ( resolve ) => {
-        const $: string[] = await new Promise( ( resolve ) => {
-            FS.readdir( directory, { encoding: "utf-8" }, ( error, files ) => {
+    return new Promise( async (resolve) => {
+        const $: string[] = await new Promise( (resolve) => {
+            FS.readdir( directory, { encoding: "utf-8" }, (error, files) => {
                 if ( error ) throw error;
 
                 resolve( files );
             } );
         } );
 
-        for await ( const iterator of $.map( ( file ) => {
-            return new Promise( ( resolve ) => {
-                FS.stat( Path.join( directory, file ), ( error, data ) => {
+        for await ( const iterator of $.map( (file) => {
+            return new Promise( (resolve) => {
+                FS.stat( Path.join( directory, file ), (error, data) => {
                     if ( error ) throw error;
 
                     Collection.Files.Total += 1;
@@ -45,7 +54,7 @@ const Size = async ( directory: string ): Promise<{ Total: number, Statistics: F
             Collection.Statistics.push( $ );
         }
 
-        Collection.Statistics.forEach( ( $ ) => {
+        Collection.Statistics.forEach( ($) => {
             Collection.Total += ( $.size * 1024 * 1024 );
             if ( $.isDirectory() ) {
                 Collection.Directories.Total += 1;

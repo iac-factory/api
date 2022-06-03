@@ -2,11 +2,11 @@ import Module from "module";
 
 import type Options from "esm";
 
-const Import = Module.createRequire(__filename);
+const Import = Module.createRequire( __filename );
 
 export module ESM {
     export type Runtime = typeof require & typeof Options;
-    export const ECMA = Import("esm") as Runtime;
+    export const ECMA = Import( "esm" ) as Runtime;
 
     /***
      * Common-JS Settings for ESM Runtime(s)
@@ -30,7 +30,13 @@ export module ESM {
      * @type {{mode: string, cache: boolean, sourceMap: boolean, await: boolean, force: boolean}}
      * @private
      */
-    const Runtime: { mode: string; cache: boolean; sourceMap: boolean; await: boolean; force: boolean; } = { mode: "auto", force: true, await: true, cache: false, sourceMap: true };
+    const Runtime: { mode: string; cache: boolean; sourceMap: boolean; await: boolean; force: boolean; } = {
+        mode: "auto",
+        force: true,
+        await: true,
+        cache: false,
+        sourceMap: true
+    };
 
     /***
      * ESM Settings
@@ -39,7 +45,7 @@ export module ESM {
      * @public
      */
     export const Configuration: { mode: string; cache: boolean; sourceMap: boolean; await: boolean; force: boolean; cjs: { cache: boolean; extensions: boolean; topLevelReturn: boolean; dedefault: boolean; mutableNamespace: boolean; paths: boolean; esModule: boolean; vars: boolean; namedExports: boolean; }; } = {
-        ... {cjs: CJS}, ... Runtime
+        ... { cjs: CJS }, ... Runtime
     };
 
     require = module.require = ECMA( module, {} );

@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import Utility from "util";
 
 import type { Request, Response, NextFunction } from "express-serve-static-core";
@@ -17,7 +25,7 @@ export const Apply = (server: Application) => {
     console.debug( "[Middleware] [Winston] [Debug] Updating Logger ..." );
 
     server.use( (request: Request, response: Response, next: NextFunction) => {
-        request.addListener("end", (event: Events.EventEmitter) => {
+        request.addListener( "end", (event: Events.EventEmitter) => {
             process.stdout.write( Utility.inspect(
                 request, {
                     colors: false,
@@ -26,9 +34,9 @@ export const Apply = (server: Application) => {
                     sorted: true
                 } )
             );
-        });
+        } );
 
-        response.addListener("finish", (event: Events.EventEmitter) => {
+        response.addListener( "finish", (event: Events.EventEmitter) => {
             process.stdout.write( Utility.inspect(
                 { Response: response }, {
                     colors: false,
@@ -37,7 +45,7 @@ export const Apply = (server: Application) => {
                     sorted: true
                 } )
             );
-        });
+        } );
 
         next();
     } );

@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Debugger } from "@iac-factory/api-core";
 
 /*** @experimental */
@@ -18,18 +26,18 @@ const Cryptography = async () => {
     try {
         await import("crypto");
     } catch ( error ) {
-        const write: Promise<boolean> = new Promise((callback) => {
+        const write: Promise<boolean> = new Promise( (callback) => {
             process.stderr.write(
                 JSON.stringify( {
                     exception: "Crypto Support is Disabled",
                     error
-                }, null, 4 ), () => callback(true)
+                }, null, 4 ), () => callback( true )
             );
 
             process.exitCode = 1;
-        });
+        } );
 
-        (await write) && process.exit();
+        ( await write ) && process.exit();
     }
 };
 

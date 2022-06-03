@@ -1,6 +1,9 @@
 import Input from "../auto.tfvars.json";
 
-const TF = { ... Input, token: undefined };
+const TF = {
+    ... Input,
+    token: undefined
+};
 
 export * as CDKTF from "cdktf";
 

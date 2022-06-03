@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import * as AWS from "@aws-sdk/client-lambda";
 import { Debugger } from "@iac-factory/api-core";
 

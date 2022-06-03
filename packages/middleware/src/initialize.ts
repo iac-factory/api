@@ -1,8 +1,15 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { HTTP } from "@iac-factory/api-schema";
 
-import Application = HTTP.Application;
-
 import { Debugger } from "@iac-factory/api-core";
+import Application = HTTP.Application;
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -12,14 +19,14 @@ const Logger = Debugger.hydrate( {
 } );
 
 const Initialize = (server: Application) => {
-    Logger.debug("Configuring API Framework ...");
+    Logger.debug( "Configuring API Framework ..." );
 
     server.init();
 
-    server.disable("etag");
-    server.disable("view");
-    server.disable("views");
-    server.disable("x-powered-by");
+    server.disable( "etag" );
+    server.disable( "view" );
+    server.disable( "views" );
+    server.disable( "x-powered-by" );
 
     return server;
 };

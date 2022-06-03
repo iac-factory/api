@@ -3,7 +3,7 @@
     "ts-node": {"esm": false},
     "compilerOptions": {
         "target": "ES3",
-        "outDir": "distribution/common-js" ,
+        "outDir": "distribution/common-js",
         "useDefineForClassFields": false
     }
 }

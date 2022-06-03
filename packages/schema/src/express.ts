@@ -2,26 +2,25 @@ declare module "IaC.API.Controller" {
     export { Router } from "express";
 
     export module IaC {
-        type Remove<Input extends string, Tail extends string> = Input extends `${infer Partially}${Tail}` ? Partially : Input;
-        type Derive<Generic extends string> = Remove<
-            Remove<Remove<Generic, `/${string}`>, `-${string}`>, `.${string}`>;
+        type Remove<Input extends string, Tail extends string> = Input extends `${ infer Partially }${ Tail }` ? Partially : Input;
+        type Derive<Generic extends string> = Remove<Remove<Remove<Generic, `/${ string }`>, `-${ string }`>, `.${ string }`>;
 
         export interface Dictionary {
-            [key: string]: string;
+            [ key: string ]: string;
         }
 
-        export type Parameters <Route extends string> = string extends Route
+        export type Parameters<Route extends string> = string extends Route
             ? Dictionary
-            : Route extends `${string}:${infer Tail}`
+            : Route extends `${ string }:${ infer Tail }`
                 ? (
                 Derive<Tail> extends never
                     ? Dictionary
-                    : Derive<Tail> extends `${infer Parameter}?`
+                    : Derive<Tail> extends `${ infer Parameter }?`
                         ? { [Variable in Parameter]?: string }
                         : { [Variable in Derive<Tail>]: string }
                 ) &
-                (Tail extends `${Derive<Tail>}${infer Recursion}`
-                    ? Parameters<Recursion> : unknown)
+                ( Tail extends `${ Derive<Tail> }${ infer Recursion }`
+                    ? Parameters<Recursion> : unknown )
                 : {};
 
         export type { Request };
@@ -43,12 +42,5 @@ declare module "IaC.API.Controller" {
         Response: NextFunction;
     }
 
-    import type { Request } from "express";
-    import type { Response } from "express";
-    import type { NextFunction } from "express";
-    import type { Express } from "express";
-    import type { Send } from "express";
-    import type { Application } from "express";
-    import type { RequestHandler } from "express";
-    import type { ErrorRequestHandler } from "express";
+    import type { Request, Response, NextFunction, Express, Send, Application, RequestHandler, ErrorRequestHandler } from "express";
 }

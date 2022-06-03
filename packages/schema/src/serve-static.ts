@@ -13,6 +13,7 @@ declare function serveStatic<R extends http.ServerResponse>(
 
 declare namespace serveStatic {
     var mime: typeof m;
+
     interface ServeStaticOptions<R extends http.ServerResponse = http.ServerResponse> {
         /**
          * Enable or disable setting Cache-Control response header, defaults to true.
@@ -83,7 +84,7 @@ declare namespace serveStatic {
          * path the file path that is being sent
          * stat the stat object of the file that is being sent
          */
-        setHeaders?: ((res: R, path: string, stat: any) => any) | undefined;
+        setHeaders?: ( (res: R, path: string, stat: any) => any ) | undefined;
     }
 
     interface RequestHandler<R extends http.ServerResponse> {
@@ -91,8 +92,9 @@ declare namespace serveStatic {
     }
 
     interface RequestHandlerConstructor<R extends http.ServerResponse> {
-        (root: string, options?: ServeStaticOptions<R>): RequestHandler<R>;
         mime: typeof m;
+
+        (root: string, options?: ServeStaticOptions<R>): RequestHandler<R>;
     }
 }
 

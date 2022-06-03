@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 /***
  * node-postgres uses the same environment variables as libpq to connect to a PostgreSQL server.
  * Both individual clients & pools will use these environment variables. Here's a tiny program
@@ -33,18 +41,19 @@
  *
  */
 
+import type { QueryResult, PoolClient } from "pg";
 import { Pool, QueryResultRow } from "pg";
 
 import { Debugger } from "@iac-factory/api-core";
 
 export module PG {
-    const Connection = new Pool({
-        password: process.env["POSTGRES_PASSWORD"],
-        user: process.env["POSTGRES_USER"],
-        database: process.env["POSTGRES_DB"],
-        application_name: process.env["SERVER"],
-        keepAlive: process.env["POSTGRES_CONNECTION_KEEPALIVE"] === "true"
-    });
+    const Connection = new Pool( {
+        password: process.env[ "POSTGRES_PASSWORD" ],
+        user: process.env[ "POSTGRES_USER" ],
+        database: process.env[ "POSTGRES_DB" ],
+        application_name: process.env[ "SERVER" ],
+        keepAlive: process.env[ "POSTGRES_CONNECTION_KEEPALIVE" ] === "true"
+    } );
 
     export const Query = async function (input: string, parameters?: any) {
         const logger = Debugger.hydrate( {
@@ -59,7 +68,7 @@ export module PG {
 
         const delta = ( new Date().getTime() - initial ) / 1000;
 
-        logger.debug( "Query Duration" + ":" + " " + delta + " " + "Second(s)");
+        logger.debug( "Query Duration" + ":" + " " + delta + " " + "Second(s)" );
 
         return response;
     };
@@ -133,7 +142,5 @@ export interface Configuration {
     /*** Specifies a value for the {@link https://www.postgresql.org/docs/9.1/runtime-config-logging.html#GUC-APPLICATION-NAME application_name} configuration parameter. */
     application_name?: string;
 }
-
-import type { QueryResult, PoolClient } from "pg";
 
 export default PG;

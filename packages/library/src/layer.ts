@@ -17,7 +17,7 @@ export interface Constructor {
 
     route: any;
 
-    new (path: string, options: any, fn: any): Constructor;
+    new(path: string, options: any, fn: any): Constructor;
 }
 
 export const Layer = function (this: any, path: string, options: any, fn: any) {
@@ -38,11 +38,13 @@ export const Layer = function (this: any, path: string, options: any, fn: any) {
     this.regexp.fast_slash = path === "/" && opts.end === false;
 
     return;
-} as any as { new(name: string, options: {
+} as any as {
+    new(name: string, options: {
         sensitive?: boolean;
         strict?: boolean;
         end?: boolean;
-    }, fn: any): Constructor; };
+    }, fn: any): Constructor;
+};
 
 /**
  * Handle the error for the layer.

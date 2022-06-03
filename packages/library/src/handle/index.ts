@@ -5,10 +5,9 @@ import { Merge } from "./merge";
 import { Path } from "./path-name";
 import { Restore } from "./restore";
 
-import { Match } from "..";
-import { Protocol } from "..";
-import { Router } from "..";
-import { Await } from "..";
+import type { HTTP } from "..";
+import { Match, Protocol, Router, Await } from "..";
+import fs from "fs";
 
 export const Log = (message: string) => {
     /***
@@ -221,7 +220,7 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
 async function send(req: HTTP.Request, res: HTTP.Response, status: HTTP.Status, headers: HTTP.Headers, message: HTTP.Message) {
     const handler = async () => new Promise( (resolve, reject) => {
         /// If the HTTP Request is HTTP 1.1, and not HTTP 2.0
-        if (!(req.stream) || !(req.stream.id)) reject();
+        if ( !( req.stream ) || !( req.stream.id ) ) reject();
 
         const identifier = req.stream.id;
 
@@ -264,23 +263,20 @@ async function send(req: HTTP.Request, res: HTTP.Response, status: HTTP.Status, 
         } );
     } );
 
-    await handler().catch((exception) => {
+    await handler().catch( (exception) => {
         // ...
-    }).finally( () => {
+    } ).finally( () => {
         Log( "Manually Closing Stream Handler" );
 
         try {
             req.stream.end();
-        } catch (exception) {}
+        } catch ( exception ) {}
 
-        Log("Submitting HTTP Response ...");
+        Log( "Submitting HTTP Response ..." );
 
         req.resume();
     } );
 }
-
-import type { HTTP } from "..";
-import fs from "fs";
 
 export * from "./options";
 export * from "./wrap";

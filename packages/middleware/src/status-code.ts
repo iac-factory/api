@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import type { Request, Response, NextFunction } from "express-serve-static-core";
 import type { Application } from "express";
 
@@ -37,24 +45,24 @@ const Log = Debugger.hydrate( {
  * @constructor
  *
  */
-const Status = ( server: Application ) => {
+const Status = (server: Application) => {
     console.debug( "[Middleware] [Status-Code] [Debug] Overwriting Default Status-Code Middleware ..." );
 
     const message = (response: Response) => {
         const code = response.statusCode;
 
-        if (code === 100) return " " + "100 Continue" + "\n";
+        if ( code === 100 ) return " " + "100 Continue" + "\n";
 
         return " " + response.statusMessage + "\n";
     };
 
-    server.use( async ( request: Request, response: Response, callback: NextFunction ) => {
+    server.use( async (request: Request, response: Response, callback: NextFunction) => {
         /// response.status( 100 );
 
         /// Unix Timestamp (C-Time)
-        Reflect.set(response, "time", Date.now());
+        Reflect.set( response, "time", Date.now() );
 
-        process.stdout.write( Logger( request as object as HTTP.Request, response, "Partial-Status" + ":" + message( response ) ));
+        process.stdout.write( Logger( request as object as HTTP.Request, response, "Partial-Status" + ":" + message( response ) ) );
 
         callback();
     } );

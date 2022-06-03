@@ -24,7 +24,7 @@ import Path from "path";
  * @constructor
  *
  */
-const Reader = async ( target: string ) => {
+const Reader = async (target: string) => {
     /***
      * Asynchronously computes the canonical pathname by resolving `.`, `..` and
      * symbolic links.
@@ -53,26 +53,29 @@ const Reader = async ( target: string ) => {
      *
      */
     const valid = () => {
-        return new Promise((resolve) => FS.realpath(target, { encoding: "utf-8" }, (exception, path) => {
-            resolve((exception) ? false : !!( path ));
-        } ));
+        return new Promise( (resolve) => FS.realpath( target, { encoding: "utf-8" }, (exception, path) => {
+            resolve( ( exception ) ? false : !!( path ) );
+        } ) );
     };
 
-    const descriptors: Descriptors = async () => new Promise((resolve) => {
+    const descriptors: Descriptors = async () => new Promise( (resolve) => {
         const handle: Handler = (exception, files) => {
-            const descriptors = files.map((descriptor) => Path.join(Path.resolve(target, descriptor.name)));
+            const descriptors = files.map( (descriptor) => Path.join( Path.resolve( target, descriptor.name ) ) );
 
-            resolve(descriptors);
+            resolve( descriptors );
         };
 
-        void FS.readdir(target, { encoding: "utf-8", withFileTypes: true }, handle);
-    });
+        void FS.readdir( target, {
+            encoding: "utf-8",
+            withFileTypes: true
+        }, handle );
+    } );
 
-    return (await valid()) ? await descriptors() : null;
+    return ( await valid() ) ? await descriptors() : null;
 };
 
 export type Descriptors = () => Promise<FS.PathOrFileDescriptor[]>;
-export type Handler = (exception: (NodeJS.ErrnoException | null), files: FS.Dirent[]) => void;
+export type Handler = (exception: ( NodeJS.ErrnoException | null ), files: FS.Dirent[]) => void;
 
 export { Reader };
 

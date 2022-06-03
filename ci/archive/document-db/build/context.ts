@@ -1,8 +1,8 @@
 const Context = async () => {
     const { Connection: connection } = await import("..");
 
-    console.log(connection);
-}
+    console.log( connection );
+};
 
 export { Context };
 

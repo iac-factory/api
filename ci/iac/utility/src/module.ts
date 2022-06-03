@@ -64,26 +64,26 @@ interface Locality {
 class Locality implements Locality {
     constructor(importable: string) {
         this.url = importable;
-        this.uri = URI.fileURLToPath(this.url);
+        this.uri = URI.fileURLToPath( this.url );
 
-        this.absolute = Path.isAbsolute(this.uri) ?? false;
-        this.file = FS.lstatSync(this.uri)?.isFile() ?? false;
+        this.absolute = Path.isAbsolute( this.uri ) ?? false;
+        this.file = FS.lstatSync( this.uri )?.isFile() ?? false;
 
         this.delimiter = Path.delimiter;
 
         this.extension = Path.extname( this.uri );
 
-        this.name = Path.basename(this.uri, this.extension);
-        this.module = Path.resolve(this.name);
+        this.name = Path.basename( this.uri, this.extension );
+        this.module = Path.resolve( this.name );
 
-        this.directory = Path.dirname(this.module);
-        this.basename = Path.basename(this.directory);
+        this.directory = Path.dirname( this.module );
+        this.basename = Path.basename( this.directory );
 
-        this.relative = Path.relative(Process.cwd(), this.uri);
+        this.relative = Path.relative( Process.cwd(), this.uri );
     }
 
     static initialize(self: string): Locality {
-        return Reflect.construct(Locality, [self]);
+        return Reflect.construct( Locality, [ self ] );
     }
 
     /*** Compatability Dot-Property, `__filename` */
@@ -98,7 +98,7 @@ class Locality implements Locality {
      *
      */
 
-    filename (): string {
+    filename(): string {
         return this.uri;
     }
 
@@ -114,7 +114,7 @@ class Locality implements Locality {
      *
      */
 
-    dirname () {
+    dirname() {
         return this.directory;
     }
 
@@ -129,7 +129,7 @@ class Locality implements Locality {
      */
 
     contents(): string | null {
-        return (this.file) ? FS.readFileSync(this.uri).toString("utf-8").trim() : null;
+        return ( this.file ) ? FS.readFileSync( this.uri ).toString( "utf-8" ).trim() : null;
     }
 }
 

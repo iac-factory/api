@@ -1,12 +1,18 @@
-const Global = Object.create({
-    initialize: (process.env["INITIALIZE"] === "true")
-});
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
 
-import { Model, Schema } from "mongoose";
+const Global = Object.create( {
+    initialize: ( process.env[ "INITIALIZE" ] === "true" )
+} );
+
+import ORM, { Model, Schema } from "mongoose";
 
 import { Hash } from "./../middleware";
-
-import ORM from "mongoose";
 
 interface Type {
     email?: string;
@@ -84,27 +90,32 @@ export const schema = new Schema<Type, Representation, Methods>( {
     timestamps: {
         createdAt: "creation",
         updatedAt: "modification"
-    }, autoCreate: true
+    },
+    autoCreate: true
 } );
 
 schema.methods.hash = Hash;
 
 export const User = ORM.model<Type, Representation, Methods>( "User", schema, "User" );
 
-async function Initialize () {
+async function Initialize() {
     await import("..");
 
     const empty = ( await User.collection.stats() ).count === 0;
 
-    const Record = new User( { Email: "administrator@internal.io", Username: "Administrator", Password: "Kn0wledge!" } );
+    const Record = new User( {
+        Email: "administrator@internal.io",
+        Username: "Administrator",
+        Password: "Kn0wledge!"
+    } );
 
-    (Global.initialize && empty) && Record.save( async (error: any) => {
+    ( Global.initialize && empty ) && Record.save( async (error: any) => {
         if ( error ) {
             Record.delete( { _id: Record.id } );
 
-            await Record.save().catch((error) => {
+            await Record.save().catch( (error) => {
                 /*** [...] */
-            });
+            } );
 
             await Initialize();
         }
@@ -115,6 +126,6 @@ async function Initialize () {
     } );
 }
 
-void (async () => Initialize())();
+void ( async () => Initialize() )();
 
 export default User;

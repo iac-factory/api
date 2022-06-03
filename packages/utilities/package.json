@@ -1,0 +1,24 @@
+{
+    "name": "@iac-factory/api-utilities",
+    "version": "0.0.1",
+    "private": true,
+    "description": "...",
+    "author": "Jacob B. Sanders <jacob.sanders@cloudhybrid.io> (https://github.com/iac-factory)",
+    "license": "BSD-2-Clause",
+    "scripts": {
+        "start": "cd $(git rev-parse --show-toplevel) && npm run start",
+        "build": "tsc --build $(dirname $(npm root)/tsconfig.json"
+    },
+    "dependencies": {
+        "@iac-factory/ecma": "file:../ecma",
+        "@iac-factory/api-core": "file:../core"
+    },
+    "devDependencies": {
+        "@types/esm": "^3.2.0"
+    },
+    "eslintConfig": {
+        "settings": {
+            "extends": "../.."
+        }
+    }
+}

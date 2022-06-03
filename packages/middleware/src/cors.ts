@@ -1,8 +1,15 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { HTTP } from "@iac-factory/api-schema";
 
-import Application = HTTP.Application;
-
 import { Debugger } from "@iac-factory/api-core";
+import Application = HTTP.Application;
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -204,7 +211,7 @@ module Middleware {
             applyHeaders( headers, res );
 
             if ( options.preflightContinue ) {
-                (next) && next();
+                ( next ) && next();
 
             } else {
                 // Safari (and potentially other browsers) need content-length 0 for 204 or they just hang waiting for a body
@@ -219,7 +226,7 @@ module Middleware {
             headers.push( configureExposedHeaders( options, req ) );
             applyHeaders( headers, res );
 
-            (next) && next();
+            ( next ) && next();
         }
     }
 

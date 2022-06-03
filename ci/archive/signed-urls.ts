@@ -5,18 +5,19 @@ import { defaultProvider } from "@aws-sdk/credential-provider-node";
 import { NodeHttpHandler } from "@aws-sdk/node-http-handler";
 import { HttpRequest } from "@aws-sdk/protocol-http";
 import { SignatureV4 } from "@aws-sdk/signature-v4";
+
 const nodeHttpHandler = new NodeHttpHandler();
-void (async () => {
-    const body = JSON.stringify({
+void ( async () => {
+    const body = JSON.stringify( {
         query: {
             match: {
                 title: "Moneyball"
             }
         }
-    });
+    } );
     const hostname =
         "<insert-end-point>.us-east-1.es.amazonaws.com";
-    const signedHttpRequest = await createSignedHttpRequest({
+    const signedHttpRequest = await createSignedHttpRequest( {
         method: "POST",
         body,
         headers: {
@@ -26,29 +27,30 @@ void (async () => {
         hostname,
         path: "/node-test/_doc/_search",
         service: "es"
-    });
-    console.log(signedHttpRequest);
+    } );
+    console.log( signedHttpRequest );
     try {
-        const res = await nodeHttpHandler.handle(signedHttpRequest);
-        const body = await new Promise((resolve, reject) => {
+        const res = await nodeHttpHandler.handle( signedHttpRequest );
+        const body = await new Promise( (resolve, reject) => {
             const incomingMessage = res.response.body as IncomingMessage;
             let body = "";
-            incomingMessage.on("data", (chunk) => {
+            incomingMessage.on( "data", (chunk) => {
                 body += chunk;
-            });
-            incomingMessage.on("end", () => {
-                resolve(body);
-            });
-            incomingMessage.on("error", (err) => {
-                reject(err);
-            });
-        });
-        console.log(body);
-    } catch (err) {
-        console.error("Error:");
-        console.error(err);
+            } );
+            incomingMessage.on( "end", () => {
+                resolve( body );
+            } );
+            incomingMessage.on( "error", (err) => {
+                reject( err );
+            } );
+        } );
+        console.log( body );
+    } catch ( err ) {
+        console.error( "Error:" );
+        console.error( err );
     }
-})();
+} )();
+
 interface CreateSignHttpRequestParams {
     body?: string;
     headers?: Record<string, string>;
@@ -60,6 +62,7 @@ interface CreateSignHttpRequestParams {
     query?: Record<string, string>;
     service: string;
 }
+
 export async function createSignedHttpRequest({
     body,
     headers,
@@ -71,7 +74,7 @@ export async function createSignedHttpRequest({
     query,
     service
 }: CreateSignHttpRequestParams): Promise<HttpRequest> {
-    const httpRequest = new HttpRequest({
+    const httpRequest = new HttpRequest( {
         body,
         headers,
         hostname,
@@ -80,13 +83,13 @@ export async function createSignedHttpRequest({
         port,
         protocol,
         query
-    });
+    } );
     const sigV4Init = {
         credentials: defaultProvider(),
         region: process.env[ "AWS_DEFAULT_REGION" ] as string,
         service,
         sha256: Sha256
     };
-    const signer = new SignatureV4(sigV4Init);
+    const signer = new SignatureV4( sigV4Init );
     return await signer.sign( httpRequest ) as unknown as Promise<HttpRequest>;
 }

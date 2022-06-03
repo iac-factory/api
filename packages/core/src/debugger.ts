@@ -103,8 +103,8 @@ export module Debugger {
                     : ( settings.level[ 0 ] === "Warning" ) ? Logger.warn( this )
                         : Logger.error( this );
 
-            this.context = this.input.module[0];
-            this.colorize = (context = this.context) => "[" + Reflect.get(this.color, this.input.module[1])(context) + "]";
+            this.context = this.input.module[ 0 ];
+            this.colorize = (context = this.context) => "[" + Reflect.get( this.color, this.input.module[ 1 ] )( context ) + "]";
 
             this.depth = Depth( this.input.depth[ 0 ] );
             this.sorting = this.input.depth[ 1 ];
@@ -148,7 +148,7 @@ export module Debugger {
                         depth: instance.depth,
                         compact: true
                     } ) );
-                },
+                }
             };
         }
 
@@ -178,7 +178,7 @@ export module Debugger {
                         depth: instance.depth,
                         compact: true
                     } ) );
-                },
+                }
             };
         }
 
@@ -201,7 +201,7 @@ export module Debugger {
                         depth: instance.depth,
                         compact: true
                     } ) );
-                },
+                }
             };
         }
 
@@ -217,7 +217,7 @@ export module Debugger {
                         depth: instance.depth,
                         compact: true
                     } ) );
-                },
+                }
             };
         }
     }

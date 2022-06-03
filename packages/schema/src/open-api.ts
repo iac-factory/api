@@ -723,9 +723,9 @@ export namespace OpenAPIV2 {
     } & T;
 
     export interface ResponsesObject {
-        [ index: string ]: Response | undefined;
-
         default?: Response;
+
+        [ index: string ]: Response | undefined;
     }
 
     export type Parameters = ( ReferenceObject | Parameter )[];
@@ -785,8 +785,6 @@ export namespace OpenAPIV2 {
     }
 
     export interface SchemaObject extends IJsonSchema {
-        [ index: string ]: any;
-
         discriminator?: string;
         readOnly?: boolean;
         xml?: XMLObject;
@@ -797,13 +795,15 @@ export namespace OpenAPIV2 {
         properties?: {
             [ name: string ]: SchemaObject;
         };
+
+        [ index: string ]: any;
     }
 
     export interface ExternalDocumentationObject {
-        [ index: string ]: any;
-
         description?: string;
         url: string;
+
+        [ index: string ]: any;
     }
 
     export interface ItemsObject {
@@ -828,13 +828,13 @@ export namespace OpenAPIV2 {
     }
 
     export interface XMLObject {
-        [ index: string ]: any;
-
         name?: string;
         namespace?: string;
         prefix?: string;
         attribute?: boolean;
         wrapped?: boolean;
+
+        [ index: string ]: any;
     }
 
     export interface InfoObject {
