@@ -14,11 +14,12 @@
         "@iac-factory/api-core": "file:../core"
     },
     "devDependencies": {
-        "@types/esm": "^3.2.0"
+        "@types/esm": "^3.2.0",
+        "@iac-factory/eslint-settings": "^1.2.11"
     },
     "eslintConfig": {
         "settings": {
-            "extends": "../.."
+            "extends": "@iac-factory/eslint-settings"
         }
     }
 }

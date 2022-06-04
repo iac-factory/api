@@ -17,7 +17,7 @@ export module Client {
     export const Functions = async function () {
         /*** Essentially namespaced "static" properties */
 
-        const max: number = 1;
+        const max: number = 25;
         const region: string = "us-east-2";
 
         /***
@@ -36,6 +36,14 @@ export module Client {
                     this.client = this.instance();
                     this.command = this.arguments();
                     this.handler = this.paginator();
+                }
+
+                private async wait(duration: number): Promise<void> {
+                    console.debug( "[Debug]", "Waiter Activated", "(" + duration + ")" );
+
+                    void new Promise( (resolve) => {
+                        setTimeout( resolve, duration );
+                    } );
                 }
 
                 private instance = () => new AWS.LambdaClient( { region } );
@@ -62,30 +70,30 @@ export module Client {
                     } );
 
                     const location = async (input: Function.Input): Promise<AWS.FunctionCodeLocation | null> => {
-                        const command = new AWS.GetFunctionCommand(input);
-                        const response = await this.client.send(command);
-                        return (response.Code) ? response.Code : null;
-                    }
+                        const command = new AWS.GetFunctionCommand( input );
+                        const response = await this.client.send( command );
+                        return ( response.Code ) ? response.Code : null;
+                    };
 
                     const lambda = async () => {
                         Logger.debug( "Paginator" + " " + "(" + state.page + ")" );
 
                         const command = this.arguments( { Marker: this.handler.token } );
                         const response = await this.client.send( command );
-                        const functions = (response.Functions) ? Array.from( response.Functions ) : null;
+                        const functions = ( response.Functions ) ? Array.from( response.Functions ) : null;
 
                         const data: Output[] = [];
 
-                        if (functions) {
+                        if ( functions ) {
                             const iterator = { index: 0 };
-                            for await (const lambda of functions) {
+                            for await ( const lambda of functions ) {
                                 const name = lambda.FunctionName;
-                                const code = await location({ FunctionName: name });
+                                const code = await location( { FunctionName: name } );
 
-                                (code) && data.push({
+                                ( code ) && data.push( {
                                     Location: code,
-                                    ... functions[iterator.index]
-                                });
+                                    ... functions[ iterator.index ]
+                                } );
 
                                 iterator.index++;
                             }
@@ -102,7 +110,7 @@ export module Client {
                         this.handler.token = ( token ) ? token : undefined;
                     };
 
-                    do { await Throttle.evaluate(lambda, state); } while ( this.handler.token );
+                    do { await Throttle.evaluate( lambda, state ); } while ( this.handler.token );
                 }
 
                 /***
@@ -312,6 +320,6 @@ export module Client {
     }
 }
 
-type Output = AWS.FunctionConfiguration & {Location?: AWS.FunctionCodeLocation };
+type Output = AWS.FunctionConfiguration & { Location?: AWS.FunctionCodeLocation };
 
 export default Client;
