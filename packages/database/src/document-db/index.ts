@@ -15,6 +15,32 @@ export * from "./user";
 export module Context {
     const state: { connection: null | any } = { connection: null };
 
+    const settings: {
+        lock: boolean,
+        data: object,
+        options: object,
+        client?: import("mongodb").MongoClient
+    } = {
+        lock: false,
+        data: Object.create({}),
+        options: Object.create({})
+    }
+
+    export enum Compression {
+        "$0" = 0,
+        "$1" = 1,
+        "$2" = 2,
+        "$3" = 3,
+        "$4" = 4,
+        "$5" = 5,
+        "$6" = 6,
+        "$7" = 7,
+        "$8" = 8,
+        "$9" = 9,
+    }
+
+    export type Level = keyof typeof Compression;
+
     export const Handler = async function () {
         const uri = process.env[ "DOCUMENTDB_URI" ] as string;
 
@@ -41,77 +67,63 @@ export module Context {
         return state.connection;
     };
 
-    void ( async () => Handler() );
-}
+    export const Connection = async function (): Promise<void> {
+        if ( !( settings.lock ) ) {
+            const validator = new RegExp( "^(mongodb:(?:\\/{2})?)((\\w+?):(\\w+?)@|:?@?)(\\S+?):(\\d+)(\\/(\\S+?))?(\\?replicaSet=(\\S+?))?$", "gm" );
 
-enum Compression {
-    "$0" = 0,
-    "$1" = 1,
-    "$2" = 2,
-    "$3" = 3,
-    "$4" = 4,
-    "$5" = 5,
-    "$6" = 6,
-    "$7" = 7,
-    "$8" = 8,
-    "$9" = 9,
-}
+            const options: import("mongodb").MongoClientOptions = {
+                auth: {
+                    username: "...",
+                    password: "..."
+                },
+                connectTimeoutMS: 5000,
+                directConnection: true,
+                replicaSet: "rs0",
+                appName: "Nexus-API",
+                authMechanism: "DEFAULT",
+                tlsCAFile: Path.join( __dirname, "us-east-2-bundle.pem" ),
+                tls: true,
+                tlsAllowInvalidHostnames: true,
+                tlsAllowInvalidCertificates: true,
+                retryWrites: false
+            } as const;
 
-type Level = keyof typeof Compression;
+            settings.options = options;
 
-export const Connection = async function (): Promise<void> {
-    if ( !( Connection.lock ) ) {
-        const validator = new RegExp( "^(mongodb:(?:\\/{2})?)((\\w+?):(\\w+?)@|:?@?)(\\S+?):(\\d+)(\\/(\\S+?))?(\\?replicaSet=(\\S+?))?$", "gm" );
+            // validator.test( (URI) ? URI : "" ) || ( () => {
+            //     console.log( "Error - Invalid URI" );
+            //     process.exit( 1 );
+            // } )();
+        }
 
-        const options: import("mongodb").MongoClientOptions = {
-            auth: {
-                username: "...",
-                password: "..."
-            },
-            connectTimeoutMS: 5000,
-            directConnection: true,
-            replicaSet: "rs0",
-            appName: "Nexus-API",
-            authMechanism: "DEFAULT",
-            tlsCAFile: Path.join( __dirname, "us-east-2-bundle.pem" ),
-            tls: true,
-            tlsAllowInvalidHostnames: true,
-            tlsAllowInvalidCertificates: true,
-            retryWrites: false
-        } as const;
+        async function Handler(): Promise<import("mongodb").MongoClient | null> {
+            const client: import("mongodb").MongoClient | null = await new Promise( async (resolve) => {
+                const Client = await import("mongodb").then( (Module) => Module.MongoClient );
+                Client.connect( process.env[ "MONGO_URI" ]!, settings.options!, (exception, connection) => {
+                    if ( exception ) throw exception;
 
-        Connection.options = options;
+                    settings.client = connection;
 
-        // validator.test( (URI) ? URI : "" ) || ( () => {
-        //     console.log( "Error - Invalid URI" );
-        //     process.exit( 1 );
-        // } )();
-    }
+                    resolve( connection ?? null );
+                } );
 
-    async function Handler(): Promise<import("mongodb").MongoClient | undefined> {
-        return new Promise( async (resolve) => {
-            const Client = await import("mongodb").then( (Module) => Module.MongoClient );
-            Client.connect( process.env[ "MONGO_URI" ]!, Connection.options!, (exception, connection) => {
-                if ( exception ) throw exception;
-
-                Connection.client = connection;
-
-                resolve( connection );
+                return Client;
             } );
-        } );
-    }
 
-    ( Mongoose.connection ) || await Handler();
+            (client) && Reflect.set(settings, "lock", true);
 
-    ( Connection?.client?.readyState !== 1 ) && Reflect.set( Connection, "lock", false );
+            return client;
+        }
 
-    return ( Connection?.lock ) ? Connection?.client : Handler();
-};
+        ( Mongoose.connection ) || await Handler();
 
-Connection.lock = false;
-Connection.data = Object.create( {} );
-Connection.options = Object.create( {} );
-Connection.client = Object.create( {} );
+        void ( settings?.lock ) ? settings?.client : await Handler();
+    };
+
+    void ( async () => {
+        await Handler();
+    } );
+}
 
 export default Context.Handler();
 

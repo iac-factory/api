@@ -41,13 +41,12 @@
  *
  */
 
-import type { QueryResult, PoolClient } from "pg";
-import { Pool, QueryResultRow } from "pg";
+import PostgreSQL from "pg";
 
 import { Debugger } from "@iac-factory/api-core";
 
 export module PG {
-    const Connection = new Pool( {
+    const Connection = new PostgreSQL.Pool( {
         password: process.env[ "POSTGRES_PASSWORD" ],
         user: process.env[ "POSTGRES_USER" ],
         database: process.env[ "POSTGRES_DB" ],
@@ -57,7 +56,7 @@ export module PG {
 
     export const Query = async function (input: string, parameters?: any) {
         const logger = Debugger.hydrate( {
-            module: [ "PostgreSQL", "blue" ],
+            module: [ "PostgreSQL (Query)", "black" ],
             level: [ "Debug", "cyan" ],
             depth: [ 1, true ]
         } );
@@ -75,12 +74,12 @@ export module PG {
 
     export const Interface = async function () {
         const logger = Debugger.hydrate( {
-            module: [ "PostgreSQL", "blue" ],
+            module: [ "PostgreSQL", "black" ],
             level: [ "Debug", "cyan" ],
             depth: [ 1, true ]
         } );
 
-        const client = await Connection.connect() as PoolClient & { lastQuery: any, query: any };
+        const client = await Connection.connect() as PostgreSQL.PoolClient & { lastQuery: any, query: any };
         const query: typeof client.query = client.query;
         const release: typeof client.release = client.release;
 
@@ -91,7 +90,7 @@ export module PG {
         }, 5000 );
 
         // Monkey patch the query method to keep track of the last query executed
-        client.query = (... args: [ queryText: string, values: any[], callback: (err: Error, result: QueryResult<QueryResultRow>) => void ]) => {
+        client.query = (... args: [ queryText: string, values: any[], callback: (err: Error, result: PostgreSQL.QueryResult<PostgreSQL.QueryResultRow>) => void ]) => {
             client.lastQuery = args;
             return query.apply( client, args );
         };
@@ -109,8 +108,16 @@ export module PG {
     };
 
     export const Version = async function () {
+        const logger = Debugger.hydrate( {
+            module: [ "PostgreSQL (Version)", "black" ],
+            level: [ "Debug", "cyan" ],
+            depth: [ 1, true ]
+        } );
+
         return await Query( "SELECT version();" )
             .then( (output) => {
+                logger.debug(output.rows[ 0 ]?.version);
+
                 return output.rows[ 0 ];
             } );
     };

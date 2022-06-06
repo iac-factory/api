@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import OS from "os";
 import Utility from "util";
 import ANSI from "ansi-colors";
@@ -242,4 +250,6 @@ export module Debugger {
     export type Types = keyof Type;
 }
 
-export default Debugger;
+export default function (settings: Debugger.Input) {
+    return Debugger.hydrate(settings);
+}

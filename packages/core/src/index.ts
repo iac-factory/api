@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Router } from "@iac-factory/api-routing";
 import { Middleware } from "@iac-factory/api-middleware";
 import { Application } from "@iac-factory/api-services";
@@ -37,3 +45,5 @@ void ( async () => Main() )();
 
 export * from "./debugger";
 export * from "./generic";
+
+export { default } from "./debugger";

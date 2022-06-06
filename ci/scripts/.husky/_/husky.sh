@@ -1,31 +1,40 @@
 #!/bin/sh
+
+#
+# BSD 3-Clause License
+#
+# Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+#
+# All Rights Reserved
+#
+
 if [ -z "$husky_skip_init" ]; then
-  debug () {
-    if [ "$HUSKY_DEBUG" = "1" ]; then
-      echo "husky (debug) - $1"
+    debug() {
+        if [ "$HUSKY_DEBUG" = "1" ]; then
+            echo "husky (debug) - $1"
+        fi
+    }
+
+    readonly hook_name="$(basename "$0")"
+    debug "starting $hook_name..."
+
+    if [ "$HUSKY" = "0" ]; then
+        debug "HUSKY env variable is set to 0, skipping hook"
+        exit 0
     fi
-  }
 
-  readonly hook_name="$(basename "$0")"
-  debug "starting $hook_name..."
+    if [ -f ~/.huskyrc ]; then
+        debug "sourcing ~/.huskyrc"
+        . ~/.huskyrc
+    fi
 
-  if [ "$HUSKY" = "0" ]; then
-    debug "HUSKY env variable is set to 0, skipping hook"
-    exit 0
-  fi
+    export readonly husky_skip_init=1
+    sh -e "$0" "$@"
+    exitCode="$?"
 
-  if [ -f ~/.huskyrc ]; then
-    debug "sourcing ~/.huskyrc"
-    . ~/.huskyrc
-  fi
+    if [ $exitCode != 0 ]; then
+        echo "husky - $hook_name hook exited with code $exitCode (error)"
+    fi
 
-  export readonly husky_skip_init=1
-  sh -e "$0" "$@"
-  exitCode="$?"
-
-  if [ $exitCode != 0 ]; then
-    echo "husky - $hook_name hook exited with code $exitCode (error)"
-  fi
-
-  exit $exitCode
+    exit $exitCode
 fi
