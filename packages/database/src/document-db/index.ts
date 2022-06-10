@@ -44,7 +44,6 @@ export module Context {
     }
 
     export type Level = keyof typeof Compression;
-
     export const Handler = async function () {
         const uri = process.env[ "DOCUMENTDB_URI" ] as string;
 

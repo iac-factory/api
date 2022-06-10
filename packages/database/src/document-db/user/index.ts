@@ -14,15 +14,19 @@ import ORM, { Model, Schema } from "mongoose";
 
 import { Hash } from "./../middleware";
 
+import Name, { schema as name } from "./name";
+
 interface Type {
     email?: string;
     username?: string;
     password?: string;
     login?: Date;
     role?: string;
-    name?: string;
+
     creation: Date;
     modification: Date;
+
+    name?: Name
 }
 
 interface Methods {
@@ -31,7 +35,7 @@ interface Methods {
     hash(): Promise<void>;
 }
 
-type Representation = Model<Type, {}, Methods>;
+export type Representation = Model<Type, {}, Methods>;
 
 export const schema = new Schema<Type, Representation, Methods>( {
     email: {
@@ -43,7 +47,6 @@ export const schema = new Schema<Type, Representation, Methods>( {
         unique: true,
         default: null,
         lowercase: true,
-        uppercase: false,
         trim: true
     },
 
@@ -55,8 +58,7 @@ export const schema = new Schema<Type, Representation, Methods>( {
         index: true,
         unique: true,
         default: null,
-        lowercase: false,
-        uppercase: false,
+        lowercase: true,
         trim: true
     },
 
@@ -65,25 +67,58 @@ export const schema = new Schema<Type, Representation, Methods>( {
         alias: "Password",
         type: String,
         required: true,
-        index: false,
-        unique: false,
         default: null,
-        lowercase: false,
-        uppercase: false,
         trim: true
     },
 
     login: { // Password Usage (Date)
         name: "login",
         alias: "Login",
-        type: ORM.Schema.Types.Date,
-        required: false,
-        index: false,
-        unique: false,
         default: null,
-        lowercase: false,
-        uppercase: false,
-        trim: false
+
+        type: ORM.Schema.Types.Date
+    },
+
+    name: {
+        name: "name",
+        alias: "Name",
+        required: false,
+        default: null,
+        type: {
+            first: {
+                name: "first",
+                required: true,
+                type: String,
+                alias: "First",
+                trim: true
+            },
+            middle: {
+                name: "middle",
+                required: false,
+                type: String,
+                default: null,
+                alias: "Middle",
+                trim: true
+            },
+            last: {
+                name: "last",
+                required: true,
+                type: String,
+                default: null,
+                alias: "Last",
+                trim: true
+            },
+            preferred: {
+                name: "preferred",
+                required: false,
+                type: String,
+                default: null,
+                alias: "Preferred",
+                trim: true
+            }
+        }
+
+        /*** type: name */
     }
 }, {
     versionKey: "version",
@@ -104,9 +139,14 @@ async function Initialize() {
     const empty = ( await User.collection.stats() ).count === 0;
 
     const Record = new User( {
-        Email: "administrator@internal.io",
-        Username: "Administrator",
-        Password: "Kn0wledge!"
+        email: "administrator@internal.io",
+        username: "Administrator",
+        password: "Kn0wledge!",
+        name: {
+            first: "Jacob",
+            middle: "Brian",
+            last: "Sanders"
+        }
     } );
 
     ( Global.initialize && empty ) && Record.save( async (error: any) => {
@@ -114,10 +154,10 @@ async function Initialize() {
             Record.delete( { _id: Record.id } );
 
             await Record.save().catch( (error) => {
-                /*** [...] */
+                console.warn("[Warning]", "Failure Creating Record");
             } );
 
-            await Initialize();
+            throw error;
         }
 
         await Record.hash();
