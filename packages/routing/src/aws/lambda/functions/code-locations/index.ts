@@ -7,14 +7,13 @@
  */
 
 import Schema, { Router } from "./definition";
-
-import { Directory } from "@iac-factory/api-services";
-
 Router.get( Schema.path, async (request, response) => {
+    const { Lambda } = await import("@iac-factory/api-services");
+
+    const { Functions } = Lambda.Client;
+
     response.status( 200 ).send( {
-        Routes: [
-            ... Directory(__filename)
-        ]
+        Functions: (await Functions())?.map((lambda) => lambda)
     } );
 } );
 

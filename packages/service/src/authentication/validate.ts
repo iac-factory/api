@@ -7,7 +7,7 @@
  */
 
 import { v4 as UUID } from "uuid";
-import Cryptography from "bcryptjs";
+import Cryptography from "bcrypt";
 import Token, { SignOptions } from "jsonwebtoken";
 
 import { User } from "@iac-factory/api-database";
@@ -28,7 +28,7 @@ import { Debugger } from "@iac-factory/api-core";
  *
  * @constructor
  */
-export const Validate = async function (server: string, response: HTTP.Response, username: string, password: string): Promise<void | HTTP.Response> {
+export const JWT = async function (server: string, response: HTTP.Response, username: string, password: string): Promise<void | HTTP.Response> {
     const Record = await User.findOne( { Username: username } ) ?? null;
 
     /*** @experimental */
@@ -50,7 +50,7 @@ export const Validate = async function (server: string, response: HTTP.Response,
             if ( error ) throw error;
 
             resolve( success );
-        }, (percent: number) => {} );
+        });
     } ) : null;
 
     const valid = await verification();
@@ -81,17 +81,13 @@ export const Validate = async function (server: string, response: HTTP.Response,
         }
     };
 
-    const payload = {
-        id,
-        uid
-    };
+    Token.sign( { id, uid }, process.env[ "SECRET" ]!, fields, (exception, token) => {
+        if (exception) throw exception;
 
-    const token = Token.sign( payload, process.env[ "SECRET" ]!, fields );
-
-    Logger.debug( "JWT Token" + " " + "(" + token + ")" );
-
-    response.set( "Content-Type", "Application/JWT" )
-        .status( 200 ).send( token );
+        Logger.debug( "JWT Token" + " " + "(" + token + ")" );
+        response.set( "Content-Type", "Application/JWT" )
+            .status( 200 ).send( token );
+    } );
 };
 
-export default Validate;
+export default JWT;

@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 /**
  * Restore obj props after function
  *
@@ -22,7 +30,11 @@ export const Restore = function (fn: Function, obj: object, ... args: any[]) {
             obj[ props[ i ] ] = vals[ i ];
         }
 
-        return fn.apply( this, arguments );
+        try {
+            return fn.apply( this, arguments );
+        } catch ( exception ) {
+            console.log(this);
+        }
     };
 } as Function;
 

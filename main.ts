@@ -1,5 +1,13 @@
-import FS from "node:fs";
-import Awaitable from "node:async_hooks";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
+import FS from "fs";
+import Awaitable from "async_hooks";
 import "dotenv/config";
 
 import Dot from "dotenv";

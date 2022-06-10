@@ -12,7 +12,13 @@
     "dependencies": {
         "@aws-sdk/client-lambda": "^3.90.0",
         "@iac-factory/api-utilities": "file:../utilities",
+        "@octokit/core": "^3.6.0",
+        "@octokit/request": "^5.6.3",
+        "@octokit/rest": "^18.12.0",
+        "ajv": "^8.11.0",
         "bcryptjs": "^2.4.3",
+        "bcrypt": "^5.0.1",
+        "cloud-parameter": "^0.8.159",
         "express": "^5.0.0-beta.1",
         "jsonwebtoken": "^8.5.1",
         "uuid": "^8.3.2"
@@ -20,6 +26,7 @@
     "devDependencies": {
         "@aws-sdk/types": "^3.78.0",
         "@types/bcryptjs": "^2.4.2",
+        "@types/bcrypt": "^5.0.0",
         "@types/esm": "^3.2.0",
         "@types/express": "^4.17.13"
     },

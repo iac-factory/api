@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Controller } from "@iac-factory/api-services";
 
 export const Router = Controller( "IaC.Factory.API.Utility.Health" );
@@ -9,5 +17,7 @@ Router.get( "/utility/health", async (request, response) => {
         services: Health()
     } );
 } );
+
+// Router.update();
 
 export default Router;

@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import type http2 from "http2";
 
 import type Framework from "./framework";
@@ -15,5 +23,3 @@ export module HTTP {
     export type Headers = NodeJS.Dict<number | string | string[]>
     export type Message = string;
 }
-
-export default HTTP;

@@ -1,10 +1,12 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Controller } from "@iac-factory/api-services";
-
-interface GetParams {
-    paramName: string;
-
-    [ key: string ]: string;
-}
 
 export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions.Filter.Variables" );
 

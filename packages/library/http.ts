@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import HTTP from "http";
 
 import { Router } from "./src";
@@ -6,6 +14,13 @@ import { Router } from "./src";
 const router = Router() as Router.prototype;
 
 router.get( "/", async (request: any, response: any) => {
+    response.setHeader( "Content-Type", "Application/JSON" );
+    response.end( JSON.stringify( {
+        Key: "Value"
+    } ), "utf-8" );
+} );
+
+router.get( "/test", async (request: any, response: any) => {
     response.setHeader( "Content-Type", "Application/JSON" );
     response.end( JSON.stringify( {
         Key: "Value"

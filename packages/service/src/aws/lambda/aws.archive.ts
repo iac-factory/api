@@ -10,8 +10,6 @@ import * as AWS from "@aws-sdk/client-lambda";
 import { Debugger } from "@iac-factory/api-core";
 
 export module Client {
-    import Invoker = Client.Policy.Invoker;
-
     export const Functions = async function () {
         /*** Essentially namespaced "static" properties */
 
@@ -239,43 +237,6 @@ export module Client {
         const statements = ( policy ) ? policy[ "Statement" ] : null;
 
         return ( statements ) ? statements : null;
-    };
-
-    /***
-     * Exposed Interface for Gathering Lambda Function "Invokers"
-     * ---
-     *
-     * "Invokers" is a personally identified construct that represents
-     * both *Lambda Function Configurations* (Functions), as well as any
-     * "Trigger"-related resources -- e.g. **API-Gateway Endpoint(s)**.
-     *
-     * <br/>
-     *
-     * @public
-     *
-     * @param {string} name
-     * @returns {Promise<Client.Policy.Invoker[] | null>}
-     * @constructor
-     */
-    export const Invokers = async (name?: string): Promise<Invoker[] | null> => {
-        const statements = await Statements( name );
-
-        const invokers = ( statements ) ? statements.map( (statement) => {
-            const resource = statement[ "Resource" ];
-            const service = statement[ "Principal" ][ "Service" ] as string;
-            const condition = statement[ "Condition" ];
-
-            const arn = ( condition && condition[ "ArnLike" ] ) ? condition[ "ArnLike" ] : null;
-            const source = ( arn ) ? arn[ "AWS:SourceArn" ] : null;
-
-            return {
-                resource,
-                service,
-                invoker: source
-            };
-        } ) : null;
-
-        return ( invokers ) ? invokers : null;
     };
 
     export module Policy {

@@ -11,7 +11,8 @@
     },
     "dependencies": {
         "@iac-factory/ecma": "file:../ecma",
-        "@iac-factory/api-core": "file:../core"
+        "@iac-factory/api-core": "file:../core",
+        "ansi-colors": "^4.1.3"
     },
     "devDependencies": {
         "@types/esm": "^3.2.0",

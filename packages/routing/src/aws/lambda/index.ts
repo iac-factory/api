@@ -1,9 +1,20 @@
-import { Controller } from "@iac-factory/api-services";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
 
-export const Router = Controller( "IaC.Factory.API.AWS.Lambda" );
-Router.get( "/aws/lambda", async (request, response) => {
+import Schema, { Router } from "./definition";
+
+import { Directory } from "@iac-factory/api-services";
+
+Router.get( Schema.path, async (request, response) => {
     response.status( 200 ).send( {
-        message: true
+        Routes: [
+            ... Directory(__filename)
+        ]
     } );
 } );
 

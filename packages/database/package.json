@@ -14,7 +14,6 @@
         "@iac-factory/api-schema": "*",
         "bcrypt": "^5.0.1",
         "bcryptjs": "^2.4.3",
-        "devops": "^0.0.0",
         "esm": "^3.2.25",
         "mongodb": "^4.6.0",
         "mongoose": "^6.3.4",

@@ -1,7 +1,16 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { HTTP } from "./http";
 import { Layer } from "./layer";
 import { Route } from "./route";
 import { Methods } from "./methods";
+import { Handle } from "./handle";
 
 import("./module");
 
@@ -27,13 +36,24 @@ export function Router(this: Construct, options?: Options): Function {
     const configuration = ( options ) ? { ... defaults, ... options } : defaults;
 
     function router(request: HTTP.Request, response: HTTP.Response, callable: HTTP.Next) {
-        const reference: { handle: Function } = router as object as { handle: Function };
+        // @ts-ignore
+        // (router.handle) && router.handle( request, response, callable );
+        // @ts-ignore
+        // (router.handle) || console.log(router);
 
-        reference.handle( request, response, callable );
+        console.log(test);
+
+        const reference: { handle: Function } = router as object as { handle: Function };
+        // @ts-ignore
+        console.log(reference.stack);
+        // @ts-ignore
+        reference.stack[0].handle( request, response, callable );
     }
 
     /*** Reasoning behind Object.setPrototypeOf is much more complicated than perhaps assumed */
     Object.setPrototypeOf( router, this );
+
+    const test = this;
 
     router.caseSensitive = configuration.caseSensitive;
     router.mergeParams = configuration.mergeParams;

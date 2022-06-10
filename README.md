@@ -19,7 +19,7 @@ npm run start
     ssh -L localhost:27017:document-db.abc.us-east-2.docdb.amazonaws.com:27017 ec2-user@bastion.organization.io -i ~/.ssh/bastion-key.pem -N
     ```
     - Command Breakdown
-        - Proxy-Forwarding (`ssh -L localhost:27017:document-db.abc.us-east-2.docdb.amazonaws.com:27017`):
+        - Proxy-Forwarding (`ssh -L 27017:document-db.abc.us-east-2.docdb.amazonaws.com:27017`):
             - `ssh`: `openssh` executable application binary interface (abi)
             - `-L`: Specifies that connections to the given TCP port or Unix socket on the local (client) host are to be
               forwarded to the given host and port, or Unix socket, on the remote side; by allocating a socket to listen
@@ -28,7 +28,7 @@ npm run start
               local port or socket, the connection is forwarded over the secure channel, and a connection is made to
               either host port hostport, or the Unix socket
               remote_socket, from the remote machine
-            - `localhost`: Local hostname (used when connecting programmatically)
+            - `localhost` (Optional): Local hostname (used when connecting programmatically)
             - `27017`: Local port (used when connecting programmatically)
             - `document-db.abc.us-east-2.docdb.amazonaws.com`: AWS RDS server-name
             - `27017`: AWS RDS document-db service port
@@ -188,3 +188,7 @@ Connection.client = Object.create( {} );
 ```
 [Timestamp] [Debug] 'HTTP Response Duration: 0.008 Second(s)'
 ```
+
+## JSON Schema + IDE Extensions ##
+
+https://www.jetbrains.com/help/idea/json.html

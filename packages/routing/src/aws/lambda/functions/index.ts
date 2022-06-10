@@ -6,15 +6,15 @@
  * All Rights Reserved
  */
 
-import { Controller } from "@iac-factory/api-services";
+import Schema, { Router } from "./definition";
 
-export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions" );
-Router.get( "/aws/lambda/functions", async (request, response) => {
-    const { Lambda } = await import("@iac-factory/api-services");
-    const { Functions } = Lambda.Client;
+import { Directory } from "@iac-factory/api-services";
 
+Router.get( Schema.path, async (request, response) => {
     response.status( 200 ).send( {
-        Functions: await Functions()
+        Routes: [
+            ... Directory(__filename)
+        ]
     } );
 } );
 

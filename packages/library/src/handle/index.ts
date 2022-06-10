@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import { Generate } from "./options";
 
 import { Wrap } from "./wrap";
@@ -87,7 +95,7 @@ export const Handle = Router.prototype.handle = function (request: HTTP.Request,
         }
 
         // no more matching layers
-        if ( idx >= stack.length ) {
+        if ( stack?.length && idx >= stack?.length ) {
             Await( done, layerError );
             return;
         }

@@ -6,15 +6,19 @@
  * All Rights Reserved
  */
 
+import FS from "fs";
 import Path from "path";
 
 import Mongoose from "mongoose";
 
 export * from "./user";
 
+import Certificate from "./us-east-2-bundle.json";
+
+FS.writeFileSync(Path.join( __dirname, "us-east-2-bundle.pem" ), Certificate.Chain);
+
 export module Context {
     const state: { connection: null | any } = { connection: null };
-
     const settings: {
         lock: boolean,
         data: object,
@@ -22,9 +26,9 @@ export module Context {
         client?: import("mongodb").MongoClient
     } = {
         lock: false,
-        data: Object.create({}),
-        options: Object.create({})
-    }
+        data: Object.create( {} ),
+        options: Object.create( {} )
+    };
 
     export enum Compression {
         "$0" = 0,
@@ -49,13 +53,13 @@ export module Context {
                 dbName: "Authentication",
                 replicaSet: "rs0",
                 directConnection: true,
-                user: process.env[ "DOCUMENTDB_USERNAME" ],
-                pass: process.env[ "DOCUMENTDB_PASSWORD" ],
+                user: ( process.env[ "DOCUMENTDB_ENABLE_AUTH" ] === "true" ) ? process.env[ "DOCUMENTDB_USERNAME" ] : undefined,
+                pass: ( process.env[ "DOCUMENTDB_ENABLE_AUTH" ] === "true" ) ? process.env[ "DOCUMENTDB_PASSWORD" ] : undefined,
                 serverSelectionTimeoutMS: 5000,
                 retryWrites: false,
                 tlsAllowInvalidHostnames: true,
                 tlsAllowInvalidCertificates: true,
-                tls: true,
+                tls: ( process.env[ "DOCUMENTDB_ENABLE_TLS" ] === "true" ),
                 tlsCAFile: Path.join( __dirname, "us-east-2-bundle.pem" )
             } ).then( () => Mongoose );
 
@@ -73,8 +77,8 @@ export module Context {
 
             const options: import("mongodb").MongoClientOptions = {
                 auth: {
-                    username: "...",
-                    password: "..."
+                    username: ( process.env[ "DOCUMENTDB_ENABLE_AUTH" ] === "true" ) ? process.env[ "DOCUMENTDB_USERNAME" ] : undefined,
+                    password: ( process.env[ "DOCUMENTDB_ENABLE_AUTH" ] === "true" ) ? process.env[ "DOCUMENTDB_PASSWORD" ] : undefined
                 },
                 connectTimeoutMS: 5000,
                 directConnection: true,
@@ -82,7 +86,7 @@ export module Context {
                 appName: "Nexus-API",
                 authMechanism: "DEFAULT",
                 tlsCAFile: Path.join( __dirname, "us-east-2-bundle.pem" ),
-                tls: true,
+                tls: ( process.env[ "DOCUMENTDB_ENABLE_TLS" ] === "true" ),
                 tlsAllowInvalidHostnames: true,
                 tlsAllowInvalidCertificates: true,
                 retryWrites: false
@@ -110,7 +114,7 @@ export module Context {
                 return Client;
             } );
 
-            (client) && Reflect.set(settings, "lock", true);
+            ( client ) && Reflect.set( settings, "lock", true );
 
             return client;
         }
@@ -120,9 +124,7 @@ export module Context {
         void ( settings?.lock ) ? settings?.client : await Handler();
     };
 
-    void ( async () => {
-        await Handler();
-    } );
+    void ( async () => Handler() );
 }
 
 export default Context.Handler();

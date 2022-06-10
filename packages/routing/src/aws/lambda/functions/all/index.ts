@@ -6,10 +6,8 @@
  * All Rights Reserved
  */
 
-import { Controller } from "@iac-factory/api-services";
-
-export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions.Code-Locations" );
-Router.get( "/aws/lambda/functions/code-locations", async (request, response) => {
+import Schema, { Router } from "./definition";
+Router.get( Schema.path, async (request, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
 
     const { Functions } = Lambda.Locations

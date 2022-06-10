@@ -6,9 +6,7 @@
  * All Rights Reserved
  */
 
-import { Controller } from "@iac-factory/api-services";
-
-export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions.Filter" );
+import Schema, { Router } from "./definition";
 
 /***
  * Types of available filter(s):
@@ -21,43 +19,63 @@ export const Router = Controller( "IaC.Factory.API.AWS.Lambda.Functions.Filter" 
  *  Implementation is handled via the router in simple cases; increasingly complex
  *  solutions should be moved to the @iac-factory/api-services package.
  */
-Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
+Router.get( Schema.path, async (request: { params: { filter?: string } }, response) => {
     const { Lambda } = await import("@iac-factory/api-services");
 
     const filter = request.params.filter;
     const error: { throw: boolean } = { throw: false };
-    const data: ( string | undefined | { Variables?: object; Function?: string; ARN?: string } )[] = [];
 
     const { Functions } = Lambda.Client;
 
-    const functions = await Functions();
-
     switch ( filter ) {
         case "name": {
-            ( functions ) && functions.filter( (lambda) => lambda )
-                .forEach( (configuration) => data
-                    .push( configuration.FunctionName )
-                );
+            const functions = await Functions();
+            const data = ( functions ) ? [...new Set(functions.filter( (lambda) => lambda )
+                .map( (configuration) => {
+                    return configuration.FunctionName;
+                } )
+            )] : null;
+
+            ( error.throw ) || response.status( 200 ).send( {
+                Functions: data
+            } );
+
             break;
         }
 
         case "arn": {
-            ( functions ) && functions.filter( (lambda) => lambda )
-                .forEach( (configuration) => data
-                    .push( configuration.FunctionArn )
-                );
+            const functions = await Functions();
+            const data = ( functions ) ? [...new Set(functions.filter( (lambda) => lambda )
+                .map( (configuration) => {
+                    return configuration.FunctionArn;
+                } )
+            )] : null;
+
+            ( error.throw ) || response.status( 200 ).send( {
+                Functions: data
+            } );
+
             break;
         }
 
         case "role": {
-            ( functions ) && functions.filter( (lambda) => lambda )
-                .forEach( (configuration) => data
-                    .push( configuration.Role )
-                );
+            const functions = await Functions();
+            const data = ( functions ) ? [...new Set(functions.filter( (lambda) => lambda )
+                .map( (configuration) => {
+                    return configuration.Role;
+                } )
+            )] : null;
+
+            ( error.throw ) || response.status( 200 ).send( {
+                Functions: data
+            } );
+
             break;
         }
 
         case "environment-variables": {
+            const data: ( string | undefined | { Variables?: object; Function?: string; ARN?: string } )[] = [];
+            const functions = await Functions();
             ( functions ) && functions.filter( (lambda) => lambda )
                 .forEach( (configuration) => data
                     .push( {
@@ -66,6 +84,11 @@ Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
                         ARN: configuration.FunctionArn
                     } )
                 );
+
+            ( error.throw ) || response.status( 200 ).send( {
+                Functions: data
+            } );
+
             break;
         }
 
@@ -76,14 +99,10 @@ Router.get( "/aws/lambda/functions/:filter", async (request, response) => {
     }
 
     ( error.throw ) && response.status( 406 ).send( {
-        code: 406,
-        status: "Not Acceptable",
-        error: "Invalid-Filter-Exception",
-        message: "Filter Must be := 'name' | 'arn' | 'role' | 'environment-variables'"
-    } );
-
-    ( error.throw ) || response.status( 200 ).send( {
-        functions: data
+        Code: 406,
+        Status: "Not Acceptable",
+        Error: "Invalid-Filter-Exception",
+        Message: "Filter Must be := 'name' | 'arn' | 'role' | 'environment-variables'"
     } );
 } );
 

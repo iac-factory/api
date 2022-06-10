@@ -1,3 +1,11 @@
-require = require( "esm" )( module, {} );
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
 
-module.exports = require( "./main" );
+import("@iac-factory/ecma");
+
+export * from "./main";

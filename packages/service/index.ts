@@ -11,13 +11,13 @@ export * from "./main";
 
 import("@iac-factory/ecma");
 
-import type { Reflection } from "./main";
-import { Framework, Application, Controller } from "./main";
+import { Application } from "./main";
+import { Controller } from "./main";
 
-export { Framework };
+import type { Reflection } from "./main";
+
 export { Application };
 export { Controller };
-
 export type { Reflection };
 
 export default Application;

@@ -1,7 +1,16 @@
-import { Controller, Validate } from "@iac-factory/api-services";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
 
-export const Router = Controller( "IaC.Factory.API.Login" );
-Router.post( "/login", async (request, response) => {
+import { JWT } from "@iac-factory/api-services";
+
+import Schema, { Router } from "./definition";
+
+Router.post( Schema.path, async (request, response) => {
     const { authorization } = request.headers;
 
     const basic = ( authorization ) ? authorization.split( " " ).pop() : null;
@@ -14,9 +23,9 @@ Router.post( "/login", async (request, response) => {
     const error = ( !username || !password );
 
     const server = request.protocol + "://" + request.hostname;
-    return ( !error ) ? await Validate( request.get( "origin" ) ?? server, response, username, password )
+    return ( !error ) ? await JWT( request.get( "origin" ) ?? server, response, username, password )
         : response.status( 401 ).send( {
-            error: "Username + Password Required"
+            Error: "Username + Password Required"
         } );
 } );
 

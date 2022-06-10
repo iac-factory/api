@@ -1,4 +1,12 @@
-import pathToRegexp from "path-to-regexp";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
+import pathToRegexp from "@iac-factory/api-path-matching";
 
 import { HTTP } from ".";
 
@@ -28,6 +36,7 @@ export const Layer = function (this: any, path: string, options: any, fn: any) {
     var opts = options || {};
 
     this.handle = fn;
+    // @ts-ignore
     this.name = fn.name || "<anonymous>";
     this.params = undefined;
     this.path = undefined;

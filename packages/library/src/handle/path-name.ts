@@ -1,9 +1,23 @@
-import { HTTP } from "@iac-factory/api-schema";
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
 
 import url from "url";
-
+import { HTTP } from "@iac-factory/api-schema";
 const parse = url.parse;
 const Url = url.URL;
+
+/**
+ * Module exports.
+ * @public
+ */
+
+module.exports = parseurl;
+module.exports.original = originalurl;
 
 /***
  * Parse the `req` url with memoization.
@@ -11,7 +25,7 @@ const Url = url.URL;
  * @param {HTTP.Request} req
  * @returns {object}
  */
-export function parseurl(req: HTTP.Request): object | undefined {
+function parseurl(req: HTTP.Request): object | undefined {
     var url = req.url;
 
     if ( url === undefined ) {
@@ -20,7 +34,7 @@ export function parseurl(req: HTTP.Request): object | undefined {
     }
 
     // @ts-ignore
-    var parsed = req[ "_parsedUrl" ];
+    var parsed = req["_parsedUrl"];
 
     if ( fresh( url, parsed ) ) {
         // Return cached URL parse
@@ -41,7 +55,7 @@ export function parseurl(req: HTTP.Request): object | undefined {
  * @param {HTTP.Request} req
  * @returns {any}
  */
-export function originalurl(req: HTTP.Request) {
+function originalurl(req: HTTP.Request) {
     var url = req.originalUrl;
 
     if ( typeof url !== "string" ) {
@@ -50,7 +64,7 @@ export function originalurl(req: HTTP.Request) {
     }
 
     // @ts-ignore
-    var parsed = req[ "_parsedOriginalUrl" ];
+    var parsed = req["_parsedOriginalUrl"];
 
     if ( fresh( url, parsed ) ) {
         // Return cached URL parse
@@ -73,7 +87,7 @@ export function originalurl(req: HTTP.Request) {
  * @private
  */
 
-export function fastparse(str: url.UrlWithStringQuery | string) {
+function fastparse(str: url.UrlWithStringQuery | string) {
     if ( typeof str !== "string" || str.charCodeAt( 0 ) !== 0x2f /* / */ ) {
         return parse( str as string );
     }
@@ -140,7 +154,7 @@ export function fastparse(str: url.UrlWithStringQuery | string) {
  * @private
  */
 
-export function fresh(url: any, parsedUrl: any) {
+function fresh(url: any, parsedUrl: any) {
     return typeof parsedUrl === "object" &&
         parsedUrl !== null &&
         ( Url === undefined || parsedUrl instanceof Url ) &&
@@ -154,7 +168,7 @@ export function fresh(url: any, parsedUrl: any) {
  * @private
  */
 
-export const Path = function (req: HTTP.Request & { pathname?: string }) {
+export const Path = function (req: HTTP.Request & { pathname?: string} ) {
     try {
         // @ts-ignore
         return parseurl( req )?.pathname;
