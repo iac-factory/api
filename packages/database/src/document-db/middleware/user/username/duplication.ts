@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 // import { default as User } from "./../../model/user/index.js";
 //
 // export const Username = async (request, response, $) => {
@@ -36,4 +44,4 @@
 //    });
 // };
 //
-// export {}
+export {}

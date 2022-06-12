@@ -6,5 +6,4 @@
  * All Rights Reserved
  */
 
-export * from "./jwt";
-export * from "./validation"
+export * from "./duplication";

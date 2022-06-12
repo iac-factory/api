@@ -52,7 +52,7 @@
         "production": "npm install --install-links --omit dev --omit optional --omit peer",
         "setup": "lerna init && lerna link && npm run post-setup && lerna bootstrap --npm-client npm",
         "release": "lerna version patch --no-private",
-        "prepare": "chmod a+x ci/scripts/.husky/commit-msg",
+        "//prepare": "chmod a+x ci/scripts/.husky/commit-msg",
         "mongo": "mongod --bind_ip mongodb --port 27017 --dbpath data-dump",
         "postversion": "lerna publish from-git --canary --no-private",
         "ci": "npm run release",

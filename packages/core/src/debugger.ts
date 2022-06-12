@@ -89,7 +89,7 @@ export module Debugger {
         private sorting: boolean;
         private input: Input;
 
-        private context: string;
+        private readonly context: string;
 
         private color = ANSI.create();
 

@@ -62,24 +62,8 @@ export const schema = new Schema<Type, Representation, Methods>( {
         alias: "Preferred",
         trim: true
     }
-}, {
-    versionKey: "version",
-    timestamps: {
-        createdAt: "creation",
-        updatedAt: "modification"
-    }
-} );
+});
 
 export const Model = ORM.model<Type, Representation, Methods>( "Name", schema, "Name" );
 export type Model = typeof Model;
 export default Model;
-
-async function Initialize() {
-    await import("..");
-
-    try {
-        await Model.createCollection({});
-    } catch (exception) {}
-}
-
-void (async () => Initialize())();

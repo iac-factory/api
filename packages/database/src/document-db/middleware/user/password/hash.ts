@@ -18,7 +18,7 @@ import Cryptography from "bcryptjs";
 
 import { Debugger } from "@iac-factory/api-core";
 
-export async function Hash(this: ORM.Schema & { password: string }): Promise<void> {
+export async function Hash(this: ORM.Schema & { password: string }) {
     const instance = this;
     const logger = Debugger.hydrate( {
         module: [ "Database", "white" ],
@@ -28,7 +28,7 @@ export async function Hash(this: ORM.Schema & { password: string }): Promise<voi
 
     logger.debug( "Initializing Password Hashing Utility" );
 
-    void await new Promise( (resolve) => {
+    return await new Promise<boolean> ( (resolve) => {
         Cryptography.genSalt( parseInt( process.env[ "SALT_TUMBLE_FACTOR" ] ?? "15" ), function (error, salt) {
             if ( error ) throw error;
 
@@ -59,5 +59,7 @@ export async function Hash(this: ORM.Schema & { password: string }): Promise<voi
         } );
     } );
 }
+
+export type Hash = typeof Hash;
 
 export default Hash;

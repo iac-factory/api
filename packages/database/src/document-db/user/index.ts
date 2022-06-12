@@ -10,17 +10,27 @@ const Global = Object.create( {
     initialize: ( process.env[ "INITIALIZE" ] === "true" )
 } );
 
-import ORM, { Model, Schema } from "mongoose";
+import ORM, { Model, Schema, model } from "mongoose";
 
-import { Hash } from "./../middleware";
+import * as Middleware from "./../middleware";
+
+const { Hash } = Middleware.User;
+const { Compare } = Middleware.User;
+const { Authorize } = Middleware.User;
 
 import Name, { schema as name } from "./name";
+import Login, { schema as login } from "./login";
 
-interface Type {
+export interface Type {
     email?: string;
     username?: string;
     password?: string;
-    login?: Date;
+    login?: {
+        date?: Date,
+        expiration?: Date,
+        origin?: string,
+        token?: string
+    };
     role?: string;
 
     creation: Date;
@@ -29,15 +39,18 @@ interface Type {
     name?: Name
 }
 
-interface Methods {
-    check(): boolean;
+export type Methods = {
+    /*** Compares `password` against Hash */
+    compare(password: string): Promise<[boolean, string]>
 
-    hash(): Promise<void>;
-}
+    /*** Overwrites Plain-Text Password */
+    hash(): Promise<boolean>;
 
-export type Representation = Model<Type, {}, Methods>;
+    /*** Updates Document's `login` Field */
+    authorize(session: { token: string, date: Date, expiration: Date, origin: string }): Promise<Schema>;
+};
 
-export const schema = new Schema<Type, Representation, Methods>( {
+export const schema = new Schema<Type, {}, Methods>( {
     email: {
         name: "email",
         alias: "Email",
@@ -71,12 +84,45 @@ export const schema = new Schema<Type, Representation, Methods>( {
         trim: true
     },
 
-    login: { // Password Usage (Date)
+    login: {
         name: "login",
         alias: "Login",
         default: null,
+        required: false,
 
-        type: ORM.Schema.Types.Date
+        type: {
+            date: { // Password Usage (Date)
+                name: "login",
+                alias: "Login",
+                default: null,
+                required: false,
+                type: ORM.Schema.Types.Date
+            },
+
+            expiration: {
+                name: "expiration",
+                alias: "Expiration",
+                default: null,
+                required: false,
+                type: ORM.Schema.Types.Date
+            },
+
+            origin: {
+                name: "origin",
+                alias: "Origin",
+                default: null,
+                required: false,
+                type: ORM.Schema.Types.String
+            },
+
+            token: {
+                name: "token",
+                alias: "Token",
+                default: null,
+                required: false,
+                type: ORM.Schema.Types.String
+            }
+        }
     },
 
     name: {
@@ -130,8 +176,10 @@ export const schema = new Schema<Type, Representation, Methods>( {
 } );
 
 schema.methods.hash = Hash;
+schema.methods.authorize = Authorize;
+schema.methods.compare = Compare;
 
-export const User = ORM.model<Type, Representation, Methods>( "User", schema, "User" );
+export const User = model<Type, Model<Type, {}, Methods>, Methods>( "User", schema, "User" );
 
 async function Initialize() {
     await import("..");
@@ -153,7 +201,7 @@ async function Initialize() {
         if ( error ) {
             Record.delete( { _id: Record.id } );
 
-            await Record.save().catch( (error) => {
+            await Record.save().catch( (error: any) => {
                 console.warn("[Warning]", "Failure Creating Record");
             } );
 
