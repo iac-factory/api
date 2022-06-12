@@ -19,17 +19,15 @@ const { Compare } = Middleware.User;
 const { Authorize } = Middleware.User;
 
 import Name, { schema as name } from "./name";
-import Login, { schema as login } from "./login";
 
 export interface Type {
     email?: string;
     username?: string;
     password?: string;
     login?: {
-        date?: Date,
-        expiration?: Date,
-        origin?: string,
-        token?: string
+        date: Date,
+        expiration: Date,
+        origin: string
     };
     role?: string;
 
@@ -91,7 +89,7 @@ export const schema = new Schema<Type, {}, Methods>( {
         required: false,
 
         type: {
-            date: { // Password Usage (Date)
+            date: {
                 name: "login",
                 alias: "Login",
                 default: null,
@@ -110,14 +108,6 @@ export const schema = new Schema<Type, {}, Methods>( {
             origin: {
                 name: "origin",
                 alias: "Origin",
-                default: null,
-                required: false,
-                type: ORM.Schema.Types.String
-            },
-
-            token: {
-                name: "token",
-                alias: "Token",
                 default: null,
                 required: false,
                 type: ORM.Schema.Types.String

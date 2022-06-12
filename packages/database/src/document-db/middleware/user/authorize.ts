@@ -15,7 +15,7 @@
 import ORM from "mongoose";
 import { Debugger }   from "@iac-factory/api-core";
 
-export async function Authorize(this: ORM.Schema & { login: { expiration: Date, date: Date, token: string, origin: string } }, session: { expiration: Date, date: Date, token: string, origin: string }) {
+export async function Authorize(this: ORM.Schema & { login: { expiration: Date, date: Date, origin: string } }, session: { expiration: Date, date: Date, origin: string }) {
     const instance = this;
 
     const logger = Debugger.hydrate( {

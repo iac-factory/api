@@ -8,11 +8,12 @@
 
 import * as Username from "./username";
 import * as Password from "./password";
+import * as Authorization from "./authorize";
 
 export module User {
     export const { Hash } = Password;
     export const { Compare } = Password;
-    export const { Authorize } = Password;
+    export const { Authorize } = Authorization;
 
     export const username = Username;
     export const password = Password;

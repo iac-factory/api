@@ -7,5 +7,4 @@
  */
 
 export * from "./hash";
-export * from "./authorize";
 export * from "./validate";
