@@ -1,3 +1,11 @@
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
+ */
+
 import Assert from "assert";
 import Utility from "util";
 import FS from "fs";
@@ -198,10 +206,12 @@ Cursor.prototype.log = function (data) {
     /// --> language... should be used.
     if ( !data.includes( prefix ) ) {
         // eslint-disable-next-line prefer-rest-params
-        process.stdout.write( "\n" + "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect( arguments, {
-            colors: false,
-            compact: false
-        } ) + "\n" );
+        process.stdout.write( {
+            chunk: "\n" + "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect( arguments, {
+                colors: false,
+                compact: false
+            } ) + "\n"
+        } );
     } else {
         if ( data !== "\x1B" + "[" + "0" + "m" ) {
             // The following conditional could be argued a performance
@@ -209,10 +219,12 @@ Cursor.prototype.log = function (data) {
             // the conditional to progress this far by disabling debug mode.
 
             // eslint-disable-next-line prefer-rest-params
-            process.stdout.write( "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect( arguments, {
-                colors: false,
-                compact: false
-            } ) + "\n" );
+            process.stdout.write( {
+                chunk: "[Debug] Write Event" + "(" + this.chain + ")" + " " + Utility.inspect( arguments, {
+                    colors: false,
+                    compact: false
+                } ) + "\n"
+            } );
         }
     }
 };
@@ -223,7 +235,7 @@ Cursor.prototype.evaluate = function (data) {
     ( this.debug ) || this.stream.write.apply( ( ( this.debug ) ? "" : this.stream ), arguments );
 
     if ( !( data.includes( prefix ) ) && !( this.debug ) ) {
-        ( this.stream.fd === 1 ) && process.stdout.write( "\n" );
+        ( this.stream.fd === 1 ) && process.stdout.write( { chunk: "\n" } );
     }
 
     ( this.debug ) && this.log( data );
@@ -278,7 +290,7 @@ Cursor.prototype.flush = function () {
     } ).join( "" );
 
     this.buffer.splice( 0 ); // empty
-    this.write( str );
+    this.write( { chunk: str } );
 
     return this;
 };
@@ -302,7 +314,7 @@ Colorer.prototype.setColorCode = function setColorCode(code) {
 
     if ( this.current === character ) return;
 
-    this.cursor.enabled && this.cursor.write( prefix + character + suffix );
+    this.cursor.enabled && this.cursor.write( { chunk: prefix + character + suffix } );
     this.current = character;
 
     return this;
@@ -320,7 +332,7 @@ Object.keys( codes ).forEach( function (name) {
             // eslint-disable-next-line prefer-rest-params
             c = toArray( arguments ).map( Math.round ).join( ";" ) + code;
         }
-        this.enabled && this.write( prefix + c );
+        this.enabled && this.write( { chunk: prefix + c } );
         return this;
     };
 } );
@@ -340,7 +352,7 @@ Object.keys( styles ).forEach( function (style) {
             return this;
         }
 
-        this.enabled && this.write( prefix + character + suffix );
+        this.enabled && this.write( { chunk: prefix + character + suffix } );
         this[ name ] = true;
 
         return this;
@@ -348,7 +360,7 @@ Object.keys( styles ).forEach( function (style) {
 
     Cursor.prototype[ "reset" + name ] = function () {
         if ( !this[ name ] ) return this;
-        this.enabled && this.write( prefix + character + suffix );
+        this.enabled && this.write( { chunk: prefix + character + suffix } );
         this[ name ] = false;
 
         return this;
@@ -378,7 +390,7 @@ Object.keys( colors ).forEach( function (color) {
  */
 
 Cursor.prototype.beep = function () {
-    this.enabled && this.write( "\x07" );
+    this.enabled && this.write( { chunk: "\x07" } );
     return this;
 };
 
@@ -389,7 +401,7 @@ Cursor.prototype.beep = function () {
 Cursor.prototype.goto = function (x, y) {
     x = x | 0;
     y = y | 0;
-    this.enabled && this.write( prefix + y + ";" + x + "H" );
+    this.enabled && this.write( { chunk: prefix + y + ";" + x + "H" } );
     return this;
 };
 
@@ -408,7 +420,7 @@ Colorer.prototype.reset = function () {
  */
 
 Cursor.prototype.reset = function () {
-    this.enabled && this.write( prefix + "0" + suffix );
+    this.enabled && this.write( { chunk: prefix + "0" + suffix } );
 
     this.bold = false;
     this.italic = false;

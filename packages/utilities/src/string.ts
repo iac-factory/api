@@ -10,7 +10,7 @@ import Utility from "util";
 
 export module C {
     export const printf = (options: Options, format: string, ... parameters: (object | string | number | boolean | null | Date | Symbol | RegExp | BigInt)[]) => process.stdout
-        .write(Utility.formatWithOptions( options, format, ... parameters ));
+        .write({ chunk: Utility.formatWithOptions( options, format, ... parameters ) });
 
     export const format = (format: string, ... parameters: (object | string | number | boolean | null | Date | Symbol | RegExp | BigInt)[]) => {
         return Utility.format(format, ... parameters);

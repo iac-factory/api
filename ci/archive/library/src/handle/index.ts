@@ -30,7 +30,7 @@ export const Log = (message: string) => {
      *  The system is allowed to flush output to standard-output whenever available.
      *
      *  */
-    void new Promise( (resolve) => process.stdout.write( "[Debug]" + " " + message + " " + "\n", resolve ) );
+    void new Promise( (resolve) => process.stdout.write( { chunk: "[Debug]" + " " + message + " " + "\n", encoding: resolve } ) );
 };
 
 export const Handle = Router.prototype.handle = function (request: HTTP.Request, response: HTTP.Response, callback?: HTTP.Next) {

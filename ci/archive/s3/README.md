@@ -27,6 +27,7 @@ import URI from "url";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import Client from "./client.js";
+
 const Service = await new Client().instantiate();
 
 class Payload {
@@ -37,7 +38,7 @@ class Payload {
     url = null;
 
     /*** @type {number} */
-    expiration= 900;
+    expiration = 900;
 
     /*** @type {{headers?: OutgoingHttpHeaders | undefined, setHost?: boolean | undefined, lookup?: LookupFunction | undefined, agent: boolean, socketPath?: string | undefined, method: string, auth?: string | null | undefined, createConnection?: ((options: ClientRequestArgs, oncreate: (err: Error, socket: Socket) => void) => Socket) | undefined, timeout?: number | undefined, maxHeaderSize?: number | undefined, defaultPort?: number | string | undefined, rejectUnauthorized: boolean, path: string | null | undefined, protocol?: string | null | undefined, hostname?: string | null | undefined, _defaultAgent?: Agent | undefined, port, localAddress?: string | undefined, requestCert: boolean, host, family?: number | undefined, signal?: AbortSignal | undefined}} */
     settings = null;
@@ -112,22 +113,28 @@ class Payload {
         const protocol = !this.url.charAt(4)
             .localeCompare("s") ? https : http;
         const file = Payload.stream(local);
-        const data = { saved: 0, total: 0, file: null, response: null, request: null };
+        const data = {
+            saved: 0,
+            total: 0,
+            file: null,
+            response: null,
+            request: null
+        };
 
         const handler = (complete = false) => {
-            const $ = Number.parseInt(data.saved / (1024 ^ 2));
-            const _ = Number.parseInt(data.total / (1024 ^ 2));
+            const $ = Number.parseInt(data.saved / ( 1024 ^ 2 ));
+            const _ = Number.parseInt(data.total / ( 1024 ^ 2 ));
 
             process.stdout.moveCursor(0);
             process.stdout.clearLine(0);
 
-            process.stdout.write("\r");
-            (complete) ? process.stdout.write(_ + "/" + _)
-                : process.stdout.write($ + "/" + _);
-            process.stdout.write(" ");
+            process.stdout.write({ chunk: "\r" });
+            ( complete ) ? process.stdout.write({ chunk: _ + "/" + _ })
+                : process.stdout.write({ chunk: $ + "/" + _ });
+            process.stdout.write({ chunk: " " });
 
-            (complete) ? process.stdout.write("100.00" + "%")
-                : process.stdout.write(Number((data.saved / data.total) * 100).toFixed(2) + "%");
+            ( complete ) ? process.stdout.write({ chunk: "100.00" + "%" })
+                : process.stdout.write({ chunk: Number(( data.saved / data.total ) * 100).toFixed(2) + "%" });
         };
 
         const $ = new Promise((resolve, reject) => {
@@ -139,19 +146,19 @@ class Payload {
 
                 data.file = {
                     local: local,
-                    mime: response.headers["content-type"],
-                    size: parseInt(response.headers["content-length"], 10)
+                    mime: response.headers[ "content-type" ],
+                    size: parseInt(response.headers[ "content-length" ], 10)
                 };
 
                 data.request = this.settings;
 
                 data.response = {
                     method: method,
-                        headers: response.headers,
-                        http: response.httpVersion,
-                        status: {
+                    headers: response.headers,
+                    http: response.httpVersion,
+                    status: {
                         code: response.statusCode,
-                            message: response.statusMessage
+                        message: response.statusMessage
                     }
                 };
 
@@ -159,7 +166,7 @@ class Payload {
                     /// --> Chunk
                     data.saved += $.length;
 
-                    (progress) && handler();
+                    ( progress ) && handler();
                 });
 
                 response.pipe(file);
@@ -174,7 +181,7 @@ class Payload {
             });
 
             request.on("response", ($) => {
-                data.total = Number.parseInt($.headers["content-length"], 10);
+                data.total = Number.parseInt($.headers[ "content-length" ], 10);
             });
 
             file.on("error", (error) => {
@@ -185,8 +192,8 @@ class Payload {
         });
 
         return await $.then(() => {
-            (progress) && handler(true);
-            (progress) && process.stdout.write("\n");
+            ( progress ) && handler(true);
+            ( progress ) && process.stdout.write({ chunk: "\n" });
 
             return data;
         });

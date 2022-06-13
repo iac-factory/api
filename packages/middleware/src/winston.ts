@@ -26,24 +26,28 @@ export const Apply = (server: Application) => {
 
     server.use( (request: Request, response: Response, next: NextFunction) => {
         request.addListener( "end", (event: Events.EventEmitter) => {
-            process.stdout.write( Utility.inspect(
-                request, {
-                    colors: false,
-                    compact: 12,
-                    maxStringLength: 25,
-                    sorted: true
-                } )
+            process.stdout.write( {
+                    chunk: Utility.inspect(
+                        request, {
+                            colors: false,
+                            compact: 12,
+                            maxStringLength: 25,
+                            sorted: true
+                        } )
+                }
             );
         } );
 
         response.addListener( "finish", (event: Events.EventEmitter) => {
-            process.stdout.write( Utility.inspect(
-                { Response: response }, {
-                    colors: false,
-                    compact: 12,
-                    maxStringLength: 25,
-                    sorted: true
-                } )
+            process.stdout.write( {
+                    chunk: Utility.inspect(
+                        { Response: response }, {
+                            colors: false,
+                            compact: 12,
+                            maxStringLength: 25,
+                            sorted: true
+                        } )
+                }
             );
         } );
 

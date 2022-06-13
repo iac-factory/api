@@ -1,0 +1,10 @@
+.tf
+.gen
+.idea
+.vscode
+.tfstate
+
+*.info
+*.tfstate
+
+build

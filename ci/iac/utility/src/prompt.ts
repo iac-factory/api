@@ -1,7 +1,9 @@
-/***
- * @author      Jacob B. Sanders
- * @license     BSD 3-Clause License
- * @copyright   Cloud-Technology LLC. & Affiliates
+/*
+ * BSD 3-Clause License
+ *
+ * Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates
+ *
+ * All Rights Reserved
  */
 
 import Input from "readline";
@@ -20,7 +22,7 @@ import TTY from "tty";
 const Handler = (timeout = Handler?.[ "timeout" ], ci = !Handler?.[ "ci" ], debug = Handler?.[ "debug" ]) => {
     ( debug ) && console.debug( "[Debug] Standard-Input Handler" + ":", Utility.inspect( Handler ) );
 
-    ( ci ) && process?.stdout?.write( "\u001B[?25l" + "\r" );
+    ( ci ) && process?.stdout?.write( { chunk: "\u001B[?25l" + "\r" } );
     ( ci ) && process?.stdin?.setRawMode( true );
 
     process?.stdin?.on( "open", () => {
@@ -74,10 +76,10 @@ const Handler = (timeout = Handler?.[ "timeout" ], ci = !Handler?.[ "ci" ], debu
         process?.stdout?.clearLine( 0 );
 
 
-        process?.stdout?.write( buffer );
+        process?.stdout?.write( { chunk: buffer } );
 
         process?.stdout?.cursorTo( 0, process?.stdout?.rows );
-        process?.stdout?.write( "\u001B[?25h" );
+        process?.stdout?.write( { chunk: "\u001B[?25h" } );
 
         process?.stdout?.emit( "drain" );
 

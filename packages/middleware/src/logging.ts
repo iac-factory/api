@@ -55,17 +55,17 @@ const Logging = (server: Application) => {
     server.use( async (request, response, callback) => {
         $.requests += 1;
 
-        process.stdout.write( Logger( request as object as Request, response, "Endpoint" + ":" + " " + String( request.path ) ) + "\n" );
-        process.stdout.write( Logger( request as object as Request, response, "Secure" + ":" + " " + String( request.secure ) ) + "\n" );
-        process.stdout.write( Logger( request as object as Request, response, "XHR" + ":" + " " + String( request.xhr ) ) + "\n" );
+        process.stdout.write( { chunk: Logger( request as object as Request, response, "Endpoint" + ":" + " " + String( request.path ) ) + "\n" } );
+        process.stdout.write( { chunk: Logger( request as object as Request, response, "Secure" + ":" + " " + String( request.secure ) ) + "\n" } );
+        process.stdout.write( { chunk: Logger( request as object as Request, response, "XHR" + ":" + " " + String( request.xhr ) ) + "\n" } );
 
-        ( request.query && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( Logger( request as object as Request, response, "Query" + ":" + " " + JSON.stringify( request.query, null, 4 ) ) + "\n" );
-        ( request.params && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( Logger( request as object as Request, response, "Parameters" + ":" + " " + JSON.stringify( request.params, null, 4 ) ) + "\n" );
-        ( request.headers && JSON.stringify( request.headers ) !== "{}" ) && process.stdout.write( Logger( request as object as Request, response, "Headers" + ":" + " " + JSON.stringify( request.headers, null, 4 ) ) + "\n" );
+        ( request.query && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( { chunk: Logger( request as object as Request, response, "Query" + ":" + " " + JSON.stringify( request.query, null, 4 ) ) + "\n" } );
+        ( request.params && JSON.stringify( request.params ) !== "{}" ) && process.stdout.write( { chunk: Logger( request as object as Request, response, "Parameters" + ":" + " " + JSON.stringify( request.params, null, 4 ) ) + "\n" } );
+        ( request.headers && JSON.stringify( request.headers ) !== "{}" ) && process.stdout.write( { chunk: Logger( request as object as Request, response, "Headers" + ":" + " " + JSON.stringify( request.headers, null, 4 ) ) + "\n" } );
 
         /// ( request.body && JSON.stringify( request.body ) !== "{}" ) && process.stdout.write( Logger( request, response, "Body" + ":" + " " + JSON.stringify( request.body, null, 4 ) ) + "\n" );
 
-        process.stdout.write( "\n" );
+        process.stdout.write( { chunk: "\n" } );
 
         callback();
     } );

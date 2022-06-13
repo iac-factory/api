@@ -39,7 +39,7 @@ const Socket = (port: number, address: string, pid: number | undefined) => {
             return server.status;
         })
 
-        socket.write( "hello\r\n" );
+        socket.write( { chunk: "hello\r\n" } );
         socket.pipe( socket, { end: false } );
     } ) as Network.Server & { state: {}, status: {}, port: number, hostname: string };
 

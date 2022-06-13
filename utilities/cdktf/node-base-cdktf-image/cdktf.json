@@ -1,0 +1,13 @@
+{
+    "language": "typescript",
+    "app": "npx --ignore-existing --quiet ts-node@latest compilation/src/index.js",
+    "terraformProviders": [
+        "kreuzwerker/docker@~>2"
+    ],
+    "terraformModules": [ ],
+    "context": {
+        "excludeStackIdFromLogicalIds": "true",
+        "allowSepCharsInLogicalIds": "true"
+    },
+    "projectId": "{{% Null %}}"
+}

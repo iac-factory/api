@@ -88,10 +88,12 @@ export function Spawn(this: any, options: Options, environment?: object | NodeJS
 
                 for await ( const line of output ) {
                     void await new Promise( (resolve) => {
-                        process.stdout.write( "[Test]" + " " + line + "\n", "utf-8", (exception) => {
-                            if ( exception ) throw exception;
+                        process.stdout.write( {
+                            chunk: "[Test]" + " " + line + "\n", encoding: "utf-8", callback: (exception) => {
+                                if ( exception ) throw exception;
 
-                            resolve( null );
+                                resolve( null );
+                            }
                         } );
                     } );
                 }
