@@ -28,12 +28,10 @@ const Cryptography = async () => {
     } catch ( error ) {
         const write: Promise<boolean> = new Promise( (callback) => {
             process.stderr.write(
-                {
-                    chunk: JSON.stringify( {
-                        exception: "Crypto Support is Disabled",
-                        error
-                    }, null, 4 ), encoding: () => callback( true )
-                }
+                JSON.stringify( {
+                    exception: "Crypto Support is Disabled",
+                    error
+                }, null, 4 ), () => callback( true )
             );
 
             process.exitCode = 1;

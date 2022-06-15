@@ -62,7 +62,7 @@ const Status = (server: Application) => {
         /// Unix Timestamp (C-Time)
         Reflect.set( response, "time", Date.now() );
 
-        process.stdout.write( { chunk: Logger( request as object as HTTP.Request, response, "Partial-Status" + ":" + message( response ) ) } );
+        process.stdout.write( Logger( request as object as HTTP.Request, response, "Partial-Status" + ":" + message( response ) ) );
 
         callback();
     } );

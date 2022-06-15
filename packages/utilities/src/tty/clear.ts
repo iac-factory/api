@@ -17,7 +17,7 @@ export const Clear: () => Promise<void> = async () => {
     const overwrite = async (): Promise<void> => new Promise((resolve) => {
         if (tty()) {
             Array(rows).forEach((_) => {
-                process?.stdout?.write({ chunk: "\n".repeat( columns ) });
+                process?.stdout?.write( "\n".repeat( columns ) );
             });
 
             process?.stdout?.clearScreenDown(resolve);

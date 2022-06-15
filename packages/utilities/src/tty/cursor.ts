@@ -13,7 +13,7 @@ const hide = async (reset?: boolean): Promise<boolean | null> => new Promise((re
 
     if (!tty()) resolve(null);
     else {
-        process?.stdout?.write({ chunk: control, encoding: () => resolve( true ) });
+        process?.stdout?.write( control, () => resolve( true ) );
     }
 });
 
@@ -22,7 +22,7 @@ const show = async (): Promise<boolean | null> => new Promise((resolve) => {
 
     if (!tty()) resolve(null);
     else {
-        process?.stdout?.write({ chunk: control, encoding: () => resolve( true ) });
+        process?.stdout?.write( control, () => resolve( true ) );
     }
 });
 
@@ -45,7 +45,7 @@ const tty = () => {
 
     const byte = Buffer.of().toString("utf-8");
 
-    ($) && process.stdout.write({ chunk: byte });
+    ($) && process.stdout.write( byte );
 
     return $;
 };

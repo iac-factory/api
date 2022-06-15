@@ -10,7 +10,9 @@ const Global = Object.create( {
     initialize: ( process.env[ "INITIALIZE" ] === "true" )
 } );
 
-import ORM, { Model, Schema, model } from "mongoose";
+import ORM, { Schema, model } from "mongoose";
+
+import * as Mongoose from "mongoose";
 
 import * as Middleware from "./../middleware";
 
@@ -34,12 +36,12 @@ export interface Type {
     creation: Date;
     modification: Date;
 
-    name?: Name
+    name?: Name;
 }
 
 export type Methods = {
     /*** Compares `password` against Hash */
-    compare(password: string): Promise<[boolean, string]>
+    compare(password: string): Promise<[ boolean, string ]>
 
     /*** Overwrites Plain-Text Password */
     hash(): Promise<boolean>;
@@ -48,7 +50,9 @@ export type Methods = {
     authorize(session: { token: string, date: Date, expiration: Date, origin: string }): Promise<Schema>;
 };
 
-export const schema = new Schema<Type, {}, Methods>( {
+export type Model = ORM.Model<Type, {}, Methods>;
+
+export const schema = new Schema<Type, Model, Methods>( {
     email: {
         name: "email",
         alias: "Email",
@@ -153,8 +157,6 @@ export const schema = new Schema<Type, {}, Methods>( {
                 trim: true
             }
         }
-
-        /*** type: name */
     }
 }, {
     versionKey: "version",
@@ -169,7 +171,7 @@ schema.methods.hash = Hash;
 schema.methods.authorize = Authorize;
 schema.methods.compare = Compare;
 
-export const User = model<Type, Model<Type, {}, Methods>, Methods>( "User", schema, "User" );
+export const User = model<Type, Model>( "User", schema );
 
 async function Initialize() {
     await import("..");
@@ -192,7 +194,7 @@ async function Initialize() {
             Record.delete( { _id: Record.id } );
 
             await Record.save().catch( (error: any) => {
-                console.warn("[Warning]", "Failure Creating Record");
+                console.warn( "[Warning]", "Failure Creating Record" );
             } );
 
             throw error;

@@ -128,3 +128,4 @@ export module Context {
 
 export default Context.Handler();
 
+export * from "./constructor";

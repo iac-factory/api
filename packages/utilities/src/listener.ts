@@ -8,7 +8,6 @@
 
 import Process from "process";
 import Subprocess from "child_process";
-import Utility from "util";
 
 export type PWD = string | URL | undefined;
 /*** The Working Directory for the Spawn'd Process - Defaults via Invocation's CWD */
@@ -88,13 +87,13 @@ export function Spawn(this: any, options: Options, environment?: object | NodeJS
 
                 for await ( const line of output ) {
                     void await new Promise( (resolve) => {
-                        process.stdout.write( {
-                            chunk: "[Test]" + " " + line + "\n", encoding: "utf-8", callback: (exception) => {
+                        process.stdout.write(
+                            "[Test]" + " " + line + "\n", (exception) => {
                                 if ( exception ) throw exception;
 
                                 resolve( null );
                             }
-                        } );
+                        );
                     } );
                 }
             } );
@@ -119,12 +118,6 @@ export function Spawn(this: any, options: Options, environment?: object | NodeJS
     }
 
     Object.setPrototypeOf( command, this );
-
-    // command.caseSensitive = configuration.caseSensitive;
-    // command.mergeParams = configuration.mergeParams;
-    // command.params = {};
-    // command.strict = configuration.strict;
-    // command.stack = [] as Construct[];
 
     return command;
 }
