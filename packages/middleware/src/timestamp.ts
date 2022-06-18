@@ -6,10 +6,9 @@
  * All Rights Reserved
  */
 
-import { HTTP } from "@iac-factory/api-schema";
 
 import { Debugger } from "@iac-factory/api-core";
-import Application = HTTP.Application;
+import type { Application } from "express";
 
 /*** @experimental */
 const Log = Debugger.hydrate( {

@@ -18,7 +18,7 @@ import Process from "process";
  */
 const valid = async (descriptor: string) => {
     return new Promise<NodeJS.ErrnoException | string | null>( (resolve) => {
-        FS.open( descriptor, (exception) => {
+        FS.open( descriptor, "r", 0o666, (exception: NodeJS.ErrnoException | null) => {
             resolve( ( exception ) ? null : descriptor );
         } );
     } );

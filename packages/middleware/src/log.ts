@@ -35,7 +35,7 @@ const Log = Debugger.hydrate( {
  *
  */
 
-export const Logger = (request: Request, response: Response, message: HTTP.Message) => {
+export const Logger = (request: HTTP.Request, response: Response, message: HTTP.Message): string => {
     const Bracket = ($: string) => "[" + $ + "]";
     const Parentheses = ($: string) => "(" + $ + ")";
 

@@ -36,7 +36,6 @@ server.listen( 8080, () => {
 
     wss.on( "connection", function (client: WebSocket) {
         const id = setInterval( () => {
-            client.send( Subprocess.execSync( "ls -lah" ) );
             client.send( JSON.stringify( process.memoryUsage() ), () => {
                 //
                 // Ignore errors.

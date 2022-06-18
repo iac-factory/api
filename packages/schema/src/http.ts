@@ -1,6 +1,6 @@
 import type http from "http";
 import type http2 from "http2";
-import type { Application as Reference } from "./application";
+import type { Application as Reference, Express } from "./application";
 import { IncomingMessage, NextFunction } from "connect";
 
 export module HTTP {

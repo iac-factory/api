@@ -4,14 +4,13 @@
     "ts-node": {
         "experimentalResolverFeatures": true,
         "preferTsExts": true,
-        "transpileOnly": true,
-        "swc": true
+        "transpileOnly": true
     },
     "compilerOptions": {
         "rootDir": ".",
-        "lib": ["ES6", "ESNext"],
+        "lib": ["ESNext"],
         "module": "CommonJS",
-        "target": "ES6",
+        "target": "ESNext",
         "moduleResolution": "Node",
         "strict": true,
         "esModuleInterop": true,
@@ -38,8 +37,8 @@
         "inlineSources": true,
         "sourceMap": true,
         "composite": true,
-        "importHelpers": true
+        "diagnostics": true
     },
     "include": ["**/*.json", "**/*.ts"],
-    "exclude": ["ci", "iac", "distribution", "coverage", "ci/scripts", "front-end"]
+    "exclude": ["ci", "distribution", "coverage"]
 }

@@ -10,16 +10,13 @@ import { v4 as UUID }         from "uuid";
 import Token, { SignOptions } from "jsonwebtoken";
 
 import { User } from "@iac-factory/api-database";
-import { HTTP } from "@iac-factory/api-schema";
-
-const Unauthorized = (response: HTTP.Response) => response.status( 401 ).set( "WWW-Authenticate", "Token-Exchange" ).send( "Invalid Username & Password Combination" );
 
 /***
  * JWT Login Generation
  * ---
  *
- * @param server {string}
- * @param {HTTP.Response} response
+ * @param {string} server
+ * @param {string} ip
  * @param {string} username
  * @param {string} password
  *
@@ -27,15 +24,15 @@ const Unauthorized = (response: HTTP.Response) => response.status( 401 ).set( "W
  *
  * @constructor
  */
-export const JWT = async function (server: string, ip: string, response: HTTP.Response, username: string, password: string): Promise<void | HTTP.Response> {
+export const JWT = async function (server: string, ip: string, username: string, password: string): Promise<void | null> {
     const record = await User.findOne( { Username: username } );
 
-    if ( !( record ) ) return Unauthorized( response );
+    if ( !( record ) ) return null;
 
     /*** Validate the User's Password --> Hash */
     const [ valid, _ ] = await record.compare( password );
 
-    if ( !( valid ) ) return Unauthorized( response );
+    if ( !( valid ) ) return null;
 
     const { id } = record;
     const fields: SignOptions = {
@@ -68,7 +65,7 @@ export const JWT = async function (server: string, ip: string, response: HTTP.Re
         await record.updateOne();
         await record.save();
 
-        response.set( "Content-Type", "Application/JWT" ).status( 200 ).send( token );
+        return token;
     } );
 };
 

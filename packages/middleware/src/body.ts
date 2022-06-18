@@ -10,7 +10,7 @@ import { HTTP } from "@iac-factory/api-schema";
 
 import { Debugger } from "@iac-factory/api-core";
 import { json, urlencoded } from "body-parser";
-import Application = HTTP.Application;
+import type { Application } from "express";
 
 /*** @experimental */
 const Logger = Debugger.hydrate( {
@@ -49,7 +49,7 @@ const Parsers = {
  *
  */
 
-export const Body = (server: Application) => {
+export const Body = (server: Application): Application => {
     Logger.debug( "Initializing Body Parser(s) ..." );
 
     for ( const [ parser, module ] of Object.entries( Parsers ) ) {
