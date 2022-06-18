@@ -6,20 +6,15 @@
  * All Rights Reserved
  */
 
-import WebSocket from "ws";
-import fs from "fs";
+import WS from "ws";
 
-const ws = new WebSocket( "ws://localhost:8080/foo");
-//     , {
-//     cert: fs.readFileSync("certificate.pem"),
-//     key: fs.readFileSync("private-key.pem"),
-//     rejectUnauthorized: false
-// } );
+const ws = new WS( "ws://localhost:8080/foo");
 
 ws.on( "open", function open() {
     ws.on("message", (event: Buffer) => {
         console.log(event.toString("utf-8"));
     });
+
     ws.on("test", (data) => {
         console.log(data);
     })

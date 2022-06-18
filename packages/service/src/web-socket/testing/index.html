@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <!-- BSD 3-Clause License                                           -->
+    <!-- Copyright © 2022, Jacob B. Sanders, IaC-Factory & Affiliates   -->
+    <!-- All Rights Reserved                                            -->
+
+    <script type="module" charset="UTF-8" async>
+        ( async () => {
+            const application = document.getElementById("Application");
+
+            const { content } = document.getElementById("Websocket-DOM-Template");
+
+            application.appendChild(content);
+        } )();
+    </script>
+</head>
+<body>
+<div id="Application"></div>
+<template id="Websocket-DOM-Template">
+    <pre><code id="Message"></code></pre>
+</template>
+<script type="module" src="socket.js" charset="UTF-8" defer async></script>
+</body>
+</html>

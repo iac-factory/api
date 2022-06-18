@@ -6,12 +6,12 @@
  * All Rights Reserved
  */
 
-import HTTPs from "https";
-import HTTP from "http";
+import HTTPs                                                 from "https";
+import HTTP                                                  from "http";
 import { WebSocket, WebSocketServer, createWebSocketStream } from "ws";
-import URI from "url";
+import URI                                                   from "url";
 
-const fs = require( "fs" );
+import Subprocess from "child_process";
 
 // openssl req -new -newkey rsa:2048 -nodes -keyout private.key -out certificate.csr -subj "/C=US/ST=Minnesota/L=Minneapolis/O=IaC-Factory LLC./OU=IT/CN=localhost"
 // openssl rsa -in private.key -text > private.pem
@@ -25,6 +25,7 @@ const fs = require( "fs" );
 // openssl req -x509 -newkey rsa:4096 -keyout private-key.pem -out certificate.pem -sha256 -days 365 -subj "/C=US/ST=Minnesota/L=Minneapolis/O=IaC-Factory LLC./OU=IT/CN=localhost" -nodes
 
 const server = HTTP.createServer();
+
 // HTTPs.createServer( {
 //     cert: fs.readFileSync( "certificate.pem" ),
 //     key: fs.readFileSync( "private-key.pem" )
@@ -34,17 +35,18 @@ server.listen( 8080, () => {
     const wss = new WebSocketServer( { server } );
 
     wss.on( "connection", function (client: WebSocket) {
-        const id = setInterval( function () {
-            client.send(require("child_process").execSync("ls -lah"));
-            client.send( JSON.stringify( process.memoryUsage() ), function () {
+        const id = setInterval( () => {
+            client.send( Subprocess.execSync( "ls -lah" ) );
+            client.send( JSON.stringify( process.memoryUsage() ), () => {
                 //
                 // Ignore errors.
                 //
             } );
         }, 1000 );
-        console.log( "started client interval" );
 
-        client.on( "close", function () {
+        console.log( "Started Client Connection" );
+
+        client.on( "close", () => {
             console.log( "stopping client interval" );
             clearInterval( id );
         } );
