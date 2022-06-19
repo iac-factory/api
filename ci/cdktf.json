@@ -1,13 +1,12 @@
 {
     "language": "typescript",
-    "app": "ts-node .",
+    "app": "npx ts-node main.ts",
+    "projectId": "b1710334-70cf-44fe-adb5-f90f65a7afe6",
+    "sendCrashReports": "true",
+    "terraformProviders": [],
     "terraformModules": [],
-    "terraformProviders": [
-        "integrations/github"
-    ],
     "context": {
-        "allowSepCharsInLogicalIds": "true",
-        "excludeStackIdFromLogicalIds": "true"
-    },
-    "codeMakerOutput": "library"
+        "excludeStackIdFromLogicalIds": "true",
+        "allowSepCharsInLogicalIds": "true"
+    }
 }

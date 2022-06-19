@@ -1,37 +1,43 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-        "charset": "utf8",
-        "declaration": true,
-        "lib": [
-            "es2018"
-        ],
-        "noImplicitOverride": false,
-        "module": "CommonJS",
-        "noEmitOnError": true,
-        "noFallthroughCasesInSwitch": true,
-        "importsNotUsedAsValues": "preserve",
-        "noImplicitAny": false,
-        "noImplicitReturns": false,
-        "noImplicitThis": false,
-        "noUnusedLocals": false,
-        "exactOptionalPropertyTypes": false,
-        "resolveJsonModule": true,
-        "strictPropertyInitialization": false,
-        "allowUnreachableCode": true,
-        "target": "ES2018",
-        "incremental": true
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "@iac-factory/tsc-configuration",
+    "ts-node": {
+        "experimentalResolverFeatures": true,
+        "preferTsExts": true,
+        "transpileOnly": true
     },
-    "exclude": [
-        "node_modules",
-        "cdktf.out",
-        "terraform",
-        "unit-testing",
-        "archive",
-        "iac",
-        "distribution-systems",
-        "scripts",
-        "**/*.js",
-        "**/*.d.ts"
-    ]
+    "compilerOptions": {
+        "rootDir": ".",
+        "lib": ["ESNext"],
+        "module": "CommonJS",
+        "target": "ESNext",
+        "moduleResolution": "Node",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
+        "resolveJsonModule": true,
+        "noEmitOnError": true,
+        "allowJs": true,
+        "strictBindCallApply": true,
+        "noImplicitThis": true,
+        "noImplicitOverride": true,
+        "noStrictGenericChecks": true,
+        "strictFunctionTypes": true,
+        "pretty": true,
+        "strictNullChecks": true,
+        "noErrorTruncation": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "declaration": true,
+        "inlineSources": true,
+        "sourceMap": true,
+        "composite": true,
+        "diagnostics": true
+    },
+    "include": ["**/*.json", "**/*.ts"],
+    "exclude": ["ci", "distribution", "coverage", "archive", "unit-testing"]
 }

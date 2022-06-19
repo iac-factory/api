@@ -59,4 +59,3 @@ export const Main = async () => {
 };
 
 export default Main;
-
